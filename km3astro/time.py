@@ -1,6 +1,7 @@
-import datetime
+from datetime import datetime
 
 import numpy as np
+
 
 def second_from_interval(start, stop, n=1):
     """Sample random times from an interval (in seconds)."""
@@ -26,6 +27,6 @@ def random_date(year=2015, **randargs):
     return second_from_interval(start, stop, **randargs)
 
 
-def np_to_datetime(time):
-    return datetime.utcfromtimestamp((time - np.datetime64(
-        '1970-01-01T00:00:00Z')) / np.timedelta64(1, 's'))
+def np_to_datetime(nptime):
+    np_corr = (nptime - np.datetime64( '1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
+    return [datetime.utcfromtimestamp(t) for t in np_corr]
