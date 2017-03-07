@@ -1,11 +1,11 @@
 """Constants, like geographical positions."""
 
-__author__ = "Tamas Gal"
-__copyright__ = "Copyright 2016, Tamas Gal and the KM3NeT collaboration."
+__author__ = "Moritz Lotze"
+__copyright__ = "Copyright 2017, Moritz Lotze and the KM3NeT collaboration."
 __credits__ = []
-__license__ = "MIT"
-__maintainer__ = "Tamas Gal"
-__email__ = "tgal@km3net.de"
+__license__ = "BSD-3"
+__maintainer__ = "Moritz Lotze"
+__email__ = "mlotze@km3net.de"
 __status__ = "Development"
 
 
