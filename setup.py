@@ -14,7 +14,8 @@ setup(
     license='BSD-3',
     packages=['km3astro', ],
     install_requires=[
-        'numpy',
         'astropy',
+        'numpy',
+        'pandas',
     ]
 )
