@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name='km3astro',
-    version='0.2',
+    version='0.2.1',
     description='Astro Utils',
     url='http://git.km3net.de/moritz/km3astro',
     author='Moritz Lotze',
