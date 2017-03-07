@@ -38,6 +38,6 @@ def gc_dist(event):
 
 
 def orca_gc_dist(azimuth, time, zenith):
-    evt = orca_event(time, zenith, azimuth)
+    evt = orca_event(azimuth, time, zenith)
     dist = gc_dist(evt)
     return dist
