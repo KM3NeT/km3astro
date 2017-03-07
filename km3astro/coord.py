@@ -34,7 +34,7 @@ def gc_dist(event):
     """
     events = event.icrs
     gc = SkyCoord(0*deg, 0*deg, frame='galactic').icrs
-    return events.separation(gc)
+    return events.separation(gc).radian
 
 
 def orca_gc_dist(azimuth, time, zenith):
