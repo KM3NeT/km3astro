@@ -5,7 +5,7 @@ from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
 import numpy as np
 
 from km3astro.constants import orca_longitude, orca_latitude, orca_height
-from km3astro.time import np_to_datetime
+from km3astro.time import np_to_datetime, random_date
 
 
 def orca_event(azimuth, time, zenith):
@@ -40,4 +40,24 @@ def gc_dist(event):
 def orca_gc_dist(azimuth, time, zenith):
     evt = orca_event(azimuth, time, zenith)
     dist = gc_dist(evt)
+    return dist
+
+
+def random_azimuth(n=1, unit='rad'):
+    azi = (np.pi * np.random.random_sample(size=n))
+    if unit == 'rad':
+        return azi
+    elif unit == 'deg':
+        return azi / np.pi * 180
+    else:
+        raise KeyError("Unknown unit '{}'".format(unit))
+
+
+def gc_dist_random(zenith, time='random', azimuth='random'):
+    n_evts = len(zenith)
+    if time == 'random':
+        time = random_date(n=n_evts)
+    if azimuth == 'random':
+        azimuth = random_azimuth(n=n_evts)
+    dist = orca_gc_dist(azimuth, time, zenith)
     return dist
