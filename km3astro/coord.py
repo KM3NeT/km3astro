@@ -1,16 +1,31 @@
 """Coordinate transformations.
+
+Galactic:
+    GC at (0, 0),
+    gal. longitude, latitude (l, b)
+
+Horizontal / altaz (km3):
+    centered at detector position
+    altitude, azimuth (altitude = 90deg - zenith)
+
+EquatorialJ200 / FK5 / ICRS / GCRS
+    (right ascension, declination)
+
+    Equatorial is the same as FK5. FK5 is superseded by the ICRS, so use
+    this instead. Note that FK5/ICRS are _barycentric_ implementations,
+    so if you are looking for *geocentric* equatorial, use GCRS.
+
 """
-from astropy.time import Time
-from astropy.units import rad, deg, hourangle  # noqa
+from astropy.units import rad, deg  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
-                                 Latitude, get_sun, get_moon)
+                                 Latitude, get_sun)
 import numpy as np
 
 from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
 )
-from km3astro.time import np_to_datetime, random_date, np_to_astrotime
+from km3astro.time import np_to_astrotime
 
 
 ARCA_LOC = EarthLocation.from_geodetic(
@@ -40,8 +55,8 @@ def orca_event(azimuth, time, zenith):
     time = np_to_astrotime(time)
     orca_frame = AltAz(obstime=time, location=ORCA_LOC)
 
-    altitude = zenith - np.pi/2
-    event = SkyCoord(alt=altitude*rad, az=azimuth*rad, frame=orca_frame)
+    altitude = zenith - np.pi / 2
+    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=orca_frame)
     return event
 
 
@@ -79,6 +94,6 @@ def sun_in_orca(time):
 def gc_in_orca(time):
     time = np_to_astrotime(time)
     orca_frame = AltAz(obstime=time, location=ORCA_LOC)
-    gc = SkyCoord(0*deg, 0*deg, frame='galactic')
+    gc = SkyCoord(0 * deg, 0 * deg, frame='galactic')
     gc_orca = gc.transform_to(orca_frame)
     return gc_orca
