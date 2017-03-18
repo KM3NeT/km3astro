@@ -2,11 +2,12 @@
 # vim:set ts=4 sts=4 sw=4 et:
 
 from setuptools import setup
+from km3astro import __version__
 
 
 setup(
     name='km3astro',
-    version='0.2.1',
+    version=__version__,
     description='Astro Utils',
     url='http://git.km3net.de/moritz/km3astro',
     author='Moritz Lotze',

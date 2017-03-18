@@ -1,11 +1,10 @@
-.. KM3Astro documentation master file
+# KM3Astro
 
-.. include:: version.txt
+## About
 
 KM3Astro is a collection astronomy utils, like coordinate transformations.
 
-Install
--------
+## Install
 
 This is developed on python 3.6. Lower versions (especially py2)
 might or might not work.
@@ -21,19 +20,3 @@ In your python env, do
   pip install git+http://git.km3net.de/moritz/km3astro.git
 
 or just clone the git repository and install via ``pip install .``
-
-Contents
---------
-
-.. toctree::
-    :hidden:
-    :titlesonly:
-
-    self
-
-.. toctree::
-    :maxdepth: 2
-    
-    api
-
-* :ref:`genindex`
