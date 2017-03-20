@@ -38,6 +38,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'numpydoc',
+    'sphinx_gallery.gen_gallery',
 ]
 
 
@@ -354,3 +355,16 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #
 # texinfo_no_detailmenu = False
+
+sphinx_gallery_conf = {
+    # path to store the module using example template
+    'mod_example_dir': 'modules/generated',
+    'doc_module': ('km3astro', ),
+    'examples_dirs': ['../examples'],
+    'gallery_dirs': ['auto_examples'],
+#     'reference_url':  {
+#         'km3astro': None,
+#         'matplotlib': 'http://matplotlib.org',
+#         'numpy': 'http://docs.scipy.org/doc/numpy-1.9.1',
+#     }
+}

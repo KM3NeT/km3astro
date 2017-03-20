@@ -35,5 +35,6 @@ Contents
     :maxdepth: 2
     
     api
+    examples
 
 * :ref:`genindex`
