@@ -1,3 +1,4 @@
 numpy
 pandas
 astropy
+matplotlib>=2.0

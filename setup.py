@@ -18,5 +18,6 @@ setup(
         'astropy',
         'numpy',
         'pandas',
+        'matplotlib>=2.0',
     ]
 )
