@@ -25,7 +25,7 @@ from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
 )
-from km3astro.time import np_to_astrotime
+from km3astro.time import np_to_astrotime, random_date
 
 
 ARCA_LOC = EarthLocation.from_geodetic(
@@ -47,16 +47,22 @@ def transform_to_orca(event, time):
     return event.transform_to(orca_frame)
 
 
-def orca_event(azimuth, time, zenith):
+def local_event(azimuth, time, zenith, location='orca'):
     """Create astropy events from detector coordinates."""
     zenith = np.atleast_1d(zenith)
     azimuth = np.atleast_1d(azimuth)
 
     time = np_to_astrotime(time)
-    orca_frame = AltAz(obstime=time, location=ORCA_LOC)
+    if location == 'orca':
+        loc = ORCA_LOC
+    elif location == 'arca':
+        loc = ARCA_LOC
+    else:
+        raise KeyError("Valid locations are 'arca' and 'orca'")
+    frame = AltAz(obstime=time, location=loc)
 
     altitude = zenith - np.pi / 2
-    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=orca_frame)
+    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame)
     return event
 
 
@@ -83,17 +89,61 @@ def random_zenith(n=1, unit='rad'):
         raise KeyError("Unknown unit '{}'".format(unit))
 
 
-def sun_in_orca(time):
+def sun_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
-    orca_frame = AltAz(obstime=time, location=ORCA_LOC)
+    local_frame = AltAz(obstime=time, location=ORCA_LOC)
     sun = get_sun(time)
-    sun_orca = sun.transform_to(orca_frame)
-    return sun_orca
+    sun_local = sun.transform_to(local_frame)
+    return sun_local
 
 
-def gc_in_orca(time):
+def gc_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
-    orca_frame = AltAz(obstime=time, location=ORCA_LOC)
+    local_frame = AltAz(obstime=time, location=ORCA_LOC)
     gc = SkyCoord(0 * deg, 0 * deg, frame='galactic')
-    gc_orca = gc.transform_to(orca_frame)
-    return gc_orca
+    gc_local = gc.transform_to(local_frame)
+    return gc_local
+
+
+def orca_gc_dist(azimuth, time, zenith, frame='detector'):
+    """Return angular distance of event to GC.
+
+    Parameters
+    ==========
+    frame: str, [default: 'detector']
+        valid are 'detector', 'galactic', 'icrs', 'gcrs'
+    """
+    evt = local_event(azimuth, time, zenith)
+    galcen = gc_in_local(time, loc='orca')
+    if frame == 'detector':
+        pass
+    elif frame in ('galactic', 'icrs', 'gcrs'):
+        evt = evt.transform_to(frame)
+        galcen = galcen.transform_to(frame)
+    return evt.separation(galcen).radian
+
+
+def orca_sun_dist(azimuth, time, zenith):
+    """Return distance of event to sun, in detector coordinates."""
+    evt = local_event(azimuth, time, zenith)
+    sun = sun_in_local(time, loc='orca')
+    dist = evt.separation(sun).radian
+    return dist
+
+
+def gc_dist_random(zenith, frame='detector'):
+    """Generate random (time, azimuth) events and get distance to GC."""
+    n_evts = len(zenith)
+    time = random_date(n=n_evts)
+    azimuth = random_azimuth(n=n_evts)
+    dist = orca_gc_dist(azimuth, time, zenith, frame=frame)
+    return dist
+
+
+def sun_dist_random(zenith):
+    """Generate random (time, azimuth) events and get distance to GC."""
+    n_evts = len(zenith)
+    time = random_date(n=n_evts)
+    azimuth = random_azimuth(n=n_evts)
+    dist = orca_sun_dist(azimuth, time, zenith)
+    return dist
