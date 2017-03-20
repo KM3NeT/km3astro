@@ -3,96 +3,60 @@ API Reference
 
 .. contents:: :local:
 
-``km3astro.weights``
+``km3astro.constants``
 ----------------
 
-.. automodule:: km3astro.weights
+.. automodule:: km3astro.constants
   :no-members:
   :no-inherited-members:
 
-.. currentmodule:: km3astro.weights
+.. currentmodule:: km3astro.constants
 
 .. autosummary::
   :toctree: api
 
-  nu_wgt
-  atmu_wgt
-  make_weights
 
 
-``km3astro.common``
+``km3astro.coord``
 ------------------
 
-.. automodule:: km3astro.common
+.. automodule:: km3astro.coord
   :no-members:
   :no-inherited-members:
 
-.. currentmodule:: km3astro.common
+.. currentmodule:: km3astro.coord
 
 .. autosummary::
   :toctree: api
 
 
-  e2flux
+  transform_to_orca
+  local_event
+  random_azimuth
+  random_zenith
+  sun_in_local
+  gc_in_local
+  orca_gc_dist
+  orca_sun_dist
+  sun_dist_random
+  gc_dist_random
 
 
-``km3astro.aeff``
+``km3astro.time``
 ----------------
 
-.. automodule:: km3astro.aeff
+.. automodule:: km3astro.time
   :no-members:
   :no-inherited-members:
 
-.. currentmodule:: km3astro.aeff
+.. currentmodule:: km3astro.time
 
 .. autosummary::
   :toctree: api
 
 
-  integrated_energy
-  integrated_zenith
-  aeff_scale_factor
-
-
-``km3astro.honda``
------------------
-
-.. automodule:: km3astro.honda
-  :no-members:
-  :no-inherited-members:
-
-.. currentmodule:: km3astro.honda
-
-.. autosummary::
-  :toctree: api
-
-  Honda2015
-  HondaSarcevic
-
-
-``km3astro.kpmod``
------------------
-
-.. automodule:: km3astro.kpmod
-  :no-members:
-  :no-inherited-members:
-
-.. currentmodule:: km3astro.kpmod
-
-.. autosummary::
-  :toctree: api
-
-  
-``km3astro.pandas``
------------------
-
-.. automodule:: km3astro.pandas
-  :no-members:
-  :no-inherited-members:
-
-.. currentmodule:: km3astro.pandas
-
-.. autosummary::
-  :toctree: api
-
-  honda2015_df 
+  second_from_interval
+  equidistant_from_interval
+  random_date
+  np_to_datetime
+  np_to_astrotime
