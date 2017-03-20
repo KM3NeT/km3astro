@@ -68,6 +68,7 @@ def local_event(azimuth, time, zenith, location='orca'):
 
 def random_azimuth(n=1, unit='rad'):
     """Draw azimuth, uniformly distributed."""
+    n = int(n)  # the method does not cast floats
     azi = (2 * np.pi * np.random.random_sample(size=n))
     if unit == 'rad':
         return azi
@@ -79,6 +80,7 @@ def random_azimuth(n=1, unit='rad'):
 
 def random_zenith(n=1, unit='rad'):
     """Draw zenith, uniformly distributed in cos(zen)."""
+    n = int(n)  # the method does not cast floats
     coszen = (2 * np.random.random_sample(size=n) - 1)
     zen = np.arccos(coszen)
     if unit == 'rad':

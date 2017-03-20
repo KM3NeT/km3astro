@@ -1,11 +1,9 @@
 from unittest import TestCase
 
-import numpy as np
-import pandas as pd
+from km3astro.coord import random_azimuth, random_zenith
+from km3astro.time import random_date
 
-#from km3astro.coord import gc_dist, orca_event, orca_gc_dist
-#
-#
+
 #class TestGalCenSep(TestCase):
 #    def setUp(self):
 #        rand_t = pd.Series(np.array(['2015-08-09T23:18:18', '2015-06-23T03:53:35',
@@ -28,6 +26,22 @@ import pandas as pd
 #        dist = gc_dist(self.event)
 #        assert np.allclose(expected, dist)
 
-class TestDummy(TestCase):
-    def test_dummy(self):
-        assert True
+
+class TestRandom(TestCase):
+    def setUp(self):
+        self.n_evts = 100
+        self.n_evts_funny = 1e2
+
+    def test_zenith(self):
+        zen = random_zenith(n=self.n_evts)
+        assert zen.shape[0] == self.n_evts
+        zen = random_zenith(n=self.n_evts_funny)
+        self.assertAlmostEqual(zen.shape[0], self.n_evts_funny)
+
+    def test_azimuth(self):
+        azi = random_azimuth(n=self.n_evts_funny)
+        assert azi.shape[0] == self.n_evts_funny
+
+    def test_date(self):
+        tim = random_date(n=self.n_evts)
+        assert tim.shape[0] == self.n_evts
