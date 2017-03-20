@@ -8,6 +8,7 @@ import numpy as np
 
 def second_from_interval(start, stop, n=1):
     """Sample random times from an interval (in seconds)."""
+    n = int(n)
     sec = np.timedelta64(1, 's')
     n_seconds = (stop - start) / sec
     samples = np.random.randint(low=0, high=n_seconds, size=n) * sec
