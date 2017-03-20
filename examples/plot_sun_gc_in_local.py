@@ -30,7 +30,7 @@ azi = random_azimuth(n=n_evts)
 astrotim = np_to_astrotime(tim)
 
 
-# In[3]:
+#############################
 
 orca_frame = AltAz(obstime=astrotim, location=ORCA_LOC)
 gc = SkyCoord(0 * rad, 0 * rad, frame='galactic')
@@ -41,7 +41,7 @@ sun_orca = sun.transform_to(orca_frame)
 gc_orca = gc.transform_to(orca_frame)
 
 
-# In[5]:
+#############################
 
 sun_azi = sun_orca.az.rad
 sun_zen = (90 * deg - sun_orca.alt).rad
@@ -49,22 +49,22 @@ gc_azi = gc_orca.az.rad
 gc_zen = (90 * deg - gc_orca.alt).rad
 
 
-# In[6]:
+############################
 
 plt.hexbin(sun_zen, sun_azi)
 
 
-# In[7]:
+############################
 
 plt.hexbin(np.cos(sun_zen), sun_azi)
 
 
-# In[8]:
+############################
 
 plt.hexbin(gc_zen, gc_azi)
 
 
-# In[9]:
+############################
 
 plt.hexbin(np.cos(gc_zen), gc_azi)
 
@@ -76,11 +76,11 @@ df = pd.DataFrame({
     'dist_sun': orca_gc_dist(azi, tim, zen, frame='gcrs'),
 })
 
-# In[ ]:
+############################
 
 df.dist_gc.hist()
 
 
-# In[ ]:
+############################
 
 df.dist_sun.hist()
