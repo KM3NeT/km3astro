@@ -1,6 +1,10 @@
 Unreleased Changes
 ------------------
 
+0.4.0
+-----
+* move random sampling methods to `km3astro.random`
+
 0.3.2
 -----
 * add example gallery
