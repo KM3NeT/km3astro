@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from km3astro.coord import random_azimuth, random_zenith
-from km3astro.time import random_date
+from km3astro.random import random_azimuth, random_zenith, random_date
 
 
 #class TestGalCenSep(TestCase):

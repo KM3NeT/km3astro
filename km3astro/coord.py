@@ -13,7 +13,8 @@ EquatorialJ200 / FK5 / ICRS / GCRS
 
     Equatorial is the same as FK5. FK5 is superseded by the ICRS, so use
     this instead. Note that FK5/ICRS are _barycentric_ implementations,
-    so if you are looking for *geocentric* equatorial, use GCRS.
+    so if you are looking for *geocentric* equatorial (i.e.
+    for solar system bodies), use GCRS.
 
 """
 from astropy.units import rad, deg  # noqa
@@ -25,7 +26,8 @@ from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
 )
-from km3astro.time import np_to_astrotime, random_date
+from km3astro.time import np_to_astrotime
+from km3astro.random import random_date, random_azimuth
 
 
 ARCA_LOC = EarthLocation.from_geodetic(
@@ -66,31 +68,6 @@ def local_event(azimuth, time, zenith, location='orca'):
     return event
 
 
-def random_azimuth(n=1, unit='rad'):
-    """Draw azimuth, uniformly distributed."""
-    n = int(n)  # the method does not cast floats
-    azi = (2 * np.pi * np.random.random_sample(size=n))
-    if unit == 'rad':
-        return azi
-    elif unit == 'deg':
-        return azi / np.pi * 180
-    else:
-        raise KeyError("Unknown unit '{}'".format(unit))
-
-
-def random_zenith(n=1, unit='rad'):
-    """Draw zenith, uniformly distributed in cos(zen)."""
-    n = int(n)  # the method does not cast floats
-    coszen = (2 * np.random.random_sample(size=n) - 1)
-    zen = np.arccos(coszen)
-    if unit == 'rad':
-        return zen
-    elif unit == 'deg':
-        return zen / np.pi * 180
-    else:
-        raise KeyError("Unknown unit '{}'".format(unit))
-
-
 def sun_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
     local_frame = AltAz(obstime=time, location=ORCA_LOC)
@@ -99,10 +76,14 @@ def sun_in_local(time, loc='orca'):
     return sun_local
 
 
+def galcen():
+    return SkyCoord(0 * deg, 0 * deg, frame='galactic')
+
+
 def gc_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
     local_frame = AltAz(obstime=time, location=ORCA_LOC)
-    gc = SkyCoord(0 * deg, 0 * deg, frame='galactic')
+    gc = galcen()
     gc_local = gc.transform_to(local_frame)
     return gc_local
 
