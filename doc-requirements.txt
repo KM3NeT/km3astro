@@ -1,6 +1,5 @@
 sphinx-gallery
 sphinx>=1.5.1
 sphinxcontrib-napoleon
-matplotlib>=2.0.0
 Pillow
 numpydoc
