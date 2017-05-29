@@ -5,8 +5,6 @@ from setuptools import setup
 from km3astro import __version__
 
 
-print('made by moritz')
-
 setup(
     name='km3astro',
     version=__version__,
