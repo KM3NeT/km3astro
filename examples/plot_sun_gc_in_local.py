@@ -15,15 +15,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from km3astro.time import random_date, np_to_astrotime
-from km3astro.coord import (random_azimuth, random_zenith, ORCA_LOC,
-                            orca_gc_dist)
+from km3astro.time import np_to_astrotime
+from km3astro.random import random_date, random_azimuth, random_zenith
+from km3astro.coord import ORCA_LOC, orca_gc_dist
 
 
 #############################
 # generate some random events
 
-n_evts = 1e3
+n_evts = 1e4
 zen = random_zenith(n=n_evts)
 tim = random_date(n=n_evts)
 azi = random_azimuth(n=n_evts)
@@ -51,7 +51,7 @@ gc_zen = (90 * deg - gc_orca.alt).rad
 
 ############################
 
-plt.hexbin(sun_zen, sun_azi)
+plt.hexbin(sun_zen, sun_azi, cmap='inferno')
 
 
 ############################
