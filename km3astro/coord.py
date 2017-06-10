@@ -49,6 +49,15 @@ def transform_to_orca(event, time):
     return event.transform_to(orca_frame)
 
 
+def local_frame(time, loc='orca'):
+    if loc == 'orca':
+        loc = ORCA_LOC
+    if loc == 'arca':
+        loc = ARCA_LOC
+    frame = AltAz(obstime=time, location=loc)
+    return frame
+
+
 def local_event(azimuth, time, zenith, location='orca'):
     """Create astropy events from detector coordinates."""
     zenith = np.atleast_1d(zenith)
@@ -61,7 +70,7 @@ def local_event(azimuth, time, zenith, location='orca'):
         loc = ARCA_LOC
     else:
         raise KeyError("Valid locations are 'arca' and 'orca'")
-    frame = AltAz(obstime=time, location=loc)
+    frame = local_frame(time, location=loc)
 
     altitude = zenith - np.pi / 2
     event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame)
