@@ -31,14 +31,14 @@ from km3astro.random import random_date, random_azimuth
 
 
 ARCA_LOC = EarthLocation.from_geodetic(
-    Longitude(arca_longitude * deg),
-    Latitude(arca_latitude * deg),
+    lon=Longitude(arca_longitude * deg),
+    lat=Latitude(arca_latitude * deg),
     height=arca_height
 )
 
 ORCA_LOC = EarthLocation.from_geodetic(
-    Longitude(orca_longitude * deg),
-    Latitude(orca_latitude * deg),
+    lon=Longitude(orca_longitude * deg),
+    lat=Latitude(orca_latitude * deg),
     height=orca_height
 )
 
@@ -70,7 +70,7 @@ def local_event(azimuth, time, zenith, location='orca'):
         loc = ARCA_LOC
     else:
         raise KeyError("Valid locations are 'arca' and 'orca'")
-    frame = local_frame(time, location=loc)
+    frame = local_frame(time, loc=loc)
 
     altitude = zenith - np.pi / 2
     event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame)
