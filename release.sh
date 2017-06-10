@@ -29,9 +29,9 @@ git commit -m "Bump version number"
 
 git tag -a $VERSION
 
-#rm -rf dist/*
-#python setup.py sdist
-#twine upload dist/*
+rm -rf dist/*
+python setup.py sdist bdist_wheel
+twine upload dist/*
 
 git checkout master
 git push
