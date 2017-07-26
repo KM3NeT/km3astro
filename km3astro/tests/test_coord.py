@@ -11,22 +11,25 @@ class TestCoord(TestCase):
         self.n_evts = 100
         self.n_evts_funny = 1e2
 
-    def test_neutrino_flip(self):
-        phi_deg = np.array([97.07, 23.46, 97.07, 192.5, 333.33])
-        theta_deg = np.array([135., 11.97, 22.97, 33.97, 85.23])
-        azimuth_exp_deg = np.array([277.07, 203.46, 277.07, 12.5, 153.33])
-        zenith_exp_deg = np.array([45., 168.03, 157.03, 146.03, 94.77])
-        azi_deg, zen_deg = neutrino_to_source_direction(phi_deg, theta_deg,
+    def test_neutrino_flip_degree(self):
+        phi = np.array([97.07, 23.46, 97.07, 192.5, 333.33])
+        theta = np.array([135., 11.97, 22.97, 33.97, 85.23])
+        azi_exp = np.array([277.07, 203.46, 277.07, 12.5, 153.33])
+        zen_exp = np.array([45., 168.03, 157.03, 146.03, 94.77])
+        azi, zen = neutrino_to_source_direction(phi, theta,
                                                         radian=False)
-        assert_allclose(zen_deg, zenith_exp_deg)
-        assert_allclose(azi_deg, azimuth_exp_deg)
-        phi = phi_deg * np.pi / 180
-        theta = theta_deg * np.pi / 180
-        azimuth_exp = azimuth_exp_deg * np.pi / 180
-        zenith_exp = zenith_exp_deg * np.pi / 180
+        assert_allclose(azi, azi_exp)
+        assert_allclose(zen, zen_exp)
+
+    def test_neutrino_flip_radian(self):
+        phi = np.array([97.07, 23.46, 97.07, 192.5, 333.33]) * np.pi / 180
+        theta = np.array([135., 11.97, 22.97, 33.97, 85.23]) * np.pi / 180
+        azi_exp = np.array([277.07, 203.46, 277.07, 12.5, 153.33]) * np.pi / 180
+        zen_exp = np.array([45., 168.03, 157.03, 146.03, 94.77]) * np.pi / 180
         azi, zen = neutrino_to_source_direction(phi, theta, radian=True)
-        assert_allclose(zen, zenith_exp)
-        assert_allclose(azi, azimuth_exp)
+
+        assert_allclose(azi, azi_exp)
+        assert_allclose(zen, zen_exp)
 
 
 class TestEvent(TestCase):

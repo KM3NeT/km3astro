@@ -78,6 +78,8 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     if not radian:
         phi *= np.pi / 180
         theta *= np.pi / 180
+    assert np.all(phi <= 2 * np.pi)
+    assert np.all(theta <= np.pi)
     azimuth = (phi + np.pi) % (2 * np.pi)
     zenith = np.pi - theta
     if not radian:
@@ -180,4 +182,4 @@ def hsin(theta):
 def space_angle(zen_1, zen_2, azi_1, azi_2):
     """Space angle between two directions specified by zenith and azimuth.
     """
-    return hsin(azi_2 - azi_1) + numpy.cos(azi_1) * np.cos(azi_2) * hsin(zen_2 - zen_1)
+    return hsin(azi_2 - azi_1) + np.cos(azi_1) * np.cos(azi_2) * hsin(zen_2 - zen_1)
