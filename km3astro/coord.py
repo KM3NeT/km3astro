@@ -139,3 +139,14 @@ def sun_dist_random(zenith):
     azimuth = random_azimuth(n=n_evts)
     dist = orca_sun_dist(azimuth, time, zenith)
     return dist
+
+
+def hsin(theta):
+    """haversine"""
+    return (1.0 - np.cos(theta)) / 2.
+
+
+def space_angle(zen_1, zen_2, azi_1, azi_2):
+    """Space angle between two directions specified by zenith and azimuth.
+    """
+    return hsin(azi_2 - azi_1) + numpy.cos(azi_1) * np.cos(azi_2) * hsin(zen_2 - zen_1)
