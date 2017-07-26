@@ -17,9 +17,8 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-sys.path.append('../')
+
+import sphinx_rtd_theme
 
 import km3astro
 
@@ -132,17 +131,14 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-html_theme_options = {
-    'font_family': "'Open Sans', sans",
-    'head_font_family': "'Lato', sans",
-    'code_font_family': "'Roboto Mono', monospace",
-}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -358,7 +354,7 @@ texinfo_documents = [
 
 sphinx_gallery_conf = {
     # path to store the module using example template
-    'mod_example_dir': 'modules/generated',
+    'backreferences_dir': 'modules/generated',
     'doc_module': ('km3astro', ),
     'examples_dirs': ['../examples'],
     'gallery_dirs': ['auto_examples'],
