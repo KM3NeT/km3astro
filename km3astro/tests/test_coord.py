@@ -17,7 +17,7 @@ class TestCoord(TestCase):
         azi_exp = np.array([277.07, 203.46, 277.07, 12.5, 153.33])
         zen_exp = np.array([45., 168.03, 157.03, 146.03, 94.77])
         azi, zen = neutrino_to_source_direction(phi, theta,
-                                                        radian=False)
+                                                radian=False)
         assert_allclose(azi, azi_exp)
         assert_allclose(zen, zen_exp)
 
