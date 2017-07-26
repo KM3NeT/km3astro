@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.6
+===
+* add UTM coordinates
+* derive arca coordinates from UTM grid
+
 0.5
 ---
 * fix lat-lon mixup bug
