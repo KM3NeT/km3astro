@@ -19,5 +19,6 @@ setup(
         'numpy',
         'pandas',
         'matplotlib>=2.0',
+        'utm',
     ]
 )

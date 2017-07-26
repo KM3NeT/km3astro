@@ -16,6 +16,12 @@ EquatorialJ200 / FK5 / ICRS / GCRS
     so if you are looking for *geocentric* equatorial (i.e.
     for solar system bodies), use GCRS.
 
+
+A note on maing conventions:
+``phi`` and ``theta`` refer to neutrino directions, ``azimuth`` and
+``zenith`` to source directions (i.e. the inversed neutrino direction).
+The former says where the neutrino points to, the latter says where it comes
+from.
 """
 from astropy.units import rad, deg  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
@@ -25,75 +31,100 @@ import numpy as np
 from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
+    antares_longitude, antares_latitude, antares_height,
 )
 from km3astro.time import np_to_astrotime
 from km3astro.random import random_date, random_azimuth
 
 
-ARCA_LOC = EarthLocation.from_geodetic(
-    lon=Longitude(arca_longitude * deg),
-    lat=Latitude(arca_latitude * deg),
-    height=arca_height
-)
+LOCATIONS = {
+    'arca': EarthLocation.from_geodetic(
+        lon=Longitude(arca_longitude * deg),
+        lat=Latitude(arca_latitude * deg),
+        height=arca_height
+    ),
+    'orca': EarthLocation.from_geodetic(
+        lon=Longitude(orca_longitude * deg),
+        lat=Latitude(orca_latitude * deg),
+        height=orca_height
+    ),
+    'antares': EarthLocation.from_geodetic(
+        lon=Longitude(antares_longitude * deg),
+        lat=Latitude(antares_latitude * deg),
+        height=antares_height
+    ),
+}
 
-ORCA_LOC = EarthLocation.from_geodetic(
-    lon=Longitude(orca_longitude * deg),
-    lat=Latitude(orca_latitude * deg),
-    height=orca_height
-)
+
+def get_location(location='orca'):
+    try:
+        loc = LOCATIONS[location]
+    except KeyError:
+        raise KeyError("Invalid location, valid are 'orca', 'arca', 'antares'")
+    return loc
 
 
-def transform_to_orca(event, time):
-    time = np_to_astrotime(time)
-    orca_frame = AltAz(obstime=time, location=ORCA_LOC)
-    return event.transform_to(orca_frame)
+def neutrino_to_source_direction(phi, theta, radian=True):
+    """Flip the direction.
+
+    Parameters
+    ==========
+    phi, theta: neutrino direction
+    radian: bool [default=True]
+        receive + return angles in radian? (if false, use degree)
+    """
+    phi = np.atleast_1d(phi)
+    theta = np.atleast_1d(theta)
+    if not radian:
+        phi *= np.pi / 180
+        theta *= np.pi / 180
+    azimuth = (phi + np.pi) % (2 * np.pi)
+    zenith = np.pi - theta
+    if not radian:
+        azimuth *= 180 / np.pi
+        zenith *= 180 / np.pi
+    return azimuth, zenith
 
 
-def local_frame(time, loc='orca'):
-    if loc == 'orca':
-        loc = ORCA_LOC
-    if loc == 'arca':
-        loc = ARCA_LOC
+def local_frame(time, location='orca'):
+    loc = get_location(location)
     frame = AltAz(obstime=time, location=loc)
     return frame
 
 
-def local_event(azimuth, time, zenith, location='orca'):
+def local_event(azimuth, time, zenith, radian=True,
+                location='orca', **kwargs):
     """Create astropy events from detector coordinates."""
+    time = np_to_astrotime(time)
     zenith = np.atleast_1d(zenith)
     azimuth = np.atleast_1d(azimuth)
-
-    time = np_to_astrotime(time)
-    if location == 'orca':
-        loc = ORCA_LOC
-    elif location == 'arca':
-        loc = ARCA_LOC
-    else:
-        raise KeyError("Valid locations are 'arca' and 'orca'")
-    frame = local_frame(time, loc=loc)
-
+    if not radian:
+        azimuth *= np.pi / 180
+        zenith *= np.pi / 180
     altitude = zenith - np.pi / 2
-    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame)
+    frame = local_frame(time, location=location)
+    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame,
+                     **kwargs)
     return event
 
 
-def sun_in_local(time, loc='orca'):
+def sun_local(time, loc='orca'):
     time = np_to_astrotime(time)
-    local_frame = AltAz(obstime=time, location=ORCA_LOC)
+    frame = local_frame(time, location='orca')
     sun = get_sun(time)
-    sun_local = sun.transform_to(local_frame)
+    sun_local = sun.transform_to(frame)
     return sun_local
 
 
-def galcen():
+def galactic_center():
     return SkyCoord(0 * deg, 0 * deg, frame='galactic')
 
 
 def gc_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
-    local_frame = AltAz(obstime=time, location=ORCA_LOC)
-    gc = galcen()
-    gc_local = gc.transform_to(local_frame)
+    frame = local_frame(time, location='orca')
+    gc = galactic_center()
+    gc_local = gc.transform_to(frame)
     return gc_local
 
 
@@ -118,7 +149,7 @@ def orca_gc_dist(azimuth, time, zenith, frame='detector'):
 def orca_sun_dist(azimuth, time, zenith):
     """Return distance of event to sun, in detector coordinates."""
     evt = local_event(azimuth, time, zenith)
-    sun = sun_in_local(time, loc='orca')
+    sun = sun_local(time, loc='orca')
     dist = evt.separation(sun).radian
     return dist
 

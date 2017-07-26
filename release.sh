@@ -15,24 +15,18 @@ git pull
 
 vim CHANGELOG.rst
 git add CHANGELOG.rst
-git commit -m "Bumps changelog"
+git commit -m "Bump changelog"
 
 echo "__version__ = '${VERSION}'" > $MODULE/__init__.py
 git add $MODULE/__init__.py
-
-TITLE="${MODULE} ${VERSION}"
-echo "${TITLE}" > doc/version.txt
-echo "$(printf '=%.0s' {1..${#TITLE}})" >> doc/version.txt
-git add doc/version.txt
 
 git commit -m "Bump version number"
 
 git tag -a $VERSION
 
 rm -rf dist/*
-python setup.py sdist bdist_wheel
+python setup.py sdist
 twine upload dist/*
 
-git checkout master
 git push
 git push --tags
