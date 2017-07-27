@@ -73,9 +73,10 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     radian: bool [default=True]
         receive + return angles in radian? (if false, use degree)
     """
-    phi = np.atleast_1d(phi)
-    theta = np.atleast_1d(theta)
+    phi = np.atleast_1d(phi).copy()
+    theta = np.atleast_1d(theta).copy()
     if not radian:
+        print('deg -> rad')
         phi *= np.pi / 180
         theta *= np.pi / 180
     assert np.all(phi <= 2 * np.pi)
@@ -83,6 +84,7 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     azimuth = (phi + np.pi) % (2 * np.pi)
     zenith = np.pi - theta
     if not radian:
+        print('rad -> deg')
         azimuth *= 180 / np.pi
         zenith *= 180 / np.pi
     return azimuth, zenith
@@ -98,8 +100,8 @@ def local_event(azimuth, time, zenith, radian=True,
                 location='orca', **kwargs):
     """Create astropy events from detector coordinates."""
     time = np_to_astrotime(time)
-    zenith = np.atleast_1d(zenith)
-    azimuth = np.atleast_1d(azimuth)
+    zenith = np.atleast_1d(zenith).copy()
+    azimuth = np.atleast_1d(azimuth).copy()
     if not radian:
         azimuth *= np.pi / 180
         zenith *= np.pi / 180
