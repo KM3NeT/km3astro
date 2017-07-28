@@ -1,5 +1,9 @@
 Unreleased Changes
 ------------------
+0.7
+===
+* COORDINATE FIX: what we call azimuth is actually co-azimuth
+* add common sources
 
 0.6
 ===
