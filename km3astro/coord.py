@@ -22,6 +22,9 @@ A note on maing conventions:
 ``zenith`` to source directions (i.e. the inversed neutrino direction).
 The former says where the neutrino points to, the latter says where it comes
 from.
+
+Also radian is the default. Degree can be used, but generally the default is
+to assume radian.
 """
 from astropy.units import rad, deg  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
@@ -76,7 +79,6 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     phi = np.atleast_1d(phi).copy()
     theta = np.atleast_1d(theta).copy()
     if not radian:
-        print('deg -> rad')
         phi *= np.pi / 180
         theta *= np.pi / 180
     assert np.all(phi <= 2 * np.pi)
@@ -84,7 +86,6 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     azimuth = (phi + np.pi) % (2 * np.pi)
     zenith = np.pi - theta
     if not radian:
-        print('rad -> deg')
         azimuth *= 180 / np.pi
         zenith *= 180 / np.pi
     return azimuth, zenith
