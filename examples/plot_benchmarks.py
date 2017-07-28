@@ -5,6 +5,10 @@ Benchmark Calculations for Coordinates Transformations
 
 Run the benchmarks similar to
 `http://antares.in2p3.fr/internal/dokuwiki/doku.php?id=benchmarks_astro`
+
+BIG CAVEAT:
+What IceCube and ANTARES/KM3NeT call "azimuth" is actually the
+co-azimuth, or ``(90 - azimuth) % 360``!
 """
 
 # Author: Moritz Lotze <mlotze@km3net.de>
@@ -15,7 +19,9 @@ from collections import OrderedDict
 import numpy as np
 import pandas as pd
 
-from km3astro.coord import neutrino_to_source_direction, local_event
+from km3astro.coord import (neutrino_to_source_direction,
+                            local_event, local_frame)
+from km3astro.sources import SIRIUS, CANOPUS, ARCTURUS, ANTARES
 
 
 time = pd.to_datetime([
@@ -73,3 +79,23 @@ data = OrderedDict([
 ])
 bench = pd.DataFrame(data=data)
 print(bench[:])
+
+########################################################
+# bla bla
+
+frame = local_frame(time[0], location='antares')
+sirius_local = SIRIUS.transform_to(frame)
+sirius_alt = sirius_local.alt.degree
+sirius_az = sirius_local.az.degree
+sirius_zen = 90 - sirius_alt
+print()
+print(sirius_az)
+print(sirius_zen)
+
+canopus_local = CANOPUS.transform_to(frame)
+canopus_alt = canopus_local.alt.degree
+canopus_az = canopus_local.az.degree
+canopus_zen = 90 - canopus_alt
+print()
+print(canopus_az)
+print(canopus_zen)
