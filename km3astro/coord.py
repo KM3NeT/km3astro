@@ -26,7 +26,7 @@ from.
 Also radian is the default. Degree can be used, but generally the default is
 to assume radian.
 """
-from astropy.units import rad, deg  # noqa
+from astropy.units import rad, deg, hourangle  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
                                  Latitude, get_sun)
 import numpy as np
@@ -92,6 +92,8 @@ def neutrino_to_source_direction(phi, theta, radian=True):
 
 
 def local_frame(time, location='orca'):
+    if hasattr(time, 'dtype'):
+        time = np_to_astrotime(time)
     loc = get_location(location)
     frame = AltAz(obstime=time, location=loc)
     return frame
@@ -107,8 +109,10 @@ def local_event(azimuth, time, zenith, radian=True,
         azimuth *= np.pi / 180
         zenith *= np.pi / 180
     altitude = zenith - np.pi / 2
+    # neutrino telescopes call the co-azimuth "azimuth"
+    true_azimuth = (np.pi / 2 - azimuth) % np.pi
     frame = local_frame(time, location=location)
-    event = SkyCoord(alt=altitude * rad, az=azimuth * rad, frame=frame,
+    event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame,
                      **kwargs)
     return event
 
@@ -201,3 +205,9 @@ class Event(object):
         azimuth = random_azimuth(n_evts)
         time = random_date(n_evts)
         return cls(zenith, azimuth, time, **initargs)
+
+
+SIRIUS = SkyCoord('06 45 08.9 -16 42 58', unit=(hourangle, deg))
+CANOPUS = SkyCoord('06 23 57.1 -52 41 45', unit=(hourangle, deg))
+ARCTURUS = SkyCoord('14 15 39.7 +19 10 57', unit=(hourangle, deg))
+ANTARES = SkyCoord('16 29 24.4 -26 25 55', unit=(hourangle, deg))
