@@ -186,3 +186,18 @@ def space_angle(zen_1, zen_2, azi_1, azi_2):
     """Space angle between two directions specified by zenith and azimuth.
     """
     return hsin(azi_2 - azi_1) + np.cos(azi_1) * np.cos(azi_2) * hsin(zen_2 - zen_1)
+
+
+class Event(object):
+    def __init__(self, zenith, azimuth, time, location='orca'):
+        self.zenith = zenith
+        self.azimuth = azimuth
+        self.time = time
+
+    @classmethod
+    def from_zenith(cls, zenith, **initargs):
+        zenith = np.atleast_1d(zenith)
+        n_evts = zenith.shape[0]
+        azimuth = random_azimuth(n_evts)
+        time = random_date(n_evts)
+        return cls(zenith, azimuth, time, **initargs)
