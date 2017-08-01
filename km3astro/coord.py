@@ -40,6 +40,21 @@ from km3astro.time import np_to_astrotime
 from km3astro.random import random_date, random_azimuth
 
 
+# (right ascension, declination)
+SIRIUS = SkyCoord('06 45 08.9 -16 42 58', unit=(hourangle, deg))
+CANOPUS = SkyCoord('06 23 57.1 -52 41 45', unit=(hourangle, deg))
+ARCTURUS = SkyCoord('14 15 39.7 +19 10 57', unit=(hourangle, deg))
+ANTARES = SkyCoord('16 29 24.4 -26 25 55', unit=(hourangle, deg))
+
+RX_J1713 = SkyCoord('17 17 33.6 -39 45 36.4', unit=(hourangle, deg))
+VELA_X = SkyCoord('08 35 00 -45 36 00', unit=(hourangle, deg))
+
+# Sagittarius A* (sagittarius a-star)
+# GALACTIC_CENTER = SkyCoord(0 * deg, 0 * deg, frame='galactic').icrs
+SAGITTARIUS_A_STAR = SkyCoord('17 45 40.0409 -29 0 28.118', unit=(hourangle, deg))      # noqa
+GALACTIC_CENTER = SAGITTARIUS_A_STAR
+
+
 LOCATIONS = {
     'arca': EarthLocation.from_geodetic(
         lon=Longitude(arca_longitude * deg),
@@ -91,8 +106,31 @@ def neutrino_to_source_direction(phi, theta, radian=True):
     return azimuth, zenith
 
 
+def source_to_neutrino_direction(azimuth, zenith, radian=True):
+    azimuth = np.atleast_1d(azimuth).copy()
+    zenith = np.atleast_1d(zenith).copy()
+    if not radian:
+        azimuth *= np.pi / 180
+        zenith *= np.pi / 180
+    phi = (azimuth - np.pi) % (2 * np.pi)
+    theta = np.pi - zenith
+    if not radian:
+        phi *= 180 / np.pi
+        theta *= 180 / np.pi
+    return phi, theta
+
+
+def Sun(time):
+    if np.issubdtype(time.dtype, np.datetime64):
+        # if np.datetime64, convert to astro time
+        time = np_to_astrotime(time)
+    return get_sun(time)
+
+
 def local_frame(time, location='orca'):
-    if hasattr(time, 'dtype'):
+    """Get the (horizontal) coordinate frame of your detector."""
+    if np.issubdtype(time.dtype, np.datetime64):
+        # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
     loc = get_location(location)
     frame = AltAz(obstime=time, location=loc)
@@ -125,14 +163,10 @@ def sun_local(time, loc='orca'):
     return sun_local
 
 
-def galactic_center():
-    return SkyCoord(0 * deg, 0 * deg, frame='galactic')
-
-
 def gc_in_local(time, loc='orca'):
     time = np_to_astrotime(time)
     frame = local_frame(time, location='orca')
-    gc = galactic_center()
+    gc = GALACTIC_CENTER
     gc_local = gc.transform_to(frame)
     return gc_local
 
@@ -205,9 +239,3 @@ class Event(object):
         azimuth = random_azimuth(n_evts)
         time = random_date(n_evts)
         return cls(zenith, azimuth, time, **initargs)
-
-
-SIRIUS = SkyCoord('06 45 08.9 -16 42 58', unit=(hourangle, deg))
-CANOPUS = SkyCoord('06 23 57.1 -52 41 45', unit=(hourangle, deg))
-ARCTURUS = SkyCoord('14 15 39.7 +19 10 57', unit=(hourangle, deg))
-ANTARES = SkyCoord('16 29 24.4 -26 25 55', unit=(hourangle, deg))
