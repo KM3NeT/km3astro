@@ -1,0 +1,33 @@
+name: km3astro
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.6*
+  - hdf5=1.8.17=1
+  - pip
+  - numpy
+  - pandas
+  - matplotlib
+  - scipy>=0.19
+  - cython
+  - pillow
+  - pytables
+  - h5py
+  - astropy
+  - utm
+  - scikit-learn
+  - patsy
+  - statsmodels
+  - tornado
+  - websocket-client
+  - urwid
+  - pip:
+    - sphinxcontrib-napoleon==0.6.1
+    - sphinx==1.5.3
+    - sphinx-gallery==0.1.8
+    - docopt
+    - numpydoc
+    - controlhost
