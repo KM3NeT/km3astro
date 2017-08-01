@@ -294,6 +294,7 @@ texinfo_documents = [
 sphinx_gallery_conf = {
     # path to store the module using example template
     'backreferences_dir': 'modules/generated',
+    'abort_on_example_error': True,
     'doc_module': ('km3astro', 'numpy', 'astropy'),
     'examples_dirs': ['../examples'],
     'gallery_dirs': ['auto_examples'],
