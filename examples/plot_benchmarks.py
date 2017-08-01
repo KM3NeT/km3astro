@@ -21,7 +21,7 @@ import pandas as pd
 
 from km3astro.coord import (neutrino_to_source_direction,
                             local_event, local_frame)
-from km3astro.sources import SIRIUS, CANOPUS, ARCTURUS, ANTARES
+from km3astro.sources import SIRIUS, CANOPUS, ARCTURUS, ANTARES     # noqa
 
 
 time = pd.to_datetime([
@@ -82,7 +82,8 @@ print(data[:])
 ########################################################
 # look at some sources in horizontal coordinates
 
-frame = local_frame(time[0], location='antares')
+frame = local_frame(
+    time=pd.to_datetime(['2007-10-04 03:03:03.00', ]), location='antares')
 sirius_local = SIRIUS.transform_to(frame)
 sirius_alt = sirius_local.alt.degree
 sirius_az = sirius_local.az.degree

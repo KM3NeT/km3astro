@@ -20,7 +20,7 @@ from km3astro.coord import local_frame, Sun, source_to_neutrino_direction
 ##########################################################
 # generate some random events
 
-n_evts = 1e4
+n_evts = 1e3
 zen = random_zenith(n=n_evts)
 time = random_date(n=n_evts)
 azi = random_azimuth(n=n_evts)
