@@ -130,7 +130,7 @@ def Sun(time):
 
 def local_frame(time, location='orca'):
     """Get the (horizontal) coordinate frame of your detector."""
-    if np.issubdtype(time.dtype, np.datetime64):
+    if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
     loc = get_location(location)
@@ -141,7 +141,6 @@ def local_frame(time, location='orca'):
 def local_event(azimuth, time, zenith, radian=True,
                 location='orca', **kwargs):
     """Create astropy events from detector coordinates."""
-    time = np_to_astrotime(time)
     zenith = np.atleast_1d(zenith).copy()
     azimuth = np.atleast_1d(azimuth).copy()
     if not radian:
@@ -157,7 +156,6 @@ def local_event(azimuth, time, zenith, radian=True,
 
 
 def sun_local(time, loc='orca'):
-    time = np_to_astrotime(time)
     frame = local_frame(time, location='orca')
     sun = get_sun(time)
     sun_local = sun.transform_to(frame)
@@ -165,7 +163,6 @@ def sun_local(time, loc='orca'):
 
 
 def gc_in_local(time, loc='orca'):
-    time = np_to_astrotime(time)
     frame = local_frame(time, location='orca')
     gc = GALACTIC_CENTER
     gc_local = gc.transform_to(frame)
