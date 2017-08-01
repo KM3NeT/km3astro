@@ -32,7 +32,8 @@ Contents
 
 .. toctree::
     :maxdepth: 2
-    
+   
+    coordinates
     api
     examples
 
