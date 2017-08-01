@@ -23,6 +23,8 @@ or just clone the git repository and install via ``pip install .``
 
 ## Docs (local)
 
-Clone the git repo, and ```pip install -Ur requirements.txt    # needed to run examples
-pip install -Ur doc-requirements.txt   # (sphinx etc).```
+Clone the git repo, and <pre>
+pip install -Ur requirements.txt       # needed to run examples
+pip install -Ur doc-requirements.txt   # (sphinx etc).
+</pre>
 Then go to `doc` and `make html`. Docs are in `_build/html/index.html`.
