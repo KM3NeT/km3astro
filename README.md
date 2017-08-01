@@ -17,7 +17,7 @@ Install the dependencies
 
 In your python env, do
 
-  pip install git+http://git.km3net.de/moritz/km3astro.git
+  pip install git+http://git.km3net.de/km3py/km3astro.git
 
 or just clone the git repository and install via ``pip install .``
 
