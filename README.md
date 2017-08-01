@@ -1,5 +1,7 @@
 # KM3Astro
 
+[](https://readthedocs.org/projects/km3astro/badge/?version=latest)
+
 ## About
 
 KM3Astro is a collection astronomy utils, like coordinate transformations.
