@@ -3,12 +3,12 @@
 Benchmark Calculations for Coordinates Transformations
 ======================================================
 
-Run the benchmarks similar to
+Run some benchmarks similar to
 `http://antares.in2p3.fr/internal/dokuwiki/doku.php?id=benchmarks_astro`
 
-BIG CAVEAT:
-What IceCube and ANTARES/KM3NeT call "azimuth" is actually the
-co-azimuth, or ``(90 - azimuth) % 360``!
+CAVEAT:
+    IceCube and ANTARES/KM3NeT define "azimuth" differently:
+``true_azimuth = (90 - azimuth) % 360``!
 """
 
 # Author: Moritz Lotze <mlotze@km3net.de>
@@ -62,7 +62,7 @@ gal = evt.galactic
 l = gal.l
 b = gal.b
 
-data = OrderedDict([
+data = pd.DataFrame(OrderedDict([
     ('time', time),
     ('theta [deg]', theta_deg),
     ('phi [deg]', phi_deg),
@@ -76,12 +76,11 @@ data = OrderedDict([
     ('right ascension', ra),
     ('gal_longitude', l),
     ('gal_latitude', b),
-])
-bench = pd.DataFrame(data=data)
-print(bench[:])
+]))
+print(data[:])
 
 ########################################################
-# bla bla
+# look at some sources in horizontal coordinates
 
 frame = local_frame(time[0], location='antares')
 sirius_local = SIRIUS.transform_to(frame)
