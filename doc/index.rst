@@ -1,7 +1,5 @@
 .. KM3Astro documentation master file
 
-.. include:: version.txt
-
 KM3Astro is a collection astronomy utils, like coordinate transformations.
 
 Install

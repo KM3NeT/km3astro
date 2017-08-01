@@ -63,5 +63,4 @@ Benchmarks
 Antares ``astro`` benchmarks:
 http://antares.in2p3.fr/internal/dokuwiki/doku.php?id=benchmarks_astro
 
-(Partial) replication with ``km3astro``:
-http://jenkins.km3net.de/job/km3astro/Sphinx_Documentation/auto_examples/plot_benchmarks.html#sphx-glr-auto-examples-plot-benchmarks-py
+(Partial) replication with ``km3astro``: :ref:`sphx_glr_auto_examples_plot_benchmarks.py`
