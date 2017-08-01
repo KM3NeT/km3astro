@@ -1,12 +1,19 @@
 Unreleased Changes
 ------------------
+
+0.7.1
+-----
+* update examples
+* fix builds
+* streamline time handling
+
 0.7
-===
+---
 * COORDINATE FIX: what we call azimuth is actually co-azimuth
 * add common sources
 
 0.6
-===
+---
 * add UTM coordinates
 * derive arca coordinates from UTM grid
 
