@@ -6,7 +6,7 @@ KM3Astro is a collection astronomy utils, like coordinate transformations.
 
 ## Install
 
-This is developed on python 3.6. Lower versions (especially py2)
+This is developed on python >=3.5. Lower versions (especially py2)
 might or might not work.
 
 Install the dependencies
@@ -20,3 +20,9 @@ In your python env, do
   pip install git+http://git.km3net.de/moritz/km3astro.git
 
 or just clone the git repository and install via ``pip install .``
+
+## Docs (local)
+
+Clone the git repo, and ```pip install -Ur requirements.txt    # needed to run examples
+pip install -Ur doc-requirements.txt   # (sphinx etc).```
+Then go to `doc` and `make html`. Docs are in `_build/html/index.html`.
