@@ -29,6 +29,7 @@ to assume radian.
 from astropy.units import rad, deg, hourangle  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
                                  Latitude, get_sun)
+import astropy.time
 import numpy as np
 
 from km3astro.constants import (
@@ -121,7 +122,7 @@ def source_to_neutrino_direction(azimuth, zenith, radian=True):
 
 
 def Sun(time):
-    if np.issubdtype(time.dtype, np.datetime64):
+    if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
     return get_sun(time)
