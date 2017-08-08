@@ -32,6 +32,8 @@ from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
 import astropy.time
 import numpy as np
 
+from km3pipe.math import hsin, space_angle
+
 from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
@@ -211,17 +213,6 @@ def sun_dist_random(zenith):
     azimuth = random_azimuth(n=n_evts)
     dist = orca_sun_dist(azimuth, time, zenith)
     return dist
-
-
-def hsin(theta):
-    """haversine"""
-    return (1.0 - np.cos(theta)) / 2.
-
-
-def space_angle(zen_1, zen_2, azi_1, azi_2):
-    """Space angle between two directions specified by zenith and azimuth.
-    """
-    return hsin(azi_2 - azi_1) + np.cos(azi_1) * np.cos(azi_2) * hsin(zen_2 - zen_1)
 
 
 class Event(object):
