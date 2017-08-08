@@ -2,7 +2,7 @@
 
 For random time samples, goto `km3flux.random`
 """
-from km3pipe import np_to_datetime
+from km3pipe.time import np_to_datetime
 
 from astropy.time import Time
 
