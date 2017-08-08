@@ -1,9 +1,9 @@
 Unreleased Changes
 ------------------
 
-0.7.2
+0.7.3
 -----
-* move minor stuf to km3pipe
+* move minor stuff to km3pipe
 
 0.7.1
 -----
