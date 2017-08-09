@@ -21,5 +21,6 @@ setup(
         'matplotlib>=2.0',
         'utm',
         'km3pipe>=7.3.2',
+        'tables'
     ]
 )
