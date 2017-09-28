@@ -1,7 +1,7 @@
 """
-===============================
-Sun and GC in local coordinates
-===============================
+========================
+Sun in local coordinates
+========================
 
 Show off some coordinate transformations.
 """
