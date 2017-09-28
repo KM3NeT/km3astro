@@ -20,7 +20,7 @@ from km3astro.coord import local_frame, Sun, source_to_neutrino_direction
 ##########################################################
 # generate some random events
 
-n_evts = 1e3
+n_evts = 1e4
 zen = random_zenith(n=n_evts)
 time = random_date(n=n_evts)
 azi = random_azimuth(n=n_evts)
@@ -52,7 +52,7 @@ sun_df = pd.DataFrame({
 sun_df.plot.hexbin(
     'Sun Zenith',
     'Sun Azimuth',
-    cmap='inferno')
+    cmap='viridis')
 
 
 #########################################################
@@ -74,4 +74,4 @@ sun_df.plot.hexbin(
 sun_df.plot.hexbin(
     'Sun Cos Theta',
     'Sun Phi',
-    cmap='magma')
+    cmap='plasma')
