@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.7.4
+-----
+* bump km3pipe due to dataclass update
+* polish examples a bit
+
 0.7.3
 -----
 * move minor stuff to km3pipe
