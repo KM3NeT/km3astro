@@ -30,11 +30,13 @@ API Reference
   :toctree: api
 
 
-  transform_to_orca
+  get_location
+  neutrino_to_source_direction
+  source_to_neutrino_direction
+  Sun
+  local_frame
   local_event
-  random_azimuth
-  random_zenith
-  sun_in_local
+  sun_local
   gc_in_local
   orca_gc_dist
   orca_sun_dist
@@ -54,9 +56,43 @@ API Reference
 .. autosummary::
   :toctree: api
 
+  np_to_astrotime
 
+``km3astro.time``
+----------------
+
+.. automodule:: km3astro.time
+  :no-members:
+  :no-inherited-members:
+
+.. currentmodule:: km3astro.time
+
+.. autosummary::
+  :toctree: api
+
+  random_azimuth
+  random_zenith
   second_from_interval
   equidistant_from_interval
   random_date
-  np_to_datetime
-  np_to_astrotime
+
+``km3astro.sources``
+----------------
+
+.. automodule:: km3astro.time
+  :no-members:
+  :no-inherited-members:
+
+.. currentmodule:: km3astro.time
+
+.. autosummary::
+  :toctree: api
+
+  SIRIUS
+  CANOPUS
+  ARCTURUS
+  ANTARES
+  RX_J1713
+  VELA_X
+  SAGITTARIUS_A_STAR
+  GALACTIC_CENTER
