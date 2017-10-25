@@ -38,7 +38,7 @@ Contents
     :maxdepth: 2
    
     coordinates
-    api
     examples
+    api
 
 * :ref:`genindex`
