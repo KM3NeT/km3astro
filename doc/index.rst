@@ -5,7 +5,6 @@ KM3Astro
 
 .. image:: https://readthedocs.org/projects/km3astro/badge/?version=latest
 
-
 KM3Astro is a collection astronomy utils, like coordinate transformations.
 
 Install
