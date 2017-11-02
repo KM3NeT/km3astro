@@ -9,7 +9,7 @@ setup(
     name='km3astro',
     version=__version__,
     description='Astro Utils',
-    url='http://git.km3net.de/moritz/km3astro',
+    url='http://git.km3net.de/km3py/km3astro',
     author='Moritz Lotze',
     author_email='mlotze@km3net.de',
     license='BSD-3',
