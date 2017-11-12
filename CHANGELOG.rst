@@ -1,6 +1,8 @@
 Unreleased Changes
 ------------------
 
+0.7.5
+-----
 * add equat plotter
 
 0.7.4
