@@ -1,5 +1,3 @@
-import
-
 """Coordinate transformations.
 
 Galactic:
