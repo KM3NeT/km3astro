@@ -79,11 +79,11 @@ API Reference
 ``km3astro.sources``
 ----------------
 
-.. automodule:: km3astro.time
+.. automodule:: km3astro.sources
   :no-members:
   :no-inherited-members:
 
-.. currentmodule:: km3astro.time
+.. currentmodule:: km3astro.sources
 
 .. autosummary::
   :toctree: api
@@ -96,3 +96,20 @@ API Reference
   VELA_X
   SAGITTARIUS_A_STAR
   GALACTIC_CENTER
+
+
+``km3astro.plot``
+----------------
+
+.. automodule:: km3astro.plot
+  :no-members:
+  :no-inherited-members:
+
+.. currentmodule:: km3astro.plot
+
+.. autosummary::
+  :toctree: api
+
+  plot_equatorial
+  projection_axes
+  ra_dec

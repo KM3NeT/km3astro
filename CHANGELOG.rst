@@ -1,6 +1,10 @@
 Unreleased Changes
 ------------------
 
+0.7.5
+-----
+* add equat plotter
+
 0.7.4
 -----
 * bump km3pipe due to dataclass update
