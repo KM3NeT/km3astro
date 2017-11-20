@@ -52,7 +52,7 @@ clean:
 	rm -rf $(BUILDDIR)/*
 	rm -rf modules/generated/*
 	rm -rf api/*
-
+	rm -rf auto_examples/*
 
 
 .PHONY: html
