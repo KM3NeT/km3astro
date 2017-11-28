@@ -32,7 +32,7 @@ from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
 import astropy.time
 import numpy as np
 
-from km3pipe.math import space_angle        # noqa
+from km3pipe.math import (neutrino_to_source_direction, source_to_neutrino_direction)   # noqa
 
 from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
@@ -71,45 +71,8 @@ def get_location(location='orca'):
     return loc
 
 
-def neutrino_to_source_direction(phi, theta, radian=True):
-    """Flip the direction.
-
-    Parameters
-    ==========
-    phi, theta: neutrino direction
-    radian: bool [default=True]
-        receive + return angles in radian? (if false, use degree)
-    """
-    phi = np.atleast_1d(phi).copy()
-    theta = np.atleast_1d(theta).copy()
-    if not radian:
-        phi *= np.pi / 180
-        theta *= np.pi / 180
-    assert np.all(phi <= 2 * np.pi)
-    assert np.all(theta <= np.pi)
-    azimuth = (phi + np.pi) % (2 * np.pi)
-    zenith = np.pi - theta
-    if not radian:
-        azimuth *= 180 / np.pi
-        zenith *= 180 / np.pi
-    return azimuth, zenith
-
-
-def source_to_neutrino_direction(azimuth, zenith, radian=True):
-    azimuth = np.atleast_1d(azimuth).copy()
-    zenith = np.atleast_1d(zenith).copy()
-    if not radian:
-        azimuth *= np.pi / 180
-        zenith *= np.pi / 180
-    phi = (azimuth - np.pi) % (2 * np.pi)
-    theta = np.pi - zenith
-    if not radian:
-        phi *= 180 / np.pi
-        theta *= 180 / np.pi
-    return phi, theta
-
-
 def Sun(time):
+    """Wrapper around astropy's get_sun, accepting numpy/pandas time objects."""
     if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
@@ -144,13 +107,15 @@ def local_event(azimuth, time, zenith, radian=True,
 
 
 def sun_local(time, loc='orca'):
+    """Sun position in local coordinates."""
     frame = local_frame(time, location='orca')
-    sun = get_sun(time)
+    sun = Sun(time)
     sun_local = sun.transform_to(frame)
     return sun_local
 
 
 def gc_in_local(time, loc='orca'):
+    """Galactic center position in local coordinates."""
     frame = local_frame(time, location='orca')
     gc = GALACTIC_CENTER
     gc_local = gc.transform_to(frame)
