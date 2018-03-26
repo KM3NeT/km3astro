@@ -3,7 +3,8 @@ from unittest import TestCase
 import numpy as np
 from numpy.testing import assert_allclose
 
-from km3astro.coord import neutrino_to_source_direction
+from km3astro.coord import neutrino_to_source_direction, sun_local
+from km3astro.random import random_date
 
 
 class TestCoord(TestCase):
@@ -32,5 +33,7 @@ class TestCoord(TestCase):
         assert_allclose(zen, zen_exp)
 
 
-class TestEvent(TestCase):
-    pass
+class TestCoordRandom(TestCase):
+    def test_sun(self):
+        date = random_date(n=100)
+        sun = sun_local(date)

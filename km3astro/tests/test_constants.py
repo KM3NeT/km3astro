@@ -10,8 +10,8 @@ from km3astro.constants import (
 # taken from loi
 arca_latitude_naive = 36 + (16 / 60)  # degree
 arca_longitude_naive = 16 + (6 / 60)  # degree
-arca_lat_delta = 0.1
-arca_lon_delta = 0.2
+arca_lat_delta = 0.3
+arca_lon_delta = 0.3
 
 orca_latitude_naive = 42 + (48.05 / 60)  # degree
 orca_longitude_naive = 6 + (1.3368 / 60)  # degree
