@@ -69,3 +69,7 @@ doc/api
 
 # jupyter files
 .ipynb_checkpoints/
+
+.pytest_cache/
+LICENCE
+junit.xml
