@@ -1,6 +1,11 @@
 Unreleased Changes
 ------------------
 
+0.8
+---
+* move a log of methods to km3pipe
+* add a makefile
+
 0.7.5
 -----
 * add equat plotter
