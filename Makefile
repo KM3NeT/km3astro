@@ -50,6 +50,6 @@ dev-dependencies:
 	pip install -Ur dev-requirements.txt
 
 doc-dependencies:
-	pip install -Ur doc_requirements.txt
+	pip install -Ur doc-requirements.txt
 
 .PHONY: all clean build install test test-nocov flake8 pep8 dependencies dev-dependencies doc-dependencies
