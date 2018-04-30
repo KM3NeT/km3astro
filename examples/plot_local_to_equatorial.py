@@ -51,8 +51,8 @@ print(azimuth[:3])
 print(zenith[:3])
 
 #########################################################################
-# We want to observer them from the Orca location. Let's look at out
-# geographic coordinates.
+# We want to observe them from the Orca location. Let's look at our
+# geographical coordinates.
 #
 # In km3astro, there are the predefined locations "orca", "arca" and "antares".
 orca_loc = get_location('orca')
