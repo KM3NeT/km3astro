@@ -12,14 +12,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from km3astro.coord import local_event
+from km3astro.coord import local_event, get_location
 from km3astro.plot import plot_equatorial
 from km3pipe.math import neutrino_to_source_direction
 import km3pipe.style.default   # noqa
 
 
 ##########################################################
-# Define some random events
+# Detector Coordinates
+# --------------------
+# Let's define some random events.
 
 theta = np.array([10, 45, 70, 23, 20, 11, 24, 54]) * np.pi / 180
 phi = np.array([4, 23, 200, 320, 10, 45, 29, 140]) * np.pi / 180
@@ -34,9 +36,9 @@ time = pd.to_datetime([
     '2015-03-15T14:24:01',
 ]).values
 
-print(theta)
-print(phi)
-print(time)
+print(theta[:3])
+print(phi[:3])
+print(time[:3])
 
 ##########################################################
 # Phi, theta: Where the neutrino is pointing to
@@ -45,18 +47,35 @@ print(time)
 
 azimuth, zenith = neutrino_to_source_direction(phi, theta, radian=True)
 
-print(azimuth)
-print(zenith)
+print(azimuth[:3])
+print(zenith[:3])
+
+#########################################################################
+# We want to observer them from the Orca location. Let's look at out
+# geographic coordinates.
+#
+# In km3astro, there are the predefined locations "orca", "arca" and "antares".
+orca_loc = get_location('orca')
+print(
+    orca_loc.lon.degree,
+    orca_loc.lat.degree
+)
 
 #########################################################################
 # Create event in local coordinates (aka AltAz or Horizontal Coordinates)
+#
+# This returns an ``astropy.SkyCoord`` instance.
 
-evt_local = local_event(azimuth=azimuth, zenith=zenith, time=time)
+evt_local = local_event(
+    azimuth=azimuth, zenith=zenith, time=time,
+    location='orca'
+)
 
 print(evt_local)
 
 ##############################################################
 # Transform to equatorial -- ICRS
+# -------------------------------
 #
 # "If you’re looking for “J2000” coordinates, and aren’t sure if
 # you want to use this or FK5, you probably want to use ICRS. It’s more
@@ -81,4 +100,4 @@ plt.ylabel('Declination / rad')
 #
 # We need this little wrap because astropy's
 # convention for ra, dec differs from matplotlib.
-plot_equatorial(evt_equat)
+plot_equatorial(evt_equat, markersize=12)
