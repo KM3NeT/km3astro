@@ -1,6 +1,5 @@
 ipython
 ipywidgets
-numpydoc
 numpydoc>=0.7.0
 pillow
 sphinx-gallery>=0.1.12
