@@ -2,15 +2,18 @@
 """Test whether at some time the sun is below the horizon in ORCA."""
 
 import os.path
+
+import numpy as np
 import km3astro
+
 from ..random import random_date
 
-import pandas as pd
 
 DATADIR = os.path.join(os.path.dirname(km3astro.__file__), 'data')
 
 
 def above_horiz(times):
+    import pandas as pd
     fname = os.path.join(DATADIR, 'orca_sun_isup.h5')
     with pd.HDFStore(fname) as h5:
         o_rise = h5['o_rise'].values
@@ -32,5 +35,5 @@ def random_time_sun_vis(n=1, keep_above=False, **kwargs):
         mask = np.logical_not(mask)
     dates = dates[mask]
     if len(dates) < n:
-        dates = random_time_sun_vis(n*2, keep_above=keep_above, **kwargs)
+        dates = random_time_sun_vis(n * 2, keep_above=keep_above, **kwargs)
     return dates[:n]
