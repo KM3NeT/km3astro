@@ -3,7 +3,7 @@
 
 import os.path
 import km3astro
-from .random import random_date
+from ..random import random_date
 
 import pandas as pd
 
