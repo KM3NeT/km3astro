@@ -6,6 +6,8 @@ Local to Equatorial Coordinates
 Where do my neutrinos come from?
 """
 
+# sphinx_gallery_thumbnail_number = 3
+
 __author__ = 'moritz'
 
 import numpy as np
@@ -14,7 +16,9 @@ import matplotlib.pyplot as plt
 
 from km3astro.coord import local_event, get_location
 from km3astro.plot import plot_equatorial
+from km3astro.sources import VELA_X
 from km3pipe.math import neutrino_to_source_direction
+
 import km3pipe.style.default   # noqa
 
 
@@ -86,12 +90,20 @@ evt_equat = evt_local.transform_to('icrs')
 print(evt_equat)
 
 ##############################################################
+# How far removed are these events from a certain source?
+
+source_dist = evt_equat.separation(VELA_X)
+
+plt.hist(source_dist.degree, bins='auto')
+
+##############################################################
 # Plot them in a square
 
 right_ascension_radian = evt_equat.ra.rad
 declination_radian = evt_equat.dec.rad
 
 plt.scatter(right_ascension_radian, declination_radian)
+plt.scatter(VELA_X.ra.rad, VELA_X.dec.rad)
 plt.xlabel('Right Ascension / rad')
 plt.ylabel('Declination / rad')
 
@@ -100,4 +112,9 @@ plt.ylabel('Declination / rad')
 #
 # We need this little wrap because astropy's
 # convention for ra, dec differs from matplotlib.
-plot_equatorial(evt_equat, markersize=12)
+
+ax = plot_equatorial(evt_equat,
+                     markersize=12, label='Event')
+plot_equatorial(VELA_X,
+                markersize=12, ax=ax, label='Vela X')
+plt.legend(loc='best')
