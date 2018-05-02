@@ -3,6 +3,10 @@ Unreleased Changes
 
 0.8.2
 ----
+* improve local -> equatorial example
+
+0.8.2
+----
 * add fast sampling of times where sun is above/below horizon
 * add new jenkins build
 * more example
