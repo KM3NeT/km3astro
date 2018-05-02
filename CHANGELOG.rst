@@ -5,6 +5,7 @@ Unreleased Changes
 ----
 * add fast sampling of times where sun is above/below horizon
 * add new jenkins build
+* more example
 * bump all dependencies
 
 0.8
