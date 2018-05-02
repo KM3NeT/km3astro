@@ -1,7 +1,7 @@
 Unreleased Changes
 ------------------
 
-0.81
+0.8.2
 ----
 * add fast sampling of times where sun is above/below horizon
 * add new jenkins build
