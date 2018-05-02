@@ -1,6 +1,12 @@
 Unreleased Changes
 ------------------
 
+0.81
+----
+* add fast sampling of times where sun is above/below horizon
+* add new jenkins build
+* bump all dependencies
+
 0.8
 ---
 * move a log of methods to km3pipe
