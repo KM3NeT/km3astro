@@ -176,6 +176,7 @@ def get_stages(docker_image) {
 
 node('master') {
 
+    deleteDir()
     checkout scm
 
     def stages = [:]
