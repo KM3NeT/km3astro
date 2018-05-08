@@ -29,9 +29,6 @@ def get_stages(docker_image) {
                     pip install -U pip setuptools wheel
                 """
             }
-            stage("Echo") {
-                sh "env"
-            }
             stage("Build") {
                 // sendMail("Build Started", "halleluja")
                 try { 
@@ -132,14 +129,10 @@ def get_stages(docker_image) {
                         make doc-dependencies
                         cd doc
                         export MPLBACKEND="agg"
-                        pwd
-                        env
-                        ll 
-                        ll ..
-                        whoami
-                        export XDG_CONFIG_HOME=$HOME/.config/astropy
-                        export XDG_CACHE_HOME=$HOME/.config/astropy
-                        mkdir -pv $HOME/.config/astropy
+                        curdir = $(pwd)
+                        mkdir -pv $curdir.config/astropy
+                        export XDG_CONFIG_HOME=$curdir.config/astropy
+                        export XDG_CACHE_HOME=$curdir.config/astropy
                         make clean
                         make html
                     """
