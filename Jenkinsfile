@@ -133,7 +133,8 @@ def get_stages(docker_image) {
                         cd doc
                         export MPLBACKEND="agg"
                         export XDG_CONFIG_HOME=$HOME/.config/astropy
-                        mkdir -pv $XDG_CONFIG_HOME                        
+                        export XDG_CACHE_HOME=$HOME/.config/astropy
+                        mkdir -pv $HOME/.config/astropy
                         make clean
                         make html
                     """
