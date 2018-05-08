@@ -132,6 +132,8 @@ def get_stages(docker_image) {
                         make doc-dependencies
                         cd doc
                         export MPLBACKEND="agg"
+                        export XDG_CONFIG_HOME=$HOME/.config/astropy
+                        mkdir -pv $XDG_CONFIG_HOME                        
                         make clean
                         make html
                     """
