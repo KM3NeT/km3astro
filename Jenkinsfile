@@ -132,6 +132,7 @@ def get_stages(docker_image) {
                         make doc-dependencies
                         cd doc
                         export MPLBACKEND="agg"
+                        make clean
                         make html
                     """
                 } catch (e) { 
