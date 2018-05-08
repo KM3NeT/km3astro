@@ -131,8 +131,8 @@ def get_stages(docker_image) {
                         export MPLBACKEND="agg"
                         curdir = $(pwd)
                         mkdir -pv $curdir.config/astropy
-                        export XDG_CONFIG_HOME=$curdir.config/astropy
-                        export XDG_CACHE_HOME=$curdir.config/astropy
+                        export XDG_CONFIG_HOME=$curdir/config/astropy
+                        export XDG_CACHE_HOME=$curdir/config/astropy
                         make clean
                         make html
                     """
