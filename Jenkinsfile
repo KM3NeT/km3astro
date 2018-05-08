@@ -139,6 +139,18 @@ def get_stages(docker_image) {
                     throw e
                 }
             }
+            stage('LsDocs') {
+                try { 
+                    sh """
+                        ls doc
+                        ls doc/build
+                        ls doc/build/html
+                    """
+                } catch (e) { 
+                    sendChatMessage("Building Docs Failed")
+                    throw e
+                }
+            }
             stage('Publishing Docs') {
                 try {
                    publishHTML target: [
