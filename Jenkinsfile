@@ -31,7 +31,6 @@ def get_stages(docker_image) {
             }
             stage("Echo") {
                 sh "env"
-                """
             }
             stage("Build") {
                 // sendMail("Build Started", "halleluja")
