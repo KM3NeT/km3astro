@@ -29,6 +29,10 @@ def get_stages(docker_image) {
                     pip install -U pip setuptools wheel
                 """
             }
+            stage("Echo") {
+                sh "env"
+                """
+            }
             stage("Build") {
                 // sendMail("Build Started", "halleluja")
                 try { 
