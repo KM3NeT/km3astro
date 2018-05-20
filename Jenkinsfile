@@ -31,7 +31,7 @@ def get_stages(docker_image) {
                     pip install -U pip setuptools wheel
                 """
             }
-            gitlabBuilds(builds: ['Deps', 'Test', 'Install', 'Test KM3Modules', 'Test Reports', 'Coverage', 'Docs']) {
+            gitlabBuilds(builds: ['Deps', 'Test', 'Install', 'Test Reports', 'Coverage', 'Docs']) {
                 stage("Deps") {
                     gitlabCommitStatus("Deps") {
                         try { 
@@ -71,20 +71,6 @@ def get_stages(docker_image) {
                         } catch (e) { 
                             sendChatMessage("Install Failed")
                             sendMail("Install Failed")
-                            throw e
-                        }
-                    }
-                }
-                stage('Test KM3Modules') {
-                    gitlabCommitStatus("Test KM3Modules") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                make test-km3modules
-                            """
-                        } catch (e) { 
-                            sendChatMessage("KM3Modules Test Suite Failed")
-                            sendMail("KM3Modules Test Suite Failed")
                             throw e
                         }
                     }
