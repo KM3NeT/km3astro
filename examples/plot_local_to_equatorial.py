@@ -23,22 +23,12 @@ import km3pipe.style.default   # noqa
 # --------------------
 # Let's define some random events.
 
-theta = np.array([10, 45, 70, 23, 20, 11, 24, 54]) * np.pi / 180
-phi = np.array([4, 23, 200, 320, 10, 45, 29, 140]) * np.pi / 180
+theta = 10 * np.pi / 180
+phi = 8 * np.pi / 180
 time = pd.to_datetime([
     '2015-01-12T15:10:12',
-    '2015-06-12T13:48:56',
-    '2015-03-09T21:57:52',
     '2015-03-15T14:24:01',
-    '2015-01-12T15:10:12',
-    '2015-06-12T13:48:56',
-    '2015-03-09T21:57:52',
-    '2015-03-15T14:24:01',
-]).values
-
-print(theta[:3])
-print(phi[:3])
-print(time[:3])
+]).values[0]
 
 ##########################################################
 # Phi, theta: Where the neutrino is pointing to
@@ -47,19 +37,12 @@ print(time[:3])
 
 azimuth, zenith = neutrino_to_source_direction(phi, theta, radian=True)
 
-print(azimuth[:3])
-print(zenith[:3])
-
 #########################################################################
 # We want to observe them from the Orca location. Let's look at our
 # geographical coordinates.
 #
 # In km3astro, there are the predefined locations "orca", "arca" and "antares".
 orca_loc = get_location('orca')
-print(
-    orca_loc.lon.degree,
-    orca_loc.lat.degree
-)
 
 #########################################################################
 # Create event in local coordinates (aka AltAz or Horizontal Coordinates)
