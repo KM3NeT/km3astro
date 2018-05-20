@@ -15,10 +15,10 @@ setup(
     license='BSD-3',
     packages=['km3astro', ],
     install_requires=[
-        'astropy>=1.3',
+        'astropy>=3.0',
         'numpy',
         'pandas',
-        'matplotlib>=2.0',
+        'matplotlib>=2.2',
         'utm',
         'km3pipe[full]>=7.18.1',
         'tables'
