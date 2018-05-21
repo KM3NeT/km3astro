@@ -18,4 +18,6 @@ setup(
     license='BSD-3',
     packages=['km3astro', ],
     install_requires=requirements,
+    python_requires='>=3.6',
+    include_package_data=True,
 )
