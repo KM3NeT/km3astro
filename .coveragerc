@@ -1,9 +1,9 @@
 [run]
-source = km3flux
+source = km3astro
 
 [report]
 include =
-    km3flux/*
+    km3astro/*
 omit =
     */tests/*
     */*/tests/*

@@ -1,4 +1,4 @@
-name: km3flux
+name: km3astro
 
 channels:
   - conda-forge
