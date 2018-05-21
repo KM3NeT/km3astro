@@ -4,6 +4,9 @@
 from setuptools import setup
 from km3astro import __version__
 
+with open('requirements.txt') as fobj:
+        requirements = [l.strip() for l in fobj.readlines()]
+
 
 setup(
     name='km3astro',
@@ -14,13 +17,5 @@ setup(
     author_email='mlotze@km3net.de',
     license='BSD-3',
     packages=['km3astro', ],
-    install_requires=[
-        'astropy>=3.0',
-        'numpy',
-        'pandas',
-        'matplotlib>=2.2',
-        'utm',
-        'km3pipe[full]>=7.18.1',
-        'tables'
-    ]
+    install_requires=requirements,
 )
