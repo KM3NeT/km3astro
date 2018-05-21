@@ -1,20 +1,20 @@
 PKGNAME=km3astro
+ALLNAMES = $(PKGNAME)
 
 default: build
 
 all: install
 
 build: 
-	python setup.py build_ext --inplace
-
-build-trace:
-	python setup.py build_ext --inplace --define CYTHON_TRACE
+	@echo "No need to build anymore :)"
 
 install: 
-	pip install ".[full]"
+	pip install -U numpy
+	pip install .
 
-install-dev: dev-dependencies
-	pip install -e ".[full]"
+install-dev:
+	pip install -U numpy
+	pip install -e .
 
 clean:
 	python setup.py clean --all
@@ -23,33 +23,29 @@ clean:
 	rm -f -r build/
 	rm -f $(PKGNAME)/*.so
 
-test: build
-	py.test --junitxml=./junit.xml || true
+test: 
+	py.test --junitxml=./reports/junit.xml $(PKGNAME)
 
-test-cov: build
-	py.test --junitxml=./junit.xml \
-		--cov ./ --cov-report term-missing --cov-report xml || true
+test-cov:
+	py.test --cov ./ --cov-report term-missing --cov-report xml:reports/coverage.xml --cov-report html:reports/coverage $(ALLNAMES)
 
-test-loop: build
-	# pip install -U pytest-watch
-	py.test || true
-	ptw --ext=.py,.pyx --beforerun "make build"
+test-loop: 
+	py.test
+	ptw --ext=.py,.pyx --ignore=doc
 
 flake8: 
-	py.test --flake8 || true
+	py.test --flake8
 
 pep8: flake8
 
+docstyle: 
+	py.test --docstyle
+
 lint: 
-	py.test --pylint || true
+	py.test --pylint
 
 dependencies:
+	pip install -U numpy
 	pip install -Ur requirements.txt
 
-dev-dependencies:
-	pip install -Ur dev-requirements.txt
-
-doc-dependencies:
-	pip install -Ur doc-requirements.txt
-
-.PHONY: all clean build install test test-nocov flake8 pep8 dependencies dev-dependencies doc-dependencies
+.PHONY: all clean build install install-dev test test-km3modules test-nocov flake8 pep8 dependencies docstyle
