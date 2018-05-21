@@ -5,7 +5,7 @@ from setuptools import setup
 from km3astro import __version__
 
 with open('requirements.txt') as fobj:
-        requirements = [l.strip() for l in fobj.readlines()]
+    requirements = [l.strip() for l in fobj.readlines()]
 
 
 setup(
