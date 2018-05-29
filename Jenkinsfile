@@ -91,40 +91,6 @@ def get_stages(docker_image) {
                         }
                     }
                 }
-                stage('Coverage') {
-                    gitlabCommitStatus("Coverage") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                make clean
-                                make test-cov
-                            """
-                            step([$class: 'CoberturaPublisher',
-                                    autoUpdateHealth: false,
-                                    autoUpdateStability: false,
-                                    coberturaReportFile: 'reports/coverage.xml',
-                                    failNoReports: false,
-                                    failUnhealthy: false,
-                                    failUnstable: false,
-                                    maxNumberOfBuilds: 0,
-                                    onlyStable: false,
-                                    sourceEncoding: 'ASCII',
-                                    zoomCoverageChart: false])
-                            publishHTML target: [
-                               allowMissing: false,
-                               alwaysLinkToLastBuild: false,
-                               keepAll: true,
-                               reportDir: 'reports/coverage',
-                               reportFiles: 'index.html',
-                               reportName: 'Coverage'
-                            ]
-                        } catch (e) { 
-                            sendChatMessage("Coverage Failed")
-                            sendMail("Coverage Failed")
-                            throw e
-                        }
-                    }
-                }
                 stage('Docs') {
                     gitlabCommitStatus("Docs") {
                         try { 
