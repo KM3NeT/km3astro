@@ -1,15 +1,26 @@
 #!groovy
-// def DOCKER_IMAGES = ["python:3.5.5", "python:3.6.4", "python:3.6.5"]
-DOCKER_IMAGES = ["python:3.6.5"]
+import groovy.io.FileType
+import static groovy.io.FileType.FILES
+
+DOCKER_FILES_DIR = './dockerfiles'
 CHAT_CHANNEL = '#km3py'
 DEVELOPERS = ['mlotze@km3net.de']
+MAIN_DOCKER = 'py365'
 
 properties([gitLabConnection('KM3NeT GitLab')])
 
 
-def get_stages(docker_image) {
+def get_stages(dockerfile) {
     stages = {
-        docker.image(docker_image).inside {
+
+        // Bug in Jenkins prevents using custom folder in docker.build
+        def customImage = ''
+        dir("${DOCKER_FILES_DIR}"){
+            customImage = docker.build("km3py:${env.BUILD_ID}",
+                                       "-f ${dockerfile} .")
+        }
+
+        customImage.inside("-u root:root") {
 
             // The following line causes a weird issue, where pip tries to 
             // install into /usr/local/... instead of the virtual env.
@@ -18,113 +29,96 @@ def get_stages(docker_image) {
             // def PYTHON_VENV = docker_image.replaceAll('[:.]', '') + 'venv'
             //
             // So we set it to 'venv' for all parallel builds now
-            def PYTHON_VENV = 'venv'
-
-            stage("${docker_image}") {
-                echo "Running in ${docker_image}"
-            }
-            stage("Prepare") {
-                sh "rm -rf ${PYTHON_VENV}"
-                sh "python -m venv ${PYTHON_VENV}"
-                sh """
-                    . ${PYTHON_VENV}/bin/activate
-                    pip install -U pip setuptools wheel
-                """
-            }
-            gitlabBuilds(builds: ['Deps', 'Install', 'Test', 'Test Reports', 'Coverage', 'Docs']) {
-                stage("Deps") {
-                    gitlabCommitStatus("Deps") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                make dependencies
-                            """
-                        } catch (e) { 
-                            sendChatMessage("Install Dependencies Failed")
-                            sendMail("Install Dependencies Failed")
-                            throw e
+            def DOCKER_NAME = dockerfile
+            def DOCKER_HOME = env.WORKSPACE + '/' + DOCKER_NAME + '_home'
+            withEnv(["HOME=${env.WORKSPACE}", "MPLBACKEND=agg", "DOCKER_NAME=${DOCKER_NAME}"]){
+                gitlabBuilds(builds: ["Install (${DOCKER_NAME})", "Test (${DOCKER_NAME})", "Docs (${DOCKER_NAME})"]) {
+                    stage("Install (${DOCKER_NAME})") {
+                        gitlabCommitStatus("Install (${DOCKER_NAME})") {
+                            try { 
+                                sh """
+                                    pip install -U pip setuptools wheel
+                                    make dependencies
+                                    make install
+                                """
+                            } catch (e) { 
+                                sendChatMessage("Install (${DOCKER_NAME}) Failed")
+                                sendMail("Install (${DOCKER_NAME}) Failed")
+                                throw e
+                            }
                         }
                     }
-                }
-                stage("Install") {
-                    gitlabCommitStatus("Install") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                make install
-                            """
-                        } catch (e) { 
-                            sendChatMessage("Install Failed")
-                            sendMail("Install Failed")
-                            throw e
+                    stage("Test (${DOCKER_NAME})") {
+                        gitlabCommitStatus("Test (${DOCKER_NAME})") {
+                            try { 
+                                sh """
+                                    make clean
+                                    make test
+                                """
+                            } catch (e) { 
+                                sendChatMessage("Test Suite (${DOCKER_NAME}) Failed")
+                                sendMail("Test Suite (${DOCKER_NAME}) Failed")
+                                throw e
+                            }
+                            try { 
+                                sh """
+                                    make test-km3modules
+                                """
+                            } catch (e) { 
+                                sendChatMessage("KM3Modules Test Suite (${DOCKER_NAME}) Failed")
+                                sendMail("KM3Modules Test Suite (${DOCKER_NAME}) Failed")
+                                throw e
+                            }
+                            try { 
+                                sh """
+                                    make clean
+                                    make test-cov
+                                """
+                                if(DOCKER_NAME == MAIN_DOCKER) {
+                                    step([$class: 'CoberturaPublisher',
+                                            autoUpdateHealth: false,
+                                            autoUpdateStability: false,
+                                            coberturaReportFile: "reports/coverage${DOCKER_NAME}.xml",
+                                            failNoReports: false,
+                                            failUnhealthy: false,
+                                            failUnstable: false,
+                                            maxNumberOfBuilds: 0,
+                                            onlyStable: false,
+                                            sourceEncoding: 'ASCII',
+                                            zoomCoverageChart: false])
+                                }
+                            } catch (e) { 
+                                sendChatMessage("Coverage (${DOCKER_NAME}) Failed")
+                                sendMail("Coverage  (${DOCKER_NAME}) Failed")
+                                throw e
+                            }
                         }
                     }
-                }
-                stage('Test') {
-                    gitlabCommitStatus("Test") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                make clean
-                                make test
-                            """
-                        } catch (e) { 
-                            sendChatMessage("Test Suite Failed")
-                            sendMail("Test Suite Failed")
-                            throw e
+                    stage("Docs (${DOCKER_NAME})") {
+                        gitlabCommitStatus("Docs (${DOCKER_NAME})") {
+                            try { 
+                                sh """
+                                    cp -R doc doc_${DOCKER_NAME}
+                                    cd doc_${DOCKER_NAME}
+                                    make html
+                                """
+                            } catch (e) { 
+                                sendChatMessage("Building Docs (${DOCKER_NAME}) Failed")
+                                sendMail("Building Docs (${DOCKER_NAME}) Failed")
+                                throw e
+                            }
+                            publishHTML target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                keepAll: true,
+                                reportDir: "doc_${DOCKER_NAME}/_build/html",
+                                reportFiles: 'index.html',
+                                reportName: "Documentation (${DOCKER_NAME})"
+                            ]
                         }
                     }
-                }
-                stage('Test Reports') {
-                    gitlabCommitStatus("Test Reports") {
-                        try { 
-                            step([$class: 'XUnitBuilder',
-                                thresholds: [
-                                    [$class: 'SkippedThreshold', failureThreshold: '0'],
-                                    [$class: 'FailedThreshold', failureThreshold: '0']],
-                                // thresholds: [[$class: 'FailedThreshold', unstableThreshold: '1']],
-                                tools: [[$class: 'JUnitType', pattern: 'reports/*.xml']]])
-                        } catch (e) { 
-                            sendChatMessage("Failed to create test reports.")
-                            sendMail("Failed to create test reports.")
-                            throw e
-                        }
-                    }
-                }
-                stage('Docs') {
-                    gitlabCommitStatus("Docs") {
-                        try { 
-                            sh """
-                                . ${PYTHON_VENV}/bin/activate
-                                cd doc
-                                export MPLBACKEND="agg"
-                                make html
-                            """
-                        } catch (e) { 
-                            sendChatMessage("Building Docs Failed")
-                            sendMail("Building Docs Failed")
-                            throw e
-                        }
-                    }
-                }
-            }
-            stage('Publishing Docs') {
-                try {
-                   publishHTML target: [
-                       allowMissing: false,
-                       alwaysLinkToLastBuild: false,
-                       keepAll: true,
-                       reportDir: 'doc/_build/html',
-                       reportFiles: 'index.html',
-                       reportName: 'Documentation'
-                   ]
-                } catch (e) {
-                    sendChatMessage("Publishing Docs Failed")
-                    sendMail("Publishing Docs Failed")
                 }
             }
-
-
         }
     }
     return stages
@@ -136,13 +130,27 @@ node('master') {
     cleanWs()
     checkout scm
 
+    def TMP_FILENAME = ".docker_files_list"
+    sh "ls ${DOCKER_FILES_DIR} > ${TMP_FILENAME}"
+    def dockerfiles = readFile(TMP_FILENAME).split( "\\r?\\n" );
+    sh "rm -f ${TMP_FILENAME}"
+
     def stages = [:]
-    for (int i = 0; i < DOCKER_IMAGES.size(); i++) {
-        def docker_image = DOCKER_IMAGES[i]
-        stages[docker_image] = get_stages(docker_image)
+    for (int i = 0; i < dockerfiles.size(); i++) {
+        def dockerfile = dockerfiles[i]
+        stages[dockerfile] = get_stages(dockerfile)
     }
 
     parallel stages
+
+    stage("Reports") {
+        step([$class: 'XUnitBuilder',
+            thresholds: [
+                [$class: 'SkippedThreshold', failureThreshold: '15'],
+                [$class: 'FailedThreshold', failureThreshold: '0']],
+            // thresholds: [[$class: 'FailedThreshold', unstableThreshold: '1']],
+            tools: [[$class: 'JUnitType', pattern: 'reports/*.xml']]])
+    }
 }
 
 
@@ -164,3 +172,4 @@ def sendMail(subject, message='', developers=DEVELOPERS) {
         )    
     }
 }
+
