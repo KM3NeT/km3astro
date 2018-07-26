@@ -26,6 +26,9 @@ clean:
 test: 
 	py.test --junitxml=./reports/junit.xml $(PKGNAME)
 
+test-cov:
+	py.test --cov ./ --cov-report term-missing --cov-report xml:reports/coverage.xml --cov-report html:reports/coverage $(ALLNAMES)
+
 test-loop: 
 	py.test
 	ptw --ext=.py,.pyx --ignore=doc
