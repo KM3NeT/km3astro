@@ -1,7 +1,7 @@
 astropy>=3.0
 ipython
 ipywidgets
-km3pipe[full]>=7.18.1
+km3pipe>=7.18.1
 matplotlib>=2.2
 mock
 numpy
@@ -20,3 +20,4 @@ sphinxcontrib-websupport>=1.0.1
 tables
 twine
 utm
+yapf
