@@ -28,7 +28,7 @@ to assume radian.
 """
 from astropy.units import rad, deg, hourangle  # noqa
 from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
-                                 Latitude, get_sun)
+                                 Latitude, get_sun, get_moon)
 import astropy.time
 import numpy as np
 
@@ -78,6 +78,13 @@ def Sun(time):
         time = np_to_astrotime(time)
     return get_sun(time)
 
+def Moon(time):
+    """Wrapper around astropy's get_moon, accepting numpy/pandas time objects."""
+    if not isinstance(time, astropy.time.Time):
+        # if np.datetime64, convert to astro time
+        time = np_to_astrotime(time)
+    return get_moon(time)
+
 
 def local_frame(time, location='orca'):
     """Get the (horizontal) coordinate frame of your detector."""
@@ -108,15 +115,22 @@ def local_event(azimuth, time, zenith, radian=True,
 
 def sun_local(time, loc='orca'):
     """Sun position in local coordinates."""
-    frame = local_frame(time, location='orca')
+    frame = local_frame(time, location=loc)
     sun = Sun(time)
     sun_local = sun.transform_to(frame)
     return sun_local
 
+def moon_local(time, loc='orca'):
+    """Moon position in local coordinates."""
+    frame = local_frame(time, location=loc)
+    moon = Moon(time)
+    moon_local = moon.transform_to(frame)
+    return moon_local
+
 
 def gc_in_local(time, loc='orca'):
     """Galactic center position in local coordinates."""
-    frame = local_frame(time, location='orca')
+    frame = local_frame(time, location=loc)
     gc = GALACTIC_CENTER
     gc_local = gc.transform_to(frame)
     return gc_local
