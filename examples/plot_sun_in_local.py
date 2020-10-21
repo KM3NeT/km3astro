@@ -28,7 +28,7 @@ azi = random_azimuth(n=n_evts)
 ##########################################################
 # transform to horizontal coordinates
 
-orca_frame = local_frame(time=time, location='orca')
+orca_frame = local_frame(time=time, location="orca")
 sun = Sun(time)
 
 sun_orca = sun.transform_to(orca_frame)
@@ -38,40 +38,30 @@ sun_zen = (90 * deg - sun_orca.alt).rad
 
 sun_phi, sun_theta = source_to_neutrino_direction(sun_azi, sun_zen)
 
-sun_df = pd.DataFrame({
-    'Sun Azimuth': sun_azi,
-    'Sun Zenith': sun_zen,
-    'Sun Cos Zenith': np.cos(sun_zen),
-    'Sun Phi': sun_phi,
-    'Sun Theta': sun_theta,
-    'Sun Cos Theta': np.cos(sun_theta),
-})
+sun_df = pd.DataFrame(
+    {
+        "Sun Azimuth": sun_azi,
+        "Sun Zenith": sun_zen,
+        "Sun Cos Zenith": np.cos(sun_zen),
+        "Sun Phi": sun_phi,
+        "Sun Theta": sun_theta,
+        "Sun Cos Theta": np.cos(sun_theta),
+    }
+)
 
 #########################################################
 
-sun_df.plot.hexbin(
-    'Sun Zenith',
-    'Sun Azimuth',
-    cmap='viridis')
+sun_df.plot.hexbin("Sun Zenith", "Sun Azimuth", cmap="viridis")
 
 
 #########################################################
 
-sun_df.plot.hexbin(
-    'Sun Cos Zenith',
-    'Sun Azimuth',
-    cmap='magma')
+sun_df.plot.hexbin("Sun Cos Zenith", "Sun Azimuth", cmap="magma")
 
 #########################################################
 
-sun_df.plot.hexbin(
-    'Sun Theta',
-    'Sun Phi',
-    cmap='inferno')
+sun_df.plot.hexbin("Sun Theta", "Sun Phi", cmap="inferno")
 
 #########################################################
 
-sun_df.plot.hexbin(
-    'Sun Cos Theta',
-    'Sun Phi',
-    cmap='plasma')
+sun_df.plot.hexbin("Sun Cos Theta", "Sun Phi", cmap="plasma")

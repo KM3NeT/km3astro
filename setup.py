@@ -8,6 +8,7 @@ import os
 from setuptools import setup
 import sys
 
+
 def read_requirements(kind):
     """Return a list of stripped lines from a file"""
     with open(os.path.join("requirements", kind + ".txt")) as fobj:

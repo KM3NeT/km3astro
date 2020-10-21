@@ -9,15 +9,16 @@ import km3astro
 from ..random import random_date
 
 
-DATADIR = os.path.join(os.path.dirname(km3astro.__file__), 'data')
+DATADIR = os.path.join(os.path.dirname(km3astro.__file__), "data")
 
 
 def above_horiz(times):
     import pandas as pd
-    fname = os.path.join(DATADIR, 'orca_sun_isup.h5')
+
+    fname = os.path.join(DATADIR, "orca_sun_isup.h5")
     with pd.HDFStore(fname) as h5:
-        o_rise = h5['o_rise'].values
-        o_set = h5['o_set'].values
+        o_rise = h5["o_rise"].values
+        o_set = h5["o_set"].values
     return [(t >= o_rise) & (t <= o_set) for t in times]
 
 

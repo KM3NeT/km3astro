@@ -27,15 +27,28 @@ Also radian is the default. Degree can be used, but generally the default is
 to assume radian.
 """
 from astropy.units import rad, deg, hourangle  # noqa
-from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
-                                 Latitude, get_sun, get_moon)
+from astropy.coordinates import (
+    EarthLocation,
+    SkyCoord,
+    AltAz,
+    Longitude,
+    Latitude,
+    get_sun,
+    get_moon,
+)
 import astropy.time
 import numpy as np
 
 from km3astro.constants import (
-    arca_longitude, arca_latitude, arca_height,
-    orca_longitude, orca_latitude, orca_height,
-    antares_longitude, antares_latitude, antares_height,
+    arca_longitude,
+    arca_latitude,
+    arca_height,
+    orca_longitude,
+    orca_latitude,
+    orca_height,
+    antares_longitude,
+    antares_latitude,
+    antares_height,
 )
 from km3astro.time import np_to_astrotime
 from km3astro.random import random_date, random_azimuth
@@ -43,23 +56,22 @@ from km3astro.sources import GALACTIC_CENTER
 
 
 LOCATIONS = {
-    'arca': EarthLocation.from_geodetic(
+    "arca": EarthLocation.from_geodetic(
         lon=Longitude(arca_longitude * deg),
         lat=Latitude(arca_latitude * deg),
-        height=arca_height
+        height=arca_height,
     ),
-    'orca': EarthLocation.from_geodetic(
+    "orca": EarthLocation.from_geodetic(
         lon=Longitude(orca_longitude * deg),
         lat=Latitude(orca_latitude * deg),
-        height=orca_height
+        height=orca_height,
     ),
-    'antares': EarthLocation.from_geodetic(
+    "antares": EarthLocation.from_geodetic(
         lon=Longitude(antares_longitude * deg),
         lat=Latitude(antares_latitude * deg),
-        height=antares_height
+        height=antares_height,
     ),
 }
-
 
 
 def neutrino_to_source_direction(phi, theta, radian=True):
@@ -113,7 +125,7 @@ def source_to_neutrino_direction(azimuth, zenith, radian=True):
     return phi, theta
 
 
-def get_location(location='orca'):
+def get_location(location="orca"):
     try:
         loc = LOCATIONS[location]
     except KeyError:
@@ -128,6 +140,7 @@ def Sun(time):
         time = np_to_astrotime(time)
     return get_sun(time)
 
+
 def Moon(time):
     """Wrapper around astropy's get_moon, accepting numpy/pandas time objects."""
     if not isinstance(time, astropy.time.Time):
@@ -136,7 +149,7 @@ def Moon(time):
     return get_moon(time)
 
 
-def local_frame(time, location='orca'):
+def local_frame(time, location="orca"):
     """Get the (horizontal) coordinate frame of your detector."""
     if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
@@ -146,8 +159,7 @@ def local_frame(time, location='orca'):
     return frame
 
 
-def local_event(azimuth, time, zenith, radian=True,
-                location='orca', **kwargs):
+def local_event(azimuth, time, zenith, radian=True, location="orca", **kwargs):
     """Create astropy events from detector coordinates."""
     zenith = np.atleast_1d(zenith).copy()
     azimuth = np.atleast_1d(azimuth).copy()
@@ -158,19 +170,19 @@ def local_event(azimuth, time, zenith, radian=True,
     # neutrino telescopes call the co-azimuth "azimuth"
     true_azimuth = (np.pi / 2 - azimuth) % np.pi
     frame = local_frame(time, location=location)
-    event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame,
-                     **kwargs)
+    event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
     return event
 
 
-def sun_local(time, loc='orca'):
+def sun_local(time, loc="orca"):
     """Sun position in local coordinates."""
     frame = local_frame(time, location=loc)
     sun = Sun(time)
     sun_local = sun.transform_to(frame)
     return sun_local
 
-def moon_local(time, loc='orca'):
+
+def moon_local(time, loc="orca"):
     """Moon position in local coordinates."""
     frame = local_frame(time, location=loc)
     moon = Moon(time)
@@ -178,7 +190,7 @@ def moon_local(time, loc='orca'):
     return moon_local
 
 
-def gc_in_local(time, loc='orca'):
+def gc_in_local(time, loc="orca"):
     """Galactic center position in local coordinates."""
     frame = local_frame(time, location=loc)
     gc = GALACTIC_CENTER
@@ -186,7 +198,7 @@ def gc_in_local(time, loc='orca'):
     return gc_local
 
 
-def orca_gc_dist(azimuth, time, zenith, frame='detector'):
+def orca_gc_dist(azimuth, time, zenith, frame="detector"):
     """Return angular distance of event to GC.
 
     Parameters
@@ -195,10 +207,10 @@ def orca_gc_dist(azimuth, time, zenith, frame='detector'):
         valid are 'detector', 'galactic', 'icrs', 'gcrs'
     """
     evt = local_event(azimuth, time, zenith)
-    galcen = gc_in_local(time, loc='orca')
-    if frame == 'detector':
+    galcen = gc_in_local(time, loc="orca")
+    if frame == "detector":
         pass
-    elif frame in ('galactic', 'icrs', 'gcrs'):
+    elif frame in ("galactic", "icrs", "gcrs"):
         evt = evt.transform_to(frame)
         galcen = galcen.transform_to(frame)
     return evt.separation(galcen).radian
@@ -207,12 +219,12 @@ def orca_gc_dist(azimuth, time, zenith, frame='detector'):
 def orca_sun_dist(azimuth, time, zenith):
     """Return distance of event to sun, in detector coordinates."""
     evt = local_event(azimuth, time, zenith)
-    sun = sun_local(time, loc='orca')
+    sun = sun_local(time, loc="orca")
     dist = evt.separation(sun).radian
     return dist
 
 
-def gc_dist_random(zenith, frame='detector'):
+def gc_dist_random(zenith, frame="detector"):
     """Generate random (time, azimuth) events and get distance to GC."""
     n_evts = len(zenith)
     time = random_date(n=n_evts)
@@ -231,7 +243,7 @@ def sun_dist_random(zenith):
 
 
 class Event(object):
-    def __init__(self, zenith, azimuth, time, location='orca'):
+    def __init__(self, zenith, azimuth, time, location="orca"):
         self.zenith = zenith
         self.azimuth = azimuth
         self.time = time
