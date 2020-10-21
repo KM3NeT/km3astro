@@ -31,19 +31,15 @@ test-loop:
 
 .PHONY: black
 black:
-	black km3pipe
-	black km3modules
+	black $(PKGNAME)
 	black examples
-	black pipeinspector
 	black doc/conf.py
 	black setup.py
 
 .PHONY: black-check
 black-check:
-	black --check km3pipe
-	black --check km3modules
+	black --check $(PKGNAME)
 	black --check examples
-	black --check pipeinspector
 	black --check doc/conf.py
 	black --check setup.py
 
