@@ -5,6 +5,7 @@ import os.path
 
 import numpy as np
 import km3astro
+import km3astro.extras
 
 from ..random import random_date
 
@@ -13,7 +14,7 @@ DATADIR = os.path.join(os.path.dirname(km3astro.__file__), "data")
 
 
 def above_horiz(times):
-    import pandas as pd
+    pd = km3astro.extras.pandas()
 
     fname = os.path.join(DATADIR, "orca_sun_isup.h5")
     with pd.HDFStore(fname) as h5:
