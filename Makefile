@@ -1,6 +1,5 @@
 PKGNAME=km3astro
 ALLNAMES = $(PKGNAME)
-ALLNAMES += km3modules 
 
 default: build
 
