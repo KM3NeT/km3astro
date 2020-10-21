@@ -1,5 +1,6 @@
 Unreleased Changes
 ------------------
+* Cleanup and remove unnecessary requirements (scipy, km3pipe, ...)
 
 0.8.2
 ----
