@@ -20,7 +20,7 @@ necessary information which will help other people to understand the
 situation.
 
 Improve km3astro
----------------
+----------------
 
 Check out our KanBan board http://git.km3net.de/km3py/km3astro/boards,
 which shows all the open issues in three columns:
@@ -36,7 +36,7 @@ standard procedure for collaborative software development, nothing exotic!
 Feel free to contribute ;)
 
 Make a Fork of km3astro
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 You create a fork (your full own copy of the
 repository), change the code and when you are happy with the changes, you create
