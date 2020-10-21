@@ -6,10 +6,8 @@ __pycache__/
 # C extensions
 *.so
 
-# Temporary Cython *.c files
-km3pipe/core.c
-km3pipe/dataclasses.c
-km3pipe/tools.c
+# Version info
+km3astro/version.py
 
 # Distribution / packaging
 .Python
@@ -27,6 +25,8 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+.eggs
+pip-wheel-metadata
 
 # Installer logs
 pip-log.txt
@@ -39,7 +39,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
-reports
+.coverage.*
 
 # Translations
 *.mo
@@ -52,10 +52,6 @@ reports
 # Rope
 .ropeproject
 
-# Django stuff:
-*.log
-*.pot
-
 # Sphinx documentation
 doc/_build/
 doc/auto_examples/
@@ -64,6 +60,7 @@ doc/api
 
 # VI swap files
 *.swp
+*.swo
 
 # PyCharm files
 .idea
@@ -71,5 +68,18 @@ doc/api
 # jupyter files
 .ipynb_checkpoints/
 
+# 
+junit*.xml
+reports
+
+# misc
+*~
+*.dqd
+*.dat
+
 .pytest_cache/
-junit.xml
+.DS_Store
+
+# venv, pyenv tmp
+.python-version
+venv
