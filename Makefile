@@ -1,51 +1,50 @@
 PKGNAME=km3astro
 ALLNAMES = $(PKGNAME)
+ALLNAMES += km3modules 
 
 default: build
 
 all: install
 
-build: 
-	@echo "No need to build anymore :)"
-
-install: 
-	pip install -U numpy
+install:
 	pip install .
 
 install-dev:
-	pip install -U numpy
-	pip install -e .
+	pip install -e ".[dev]"
+	pip install -e ".[extras]"
 
 clean:
 	python setup.py clean --all
-	rm -f $(PKGNAME)/*.cpp
-	rm -f $(PKGNAME)/*.c
-	rm -f -r build/
-	rm -f $(PKGNAME)/*.so
 
 test: 
-	py.test --junitxml=./reports/junit.xml $(PKGNAME)
+	py.test --junitxml=./reports/junit.xml -o junit_suite_name=$(PKGNAME) $(ALLNAMES)
+
+benchmark:
+	scripts/run_tests.py benchmarks
 
 test-cov:
 	py.test --cov ./ --cov-report term-missing --cov-report xml:reports/coverage.xml --cov-report html:reports/coverage $(ALLNAMES)
 
 test-loop: 
-	py.test
-	ptw --ext=.py,.pyx --ignore=doc
+	py.test $(ALLNAMES)
+	ptw --ext=.py,.pyx --ignore=doc $(ALLNAMES)
 
-flake8: 
-	py.test --flake8
+.PHONY: black
+black:
+	black km3pipe
+	black km3modules
+	black examples
+	black pipeinspector
+	black doc/conf.py
+	black setup.py
 
-pep8: flake8
+.PHONY: black-check
+black-check:
+	black --check km3pipe
+	black --check km3modules
+	black --check examples
+	black --check pipeinspector
+	black --check doc/conf.py
+	black --check setup.py
 
-docstyle: 
-	py.test --docstyle
-
-lint: 
-	py.test --pylint
-
-dependencies:
-	pip install -U numpy
-	pip install -Ur requirements.txt
-
-.PHONY: all clean build install install-dev test test-km3modules test-nocov flake8 pep8 dependencies docstyle
+.PHONY: all black black-check clean install install-dev test test-cov test-loop benchmark

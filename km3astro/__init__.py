@@ -1,1 +1,4 @@
-__version__ = '0.8.3'
+try:
+    version = get_distribution(__name__).version
+except DistributionNotFound:
+    version = "unknown version"
