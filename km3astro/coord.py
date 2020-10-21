@@ -32,8 +32,6 @@ from astropy.coordinates import (EarthLocation, SkyCoord, AltAz, Longitude,
 import astropy.time
 import numpy as np
 
-from km3pipe.math import (neutrino_to_source_direction, source_to_neutrino_direction)   # noqa
-
 from km3astro.constants import (
     arca_longitude, arca_latitude, arca_height,
     orca_longitude, orca_latitude, orca_height,
@@ -61,6 +59,58 @@ LOCATIONS = {
         height=antares_height
     ),
 }
+
+
+
+def neutrino_to_source_direction(phi, theta, radian=True):
+    """Flip the direction.
+
+    Parameters
+    ----------
+    phi, theta: neutrino direction
+    radian: bool [default=True]
+        receive + return angles in radian? (if false, use degree)
+
+    """
+    phi = np.atleast_1d(phi).copy()
+    theta = np.atleast_1d(theta).copy()
+    if not radian:
+        phi *= np.pi / 180
+        theta *= np.pi / 180
+    assert np.all(phi <= 2 * np.pi)
+    assert np.all(theta <= np.pi)
+    azimuth = (phi + np.pi) % (2 * np.pi)
+    zenith = np.pi - theta
+    if not radian:
+        azimuth *= 180 / np.pi
+        zenith *= 180 / np.pi
+    return azimuth, zenith
+
+
+def source_to_neutrino_direction(azimuth, zenith, radian=True):
+    """Flip the direction.
+
+    Parameters
+    ----------
+    zenith : float
+        neutrino origin
+    azimuth: float
+        neutrino origin
+    radian: bool [default=True]
+        receive + return angles in radian? (if false, use degree)
+
+    """
+    azimuth = np.atleast_1d(azimuth).copy()
+    zenith = np.atleast_1d(zenith).copy()
+    if not radian:
+        azimuth *= np.pi / 180
+        zenith *= np.pi / 180
+    phi = (azimuth - np.pi) % (2 * np.pi)
+    theta = np.pi - zenith
+    if not radian:
+        phi *= 180 / np.pi
+        theta *= 180 / np.pi
+    return phi, theta
 
 
 def get_location(location='orca'):
