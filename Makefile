@@ -1,5 +1,4 @@
 PKGNAME=km3astro
-ALLNAMES = $(PKGNAME)
 
 default: build
 
@@ -15,14 +14,14 @@ install-dev:
 clean:
 	python setup.py clean --all
 
-test: 
-	py.test --junitxml=./reports/junit.xml -o junit_suite_name=$(PKGNAME) $(ALLNAMES)
+test:
+	py.test --junitxml=./reports/junit.xml -o junit_suite_name=$(PKGNAME) tests
 
 benchmark:
 	scripts/run_tests.py benchmarks
 
 test-cov:
-	py.test --cov ./ --cov-report term-missing --cov-report xml:reports/coverage.xml --cov-report html:reports/coverage $(ALLNAMES)
+	py.test --cov ./$(PKGNAME) --cov-report term-missing --cov-report xml:reports/coverage.xml --cov-report html:reports/coverage tests
 
 test-loop: 
 	py.test $(ALLNAMES)
