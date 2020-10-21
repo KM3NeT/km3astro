@@ -11,9 +11,7 @@ __author__ = 'moritz'
 import numpy as np
 import pandas as pd
 
-from km3astro.coord import local_event, Sun
-from km3pipe.math import neutrino_to_source_direction
-import km3pipe.style.default   # noqa
+from km3astro.coord import local_event, Sun, neutrino_to_source_direction
 
 
 ##########################################################

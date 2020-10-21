@@ -14,12 +14,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from km3astro.coord import local_event, get_location
+from km3astro.coord import local_event, get_location, neutrino_to_source_direction
 from km3astro.plot import plot_equatorial
 from km3astro.sources import VELA_X
-from km3pipe.math import neutrino_to_source_direction
-
-import km3pipe.style.default   # noqa
 
 
 ##########################################################

@@ -19,8 +19,7 @@ from collections import OrderedDict
 import numpy as np
 import pandas as pd
 
-from km3pipe.math import neutrino_to_source_direction
-from km3astro.coord import local_event, local_frame
+from km3astro.coord import local_event, local_frame, neutrino_to_source_direction
 from km3astro.sources import SIRIUS, CANOPUS, ARCTURUS, ANTARES     # noqa
 
 
