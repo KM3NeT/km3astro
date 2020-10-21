@@ -8,7 +8,9 @@ Run some benchmarks similar to
 
 CAVEAT:
     IceCube and ANTARES/KM3NeT define "azimuth" differently:
+
 ``true_azimuth = (90 - azimuth) % 360``!
+
 """
 
 # Author: Moritz Lotze <mlotze@km3net.de>
