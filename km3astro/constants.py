@@ -11,9 +11,9 @@ DATUM = "WGS84"
 # taken from cppm via kay
 orca_northing = 4743000
 orca_easting = 256500
-orca_height = -2450  # m
+orca_height = -2440  # m
 orca_utm_zone_number = 32
-orca_utm_zone_letter = "T"
+orca_utm_zone_letter = "N"
 orca_utm_zone = "{num}{let}".format(num=orca_utm_zone_number, let=orca_utm_zone_letter)
 orca_latitude, orca_longitude = utm.to_latlon(
     orca_easting, orca_northing, orca_utm_zone_number, orca_utm_zone_letter
