@@ -30,6 +30,7 @@ test-loop:
 .PHONY: black
 black:
 	black $(PKGNAME)
+	black tests
 	black examples
 	black doc/conf.py
 	black setup.py
@@ -37,6 +38,7 @@ black:
 .PHONY: black-check
 black-check:
 	black --check $(PKGNAME)
+	black --check tests
 	black --check examples
 	black --check doc/conf.py
 	black --check setup.py
