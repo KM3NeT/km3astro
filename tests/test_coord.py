@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy as np
 from numpy.testing import assert_allclose
 
-from km3astro.coord import neutrino_to_source_direction, sun_local
+from km3astro.coord import (neutrino_to_source_direction, sun_local, convergence_angle, utm_zone, longitude_of_central_meridian)
 from km3astro.random import random_date
 
 
@@ -37,3 +37,16 @@ class TestCoordRandom(TestCase):
     def test_sun(self):
         date = random_date(n=100)
         sun = sun_local(date)
+
+
+class TestConvergenceAngle(TestCase):
+    def test_convergence_angle(self):
+        ca = convergence_angle(1.3, 1.5)
+        self.assertAlmostEqual(-0.00897440033130838, ca)
+
+class TestUTMStuff(TestCase):
+    def test_utm_zone(self):
+        assert 38 == utm_zone(np.pi / 180 * 42.8871)
+
+    def test_longitude_of_central_meridian(self):
+        self.assertAlmostEqual(0.785398163397448, longitude_of_central_meridian(38))
