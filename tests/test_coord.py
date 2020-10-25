@@ -2,8 +2,14 @@ from unittest import TestCase
 
 import numpy as np
 from numpy.testing import assert_allclose
+from astropy.coordinates import SkyCoord
+from astropy import units as u
+from astropy.time import Time
+from astropy.io import ascii
+from km3net_testdata import data_path
 
 from km3astro.coord import (
+    local_event,
     neutrino_to_source_direction,
     sun_local,
     convergence_angle,
@@ -11,6 +17,7 @@ from km3astro.coord import (
     longitude_of_central_meridian,
 )
 from km3astro.random import random_date
+
 
 
 class TestCoord(TestCase):
@@ -56,3 +63,60 @@ class TestUTMStuff(TestCase):
 
     def test_longitude_of_central_meridian(self):
         self.assertAlmostEqual(0.785398163397448, longitude_of_central_meridian(38))
+
+
+
+class TestAntaresBenchmark(TestCase):
+    def test_antares_objects(self):
+        # FIXME
+        antares_objects_data = ascii.read(data_path("astro/antares_astro_objects_benchmark.csv"))
+        for obj in antares_objects_data:
+            time = Time(" ".join([obj["date"], obj["time"]]))
+
+            theta = obj["theta"] * np.pi / 180
+            phi = obj["phi"] * np.pi / 180
+
+            # check azimuth and zenith conversion
+            azimuth, zenith = neutrino_to_source_direction(phi, theta)
+            self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
+            self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
+
+            event = local_event(azimuth, time, zenith, location="antares")
+
+            equat = event.fk5
+            dec = equat.dec
+            ra = equat.ra
+
+            ref = SkyCoord(" ".join([obj["RA-J2000"], obj["DEC-J2000"]]), unit=(u.hourangle, u.deg), frame="fk5")
+
+            # assert np.abs(dec - ref.fk5.dec) < 0.0001 * u.deg
+            # assert np.abs(ra - ref.fk5.ra) < 0.0001 * u.deg
+
+    def test_antares_coordinate_system_benchmarks(self):
+        # FIXME
+        antares_objects_data = ascii.read(data_path("astro/antares_coordinate_systems_benchmark.csv"))
+        for obj in antares_objects_data:
+            print(obj)
+            time = Time(" ".join([obj["date"], obj["time"]]))
+
+            theta = obj["theta"] * np.pi / 180
+            phi = obj["phi"] * np.pi / 180
+
+            # check azimuth and zenith conversion
+            azimuth, zenith = neutrino_to_source_direction(phi, theta)
+            print("azimuth: ", azimuth, np.rad2deg(azimuth))
+            print("zenith: ", zenith, np.rad2deg(zenith))
+            self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
+            self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
+
+            event = local_event(np.pi + azimuth, time, np.pi - zenith, location="antares")
+            print(event.fk5)
+            print(event.galactic)
+
+            # ref = SkyCoord(obj["RA-J2000"], obj["DEC-J2000"], unit=u.deg, frame="fk5")
+
+            assert np.abs(obj["DEC"] * u.deg - event.fk5.dec) < 0.1 * u.deg
+            assert np.abs(obj["RA"] * u.deg - event.fk5.ra) < 0.1 * u.deg
+
+            # assert np.abs(obj["gal_lat"] * u.deg - event.galactic.b) < 10.0001 * u.deg
+            # assert np.abs(obj["gal_lon"] * u.deg - event.galactic.l) < 10.0001 * u.deg
