@@ -8,6 +8,11 @@ import numpy as np
 from astropy.time import Time
 
 
+def now():
+    """Returns the time of now as astropy Time"""
+    return Time(datetime.utcnow())
+
+
 def np_to_datetime(intime):
     """Convert numpy/pandas datetime64 to list[datetime]."""
     nptime = np.atleast_1d(intime)
