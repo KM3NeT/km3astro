@@ -168,8 +168,10 @@ def local_event(azimuth, time, zenith, radian=True, location="orca", **kwargs):
         azimuth *= np.pi / 180
         zenith *= np.pi / 180
     altitude = zenith - np.pi / 2
+
+    loc = get_location(location)
     # neutrino telescopes call the co-azimuth "azimuth"
-    true_azimuth = (np.pi / 2 - azimuth) % np.pi
+    true_azimuth = (np.pi / 2 - azimuth + convergence_angle(loc.lat.rad, loc.lon.rad)) % (np.pi)
     frame = local_frame(time, location=location)
     event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
     return event
