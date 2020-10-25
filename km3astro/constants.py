@@ -8,7 +8,8 @@ HEMISPHERE = "north"
 DATUM = "WGS84"
 
 
-# taken from cppm via kay
+# ORCA
+# taken from det ID 49 (km3db CLI -> detx 49)
 orca_northing = 4743000
 orca_easting = 256500
 orca_height = -2440  # m
@@ -19,8 +20,8 @@ orca_latitude, orca_longitude = utm.to_latlon(
     orca_easting, orca_northing, orca_utm_zone_number, orca_utm_zone_letter
 )
 
-# taken from detX v2
-# sicily site
+# ARCA Sicily site
+# taken from det ID 42 (km3db CLI -> detx 49)
 arca_northing = 4016800
 arca_easting = 587600
 arca_height = -3450  # m
