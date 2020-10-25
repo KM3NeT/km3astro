@@ -46,7 +46,7 @@ class TestCoordRandom(TestCase):
 
 class TestConvergenceAngle(TestCase):
     def test_convergence_angle(self):
-        ca = convergence_angle(1.3, 1.5)
+        ca = convergence_angle(1.5, 1.3)
         self.assertAlmostEqual(-0.00897440033130838, ca)
 
 

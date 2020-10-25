@@ -258,7 +258,7 @@ class Event(object):
         return cls(zenith, azimuth, time, **initargs)
 
 
-def convergence_angle(lon, lat):
+def convergence_angle(lat, lon):
     """Calculate the converge angle on the UTM grid.
 
     Parameters
