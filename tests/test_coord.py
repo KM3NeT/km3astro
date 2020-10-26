@@ -99,8 +99,8 @@ class TestAntaresBenchmark(TestCase):
             print(obj)
             time = Time(" ".join([obj["date"], obj["time"]]))
 
-            theta = obj["theta"] * np.pi / 180
-            phi = obj["phi"] * np.pi / 180
+            theta = np.deg2rad(obj["theta"])
+            phi = np.deg2rad(obj["phi"])
 
             # check azimuth and zenith conversion
             azimuth, zenith = neutrino_to_source_direction(phi, theta)
@@ -109,14 +109,15 @@ class TestAntaresBenchmark(TestCase):
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = local_event(np.pi + azimuth, time, np.pi - zenith, location="antares")
+            event = local_event(phi, time, theta, location="antares")
             print(event.fk5)
             print(event.galactic)
 
             # ref = SkyCoord(obj["RA-J2000"], obj["DEC-J2000"], unit=u.deg, frame="fk5")
 
-            assert np.abs(obj["DEC"] * u.deg - event.fk5.dec) < 0.1 * u.deg
-            assert np.abs(obj["RA"] * u.deg - event.fk5.ra) < 0.1 * u.deg
+            tol = 0.01 * u.deg
+            assert np.abs(obj["DEC-J2000"] * u.deg - event.fk5.dec) < tol
+            assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < tol
 
             # assert np.abs(obj["gal_lat"] * u.deg - event.galactic.b) < 10.0001 * u.deg
             # assert np.abs(obj["gal_lon"] * u.deg - event.galactic.l) < 10.0001 * u.deg
