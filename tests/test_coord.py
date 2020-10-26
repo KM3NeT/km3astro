@@ -65,6 +65,9 @@ class TestUTMStuff(TestCase):
 
 
 class TestAntaresBenchmark(TestCase):
+    def setUp(self):
+        self.tol = 0.01 * u.deg
+
     def test_antares_objects(self):
         # FIXME
         antares_objects_data = ascii.read(
@@ -73,15 +76,15 @@ class TestAntaresBenchmark(TestCase):
         for obj in antares_objects_data:
             time = Time(" ".join([obj["date"], obj["time"]]))
 
-            theta = obj["theta"] * np.pi / 180
-            phi = obj["phi"] * np.pi / 180
+            theta = np.deg2rad(obj["theta"])
+            phi = np.deg2rad(obj["phi"])
 
             # check azimuth and zenith conversion
             azimuth, zenith = neutrino_to_source_direction(phi, theta)
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = local_event(azimuth, time, zenith, location="antares")
+            event = local_event(phi, time, theta, location="antares")
 
             equat = event.fk5
             dec = equat.dec
@@ -92,6 +95,10 @@ class TestAntaresBenchmark(TestCase):
                 unit=(u.hourangle, u.deg),
                 frame="fk5",
             )
+
+            # from astropy.coordinates import Angle
+            # assert np.abs(Angle(obj["DEC-J2000"] + " hours") - event.fk5.dec) < self.tol
+            # assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < self.tol
 
             # assert np.abs(dec - ref.fk5.dec) < 0.0001 * u.deg
             # assert np.abs(ra - ref.fk5.ra) < 0.0001 * u.deg
@@ -121,9 +128,8 @@ class TestAntaresBenchmark(TestCase):
 
             # ref = SkyCoord(obj["RA-J2000"], obj["DEC-J2000"], unit=u.deg, frame="fk5")
 
-            tol = 0.01 * u.deg
-            assert np.abs(obj["DEC-J2000"] * u.deg - event.fk5.dec) < tol
-            assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < tol
+            assert np.abs(obj["DEC-J2000"] * u.deg - event.fk5.dec) < self.tol
+            assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < self.tol
 
             # assert np.abs(obj["gal_lat"] * u.deg - event.galactic.b) < 10.0001 * u.deg
             # assert np.abs(obj["gal_lon"] * u.deg - event.galactic.l) < 10.0001 * u.deg
