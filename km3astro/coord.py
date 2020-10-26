@@ -160,7 +160,7 @@ def local_frame(time, location="orca"):
     return frame
 
 
-def local_event(azimuth, time, zenith, radian=True, location="orca", **kwargs):
+def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
     """Create astropy events from detector coordinates."""
     zenith = np.atleast_1d(zenith).copy()
     azimuth = np.atleast_1d(azimuth).copy()
