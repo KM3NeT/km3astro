@@ -19,7 +19,6 @@ from km3astro.coord import (
 from km3astro.random import random_date
 
 
-
 class TestCoord(TestCase):
     def setUp(self):
         self.n_evts = 100
@@ -65,11 +64,12 @@ class TestUTMStuff(TestCase):
         self.assertAlmostEqual(0.785398163397448, longitude_of_central_meridian(38))
 
 
-
 class TestAntaresBenchmark(TestCase):
     def test_antares_objects(self):
         # FIXME
-        antares_objects_data = ascii.read(data_path("astro/antares_astro_objects_benchmark.csv"))
+        antares_objects_data = ascii.read(
+            data_path("astro/antares_astro_objects_benchmark.csv")
+        )
         for obj in antares_objects_data:
             time = Time(" ".join([obj["date"], obj["time"]]))
 
@@ -87,14 +87,20 @@ class TestAntaresBenchmark(TestCase):
             dec = equat.dec
             ra = equat.ra
 
-            ref = SkyCoord(" ".join([obj["RA-J2000"], obj["DEC-J2000"]]), unit=(u.hourangle, u.deg), frame="fk5")
+            ref = SkyCoord(
+                " ".join([obj["RA-J2000"], obj["DEC-J2000"]]),
+                unit=(u.hourangle, u.deg),
+                frame="fk5",
+            )
 
             # assert np.abs(dec - ref.fk5.dec) < 0.0001 * u.deg
             # assert np.abs(ra - ref.fk5.ra) < 0.0001 * u.deg
 
     def test_antares_coordinate_system_benchmarks(self):
         # FIXME
-        antares_objects_data = ascii.read(data_path("astro/antares_coordinate_systems_benchmark.csv"))
+        antares_objects_data = ascii.read(
+            data_path("astro/antares_coordinate_systems_benchmark.csv")
+        )
         for obj in antares_objects_data:
             print(obj)
             time = Time(" ".join([obj["date"], obj["time"]]))
