@@ -48,7 +48,7 @@ class TestCoord(TestCase):
 class TestCoordRandom(TestCase):
     def test_sun(self):
         date = random_date(n=100)
-        sun = sun_local(date)
+        sun = sun_local(date, loc="orca")
 
 
 class TestConvergenceAngle(TestCase):
