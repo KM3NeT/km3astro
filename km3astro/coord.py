@@ -126,7 +126,7 @@ def source_to_neutrino_direction(azimuth, zenith, radian=True):
     return phi, theta
 
 
-def get_location(location="orca"):
+def get_location(location):
     try:
         loc = LOCATIONS[location]
     except KeyError:
@@ -150,7 +150,7 @@ def Moon(time):
     return get_moon(time)
 
 
-def local_frame(time, location="orca"):
+def local_frame(time, location):
     """Get the (horizontal) coordinate frame of your detector."""
     if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
@@ -177,7 +177,7 @@ def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
     return event
 
 
-def sun_local(time, loc="orca"):
+def sun_local(time, loc):
     """Sun position in local coordinates."""
     frame = local_frame(time, location=loc)
     sun = Sun(time)
@@ -185,7 +185,7 @@ def sun_local(time, loc="orca"):
     return sun_local
 
 
-def moon_local(time, loc="orca"):
+def moon_local(time, loc):
     """Moon position in local coordinates."""
     frame = local_frame(time, location=loc)
     moon = Moon(time)
@@ -193,7 +193,7 @@ def moon_local(time, loc="orca"):
     return moon_local
 
 
-def gc_in_local(time, loc="orca"):
+def gc_in_local(time, loc):
     """Galactic center position in local coordinates."""
     frame = local_frame(time, location=loc)
     gc = GALACTIC_CENTER
@@ -210,7 +210,7 @@ def orca_gc_dist(azimuth, time, zenith, frame="detector"):
         valid are 'detector', 'galactic', 'icrs', 'gcrs'
     """
     evt = local_event(azimuth, time, zenith)
-    galcen = gc_in_local(time, loc="orca")
+    galcen = gc_in_local(time, loc)
     if frame == "detector":
         pass
     elif frame in ("galactic", "icrs", "gcrs"):
@@ -222,7 +222,7 @@ def orca_gc_dist(azimuth, time, zenith, frame="detector"):
 def orca_sun_dist(azimuth, time, zenith):
     """Return distance of event to sun, in detector coordinates."""
     evt = local_event(azimuth, time, zenith)
-    sun = sun_local(time, loc="orca")
+    sun = sun_local(time, loc)
     dist = evt.separation(sun).radian
     return dist
 
@@ -246,7 +246,7 @@ def sun_dist_random(zenith):
 
 
 class Event(object):
-    def __init__(self, zenith, azimuth, time, location="orca"):
+    def __init__(self, zenith, azimuth, time, location):
         self.zenith = zenith
         self.azimuth = azimuth
         self.time = time
