@@ -67,6 +67,7 @@ class TestUTMStuff(TestCase):
 class TestAntaresBenchmark(TestCase):
     def setUp(self):
         self.tol = 0.01 * u.deg
+        self.gal_tol = 0.02 * u.deg
 
     def test_antares_objects(self):
         # FIXME
@@ -131,5 +132,6 @@ class TestAntaresBenchmark(TestCase):
             assert np.abs(obj["DEC-J2000"] * u.deg - event.fk5.dec) < self.tol
             assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < self.tol
 
-            # assert np.abs(obj["gal_lat"] * u.deg - event.galactic.b) < self.tol * u.deg
-            # assert np.abs(obj["gal_lon"] * u.deg - event.galactic.l) < self.tol * u.deg
+            print(obj["gal_lat"], event.galactic.b.deg[0])
+            assert np.abs(obj["gal_lat"] - event.galactic.b.deg[0]) * u.deg < self.gal_tol
+            assert np.abs(obj["gal_lon"] - event.galactic.l.deg[0])  * u.deg< self.gal_tol
