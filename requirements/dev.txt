@@ -1,5 +1,5 @@
 black
-km3net-testdata
+km3net-testdata>=0.2.14
 mock
 numpydoc
 pillow
