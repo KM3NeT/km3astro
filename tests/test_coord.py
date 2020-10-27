@@ -105,7 +105,6 @@ class TestAntaresBenchmark(TestCase):
             # assert np.abs(ra - ref.fk5.ra) < 0.0001 * u.deg
 
     def test_antares_coordinate_system_benchmarks(self):
-        # FIXME
         antares_objects_data = ascii.read(
             data_path("astro/antares_coordinate_systems_benchmark.csv")
         )
