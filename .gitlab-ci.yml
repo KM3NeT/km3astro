@@ -20,7 +20,7 @@ cache:
   paths:
     - .cache/pip
     - venv/
-  # key: "$CI_COMMIT_REF_SLUG"
+  key: "$CI_COMMIT_REF_SLUG"
 
 stages:
   - test
@@ -31,10 +31,11 @@ stages:
 
 .virtualenv_template: &virtualenv_definition |
   python -V
-  pip install -U pip setuptools wheel
-  test -d venv || python3 -m venv venv
+  pip install -U pip setuptools wheel virtualenv
+  virtualenv venv
   source venv/bin/activate
   make install-dev
+  pip freeze
 
 .junit_template: &junit_definition
     artifacts:
