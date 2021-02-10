@@ -26,7 +26,7 @@ stages:
   - test
   - coverage
   - doc
-  - docker
+  # - docker
   - release
 
 .virtualenv_template: &virtualenv_definition |
@@ -113,18 +113,18 @@ pages:
         - tags
         - master
 
-docker:
-  image: docker:stable
-  services:
-    - docker:dind
-  stage: docker
-  script:
-    - docker build --pull -t $CONTAINER_TEST_IMAGE .
-    - docker push $CONTAINER_TEST_IMAGE
-  tags:
-    - docker
-  only:
-    - tags
+# docker:
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   stage: docker
+#   script:
+#     - docker build --pull -t $CONTAINER_TEST_IMAGE .
+#     - docker push $CONTAINER_TEST_IMAGE
+#   tags:
+#     - docker
+#   only:
+#     - tags
 
 pypi:
     image: docker.km3net.de/base/python:3
@@ -138,18 +138,18 @@ pypi:
     only:
         - tags
 
-release-image:
-  image: docker:stable
-  services:
-    - docker:dind
-  stage: release
-  script:
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_LATEST_IMAGE
-    - docker push $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_LATEST_IMAGE
-  tags:
-    - docker
-  only:
-    - tags
+# release-image:
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   stage: release
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_LATEST_IMAGE
+#     - docker push $CONTAINER_RELEASE_IMAGE
+#     - docker push $CONTAINER_LATEST_IMAGE
+#   tags:
+#     - docker
+#   only:
+#     - tags
