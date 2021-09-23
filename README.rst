@@ -7,7 +7,7 @@ km3astro
 .. image:: https://git.km3net.de/km3py/km3astro/badges/master/coverage.svg
     :target: https://km3py.pages.km3net.de/km3astro/coverage
 
-.. image:: https://git.km3net.de/templates/python-project/-/commit/f093d1b738668fd5f38b7ca21950ba7ec7222188
+.. image:: https://git.km3net.de/examples/km3badges/-/raw/master/docs-latest-brightgreen.svg
     :target: https://km3py.pages.km3net.de/km3astro
 
 About
