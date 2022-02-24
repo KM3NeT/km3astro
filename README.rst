@@ -22,6 +22,15 @@ This is developed on python >=3.5. Lower versions (especially py2)
 might or might not work. Use ``pip`` to install the latest
 version::
 
+  pip install km3astro
+
+
+Install the latest development version
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get the latest and greatest stable development version, use ``pip``
+and the URL to the repository::
+
   pip install git+http://git.km3net.de/km3py/km3astro.git
 
 or just clone the git repository and install via ``pip install .``
