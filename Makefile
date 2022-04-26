@@ -5,11 +5,11 @@ default: build
 all: install
 
 install:
-	python3.10 -m pip install .
+	python3 -m pip install .
 
 install-dev:
-	python3.10 -m pip install -e ".[dev]"
-	python3.10 -m pip install -e ".[extras]"
+	python3 -m pip install -e ".[dev]"
+	python3 -m pip install -e ".[extras]"
 
 clean:
 	python setup.py clean --all
