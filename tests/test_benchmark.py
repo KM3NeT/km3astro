@@ -267,18 +267,18 @@ def main():
    
     #coordinate system benchmark
     
-    test_angle_separation(to_print = True)
-    #test_angle_separation(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
-    #test_angle_separation(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
+    test_angle_separation(to_print = False)
+    test_angle_separation(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
+    test_angle_separation(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
 
     #astro object benchmark
-    #test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"), "antares", "antares")
-    #test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca")
-    #test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"), "orca", "orca")
+    test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"), "antares", "antares")
+    test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca")
+    test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"), "orca", "orca")
     
     
     #moon sun postion benchmark
-    #test_angle_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
+    test_angle_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
     
     #need new benchmark table:
     #test_angle_separation(data_path("astro/ARCA_moon_sun_position_benchmark.csv"), "arca", "arca")
