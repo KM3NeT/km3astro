@@ -30,7 +30,11 @@ from km3astro.constants import (
 from astropy.coordinates import BaseCoordinateFrame
 import astropy.coordinates.representation as rep
 from astropy.coordinates import RepresentationMapping
-from astropy.coordinates.attributes import TimeAttribute, EarthLocationAttribute, QuantityAttribute
+from astropy.coordinates.attributes import (
+    TimeAttribute,
+    EarthLocationAttribute,
+    QuantityAttribute,
+)
 from astropy.coordinates import TransformGraph, frame_transform_graph, FunctionTransform
 
 
@@ -51,6 +55,7 @@ LOCATIONS = {
         height=antares_height,
     ),
 }
+
 
 def get_location(location):
     try:
@@ -148,7 +153,7 @@ def longitude_of_central_meridian(utmzone):
 class ParticleFrame(BaseCoordinateFrame):
     default_representation = rep.PhysicsSphericalRepresentation
 
-    #Specify frame attributes required to fully specify the frame
+    # Specify frame attributes required to fully specify the frame
     obstime = TimeAttribute(default=None)
     location = EarthLocationAttribute(default=get_location("arca"))
 
@@ -156,10 +161,12 @@ class ParticleFrame(BaseCoordinateFrame):
 class UTM(BaseCoordinateFrame):
 
     default_representation = rep.PhysicsSphericalRepresentation
-    
+
     frame_specific_representation_info = {
-        rep.PhysicsSphericalRepresentation: [RepresentationMapping('phi', 'azimuth'),
-                                    RepresentationMapping('theta', 'zenith')]
+        rep.PhysicsSphericalRepresentation: [
+            RepresentationMapping("phi", "azimuth"),
+            RepresentationMapping("theta", "zenith"),
+        ]
     }
 
     obstime = TimeAttribute(default=None)
@@ -167,10 +174,10 @@ class UTM(BaseCoordinateFrame):
 
     @property
     def alt_utm(self):
-        """ Altitude in UTM """
-        return Angle(np.pi/2 - self.zenith.rad, u.rad)
+        """Altitude in UTM"""
+        return Angle(np.pi / 2 - self.zenith.rad, u.rad)
 
-    
+
 @frame_transform_graph.transform(FunctionTransform, ParticleFrame, AltAz)
 def ParticleFrame_to_AltAz(ParticleFrame_, altaz):
 
@@ -179,14 +186,17 @@ def ParticleFrame_to_AltAz(ParticleFrame_, altaz):
     loc = ParticleFrame_.location
     time = ParticleFrame_.obstime
 
-    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
+    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit=u.radian)
 
     altitude = theta - np.pi / 2
     Corrected_azimuth = (np.pi / 2 - phi + np.pi + conv_angle.rad) % (2 * np.pi)
 
-    altaz = AltAz(alt = altitude *rad, az = Corrected_azimuth *rad, obstime=time, location=loc)
+    altaz = AltAz(
+        alt=altitude * rad, az=Corrected_azimuth * rad, obstime=time, location=loc
+    )
 
     return altaz
+
 
 @frame_transform_graph.transform(FunctionTransform, AltAz, ParticleFrame)
 def AltAz_to_ParticleFrame(altaz_, particleframe_):
@@ -195,20 +205,26 @@ def AltAz_to_ParticleFrame(altaz_, particleframe_):
     az = altaz_.az.rad
     loc = altaz_.location
     time = altaz_.obstime
-    r = u.Quantity(100, u.m) # Warning dummy r value! For SphericalRepresentation to PhysicsSphericalRepresentation conversion
-    
-    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
+    r = u.Quantity(
+        100, u.m
+    )  # Warning dummy r value! For SphericalRepresentation to PhysicsSphericalRepresentation conversion
 
-    phi = np.pi/2 + np.pi + conv_angle.rad - az
-    
-    theta = alt + np.pi/2
+    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit=u.radian)
 
-    particleframe_ = ParticleFrame(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
+    phi = np.pi / 2 + np.pi + conv_angle.rad - az
+
+    theta = alt + np.pi / 2
+
+    particleframe_ = ParticleFrame(
+        phi=phi * rad, theta=theta * rad, obstime=time, location=loc, r=r
+    )
 
     return particleframe_
 
-#UTM: X = Easting, Y = Northing with  Northing = North + conv_angle
-#Altaz: X = North Y = East  
+
+# UTM: X = Easting, Y = Northing with  Northing = North + conv_angle
+# Altaz: X = North Y = East
+
 
 @frame_transform_graph.transform(FunctionTransform, UTM, AltAz)
 def UTM_to_AltAz(UTM_, altaz):
@@ -219,14 +235,17 @@ def UTM_to_AltAz(UTM_, altaz):
     loc = UTM_.location
     time = UTM_.obstime
 
-    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
+    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit=u.radian)
 
     altitude = np.pi / 2 - ze
     Corrected_azimuth = (np.pi / 2 - az + conv_angle.rad) % (2 * np.pi)
 
-    altaz = AltAz(alt = altitude *rad, az = Corrected_azimuth *rad, obstime=time, location=loc)
+    altaz = AltAz(
+        alt=altitude * rad, az=Corrected_azimuth * rad, obstime=time, location=loc
+    )
 
     return altaz
+
 
 @frame_transform_graph.transform(FunctionTransform, AltAz, UTM)
 def AltAz_to_UTM(altaz_, UTM_):
@@ -236,33 +255,39 @@ def AltAz_to_UTM(altaz_, UTM_):
 
     loc = altaz_.location
     time = altaz_.obstime
-    r = u.Quantity(100, u.m) # Warning dummy r value! For SphericalRepresentation to PhysicsSphericalRepresentation.
-    
-    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
+    r = u.Quantity(
+        100, u.m
+    )  # Warning dummy r value! For SphericalRepresentation to PhysicsSphericalRepresentation.
 
-    az = 5*np.pi/2 + conv_angle.rad - caz
-    az = az %(2*np.pi)
-    ze = np.pi/2 - alt
+    conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit=u.radian)
 
-    UTM_ = UTM(azimuth = az *rad, zenith = ze *rad, obstime = time, location = loc, r = r)
+    az = 5 * np.pi / 2 + conv_angle.rad - caz
+    az = az % (2 * np.pi)
+    ze = np.pi / 2 - alt
+
+    UTM_ = UTM(azimuth=az * rad, zenith=ze * rad, obstime=time, location=loc, r=r)
     return UTM_
+
 
 @frame_transform_graph.transform(FunctionTransform, UTM, ParticleFrame)
 def UTM_to_ParticleFrame(UTM_, particleframe):
-    
+
     phi = UTM_.azimuth.rad - np.pi
     theta = np.pi - UTM_.zenith.rad
     loc = UTM_.location
     time = UTM_.obstime
     r = UTM_.r
 
-    particleframe = ParticleFrame(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
+    particleframe = ParticleFrame(
+        phi=phi * rad, theta=theta * rad, obstime=time, location=loc, r=r
+    )
 
     return particleframe
 
+
 @frame_transform_graph.transform(FunctionTransform, ParticleFrame, UTM)
 def ParticleFrame_to_UTM(particleframe, UTM_):
-    
+
     az = particleframe.phi.rad + np.pi
     ze = np.pi - particleframe.theta.rad
 
@@ -270,6 +295,6 @@ def ParticleFrame_to_UTM(particleframe, UTM_):
     time = particleframe.obstime
     r = particleframe.r
 
-    UTM_ = UTM(azimuth = az *rad, zenith = ze *rad, obstime = time, location = loc, r = r)
+    UTM_ = UTM(azimuth=az * rad, zenith=ze * rad, obstime=time, location=loc, r=r)
 
     return UTM_

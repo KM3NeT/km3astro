@@ -132,5 +132,9 @@ class TestAntaresBenchmark(TestCase):
             assert np.abs(obj["RA-J2000"] * u.deg - event.fk5.ra) < self.tol
 
             print(obj["gal_lat"], event.galactic.b.deg[0])
-            assert np.abs(obj["gal_lat"] - event.galactic.b.deg[0]) * u.deg < self.gal_tol
-            assert np.abs(obj["gal_lon"] - event.galactic.l.deg[0])  * u.deg< self.gal_tol
+            assert (
+                np.abs(obj["gal_lat"] - event.galactic.b.deg[0]) * u.deg < self.gal_tol
+            )
+            assert (
+                np.abs(obj["gal_lon"] - event.galactic.l.deg[0]) * u.deg < self.gal_tol
+            )
