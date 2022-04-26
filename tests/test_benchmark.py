@@ -197,8 +197,8 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
         table_gal_to_utm = transform_to_new_frame(table_read, "galactic", "UTM", detector_, detector_to_)
 
     #Start the Angle separation calculation
-    print("Checking Phi/Theta")
     
+    #Checking Phi/Theta
     if set(['phi','theta']).issubset(table_read.columns):
         
         if set(['azimuth','zenith']).issubset(table_read.columns):
@@ -248,7 +248,7 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
             if max_ > angle_treshold:
                 raise Exception("Error: Maximum angle separation = " + str(max_) + " > " + str(angle_treshold))
 
-    print("\nChecking Az/Ze")
+    #Checking Az/Ze
     if set(['azimuth','zenith']).issubset(table_read.columns):
 
         if set(['phi','theta']).issubset(table_read.columns):
@@ -300,7 +300,7 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
                 raise Exception("Error: Maximum angle separation = " + str(max_) + " > " + str(angle_treshold))
 
 
-    print("\nChecking RA/DEC")
+    #Checking RA/DEC
     if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
 
         if set(['phi','theta']).issubset(table_read.columns):
@@ -349,7 +349,7 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
             if max_ > angle_treshold:
                 raise Exception("Error: Maximum angle separation = " + str(max_) + " > " + str(angle_treshold))
 
-    print("\nChecking GAL L/B")
+    #Checking GAL L/B
     if set(['gal_lon','gal_lat']).issubset(table_read.columns):
 
         if set(['phi','theta']).issubset(table_read.columns):
@@ -400,155 +400,6 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
     print("... End of Angle Separation Test")
     return 0
 
-def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares"):
-
-    print("Starting Calculated value Separation Test...")
-    if file0 == "":
-        file0 = "/home/htedjditi/work/test_astro/antares_coordinate_systems_benchmark.csv"
-
-    print("Read " + file0 + " file. \n")
-
-    table_read = reader_from_file(file0)
-    print(table_read)
-
-    atol_value = 0.021
-
-    if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-        true_ra = table_read['RA-J2000']
-        if type(true_ra[0]) == str:
-            true_ra = Angle(true_ra, unit = 'hourangle')
-        elif type(true_ra[0]) == np.float64:
-            true_ra = Angle(true_ra, unit = u.deg)
-
-        true_dec = table_read['DEC-J2000']
-        if type(true_dec[0]) == str:
-            true_dec = Angle(true_dec, unit = u.deg)
-        elif type(true_dec[0]) == np.float64:
-            true_dec = Angle(true_dec, unit = u.deg)
-        
-    print("Asserting from Phi, theta")
-    if set(['phi','theta']).issubset(table_read.columns):
-
-        table_loc_to_utm = transform_to_new_frame(table_read, "ParticleFrame", "UTM", detector_, detector_to_)
-        table_loc_to_eq = transform_to_new_frame(table_read, "ParticleFrame", "equatorial", detector_, detector_to_)
-        table_loc_to_gal = transform_to_new_frame(table_read, "ParticleFrame", "galactic", detector_, detector_to_)
-
-        phi_, theta_ = zip(*table_loc_to_utm.apply( lambda x: get_phi_theta(x.SkyCoord_base, detector_to_) , axis = 1))
-
-        az_, ze_ = zip(*table_loc_to_utm.apply( lambda x: get_az_zenith(x.SkyCoord_new, detector_to_) , axis = 1))
-        
-        ra_, dec_ = zip(*table_loc_to_eq.apply( lambda x: get_ra_dec(x.SkyCoord_new) , axis = 1))     
-        l_, b_ = zip(*table_loc_to_gal.apply( lambda x: get_l_b(x.SkyCoord_new) , axis = 1))     
-
-        if set(['phi','theta']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['phi'],phi_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['theta'],theta_,rtol=0,atol=atol_value,verbose=True)
-
-        if set(['azimuth','zenith']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['azimuth'],az_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['zenith'],ze_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-            np.testing.assert_allclose(true_ra.deg,ra_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(true_dec.deg,dec_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['gal_lon','gal_lat']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['gal_lon'],l_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['gal_lat'],b_,rtol=0,atol=atol_value,verbose=True)
-
-    print("Asserting from Az, Zenith")
-    if set(['azimuth','zenith']).issubset(table_read.columns):
-
-        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "ParticleFrame", detector_, detector_to_)
-        table_utm_to_eq = transform_to_new_frame(table_read, "UTM", "equatorial", detector_, detector_to_)
-        table_utm_to_gal = transform_to_new_frame(table_read, "UTM", "galactic", detector_, detector_to_)
-
-        az_, ze_ = zip(*table_utm_to_loc.apply( lambda x: get_az_zenith(x.SkyCoord_base, detector_to_) , axis = 1))
-
-        phi_, theta_ = zip(*table_utm_to_loc.apply( lambda x: get_phi_theta(x.SkyCoord_new, detector_to_) , axis = 1))
-        
-        ra_, dec_ = zip(*table_utm_to_eq.apply( lambda x: get_ra_dec(x.SkyCoord_new) , axis = 1))     
-        l_, b_ = zip(*table_utm_to_gal.apply( lambda x: get_l_b(x.SkyCoord_new) , axis = 1))     
-
-        if set(['phi','theta']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['phi'],phi_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['theta'],theta_,rtol=0,atol=atol_value,verbose=True)
-
-        if set(['azimuth','zenith']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['azimuth'],az_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['zenith'],ze_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-            np.testing.assert_allclose(true_ra.deg,ra_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(true_dec.deg,dec_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['gal_lon','gal_lat']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['gal_lon'],l_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['gal_lat'],b_,rtol=0,atol=atol_value,verbose=True)
-
-    print("Asserting from ra, dec")
-    if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-
-        table_eq_to_utm = transform_to_new_frame(table_read, "equatorial", "UTM", detector_, detector_to_)
-        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "ParticleFrame", detector_, detector_to_)
-        table_eq_to_gal = transform_to_new_frame(table_read, "equatorial", "galactic", detector_, detector_to_)
-
-        ra_, dec_ = zip(*table_eq_to_utm.apply( lambda x: get_ra_dec(x.SkyCoord_base) , axis = 1))     
-        
-        phi_, theta_ = zip(*table_eq_to_loc.apply( lambda x: get_phi_theta(x.SkyCoord_new, detector_to_) , axis = 1))
-        az_, ze_ = zip(*table_eq_to_utm.apply( lambda x: get_az_zenith(x.SkyCoord_new, detector_to_) , axis = 1))
-        l_, b_ = zip(*table_eq_to_gal.apply( lambda x: get_l_b(x.SkyCoord_new) , axis = 1))     
-
-        if set(['phi','theta']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['phi'],phi_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['theta'],theta_,rtol=0,atol=atol_value,verbose=True)
-
-        if set(['azimuth','zenith']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['azimuth'],az_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['zenith'],ze_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-            np.testing.assert_allclose(true_ra.deg,ra_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(true_dec.deg,dec_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['gal_lon','gal_lat']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['gal_lon'],l_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['gal_lat'],b_,rtol=0,atol=atol_value,verbose=True)
-
-    print("Asserting from l, b")
-    if set(['gal_lon','gal_lat']).issubset(table_read.columns):
-
-        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "ParticleFrame", detector_, detector_to_)
-        table_gal_to_eq = transform_to_new_frame(table_read, "galactic", "equatorial", detector_, detector_to_)
-        table_gal_to_utm = transform_to_new_frame(table_read, "galactic", "UTM", detector_, detector_to_)
-
-        l_, b_ = zip(*table_gal_to_utm.apply( lambda x: get_l_b(x.SkyCoord_base) , axis = 1))     
-                
-        phi_, theta_ = zip(*table_utm_to_loc.apply( lambda x: get_phi_theta(x.SkyCoord_new, detector_to_) , axis = 1))
-        az_, ze_ = zip(*table_eq_to_utm.apply( lambda x: get_az_zenith(x.SkyCoord_new, detector_to_) , axis = 1))
-
-        ra_, dec_ = zip(*table_utm_to_eq.apply( lambda x: get_ra_dec(x.SkyCoord_new) , axis = 1))
-
-        if set(['phi','theta']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['phi'],phi_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['theta'],theta_,rtol=0,atol=atol_value,verbose=True)
-
-        if set(['azimuth','zenith']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['azimuth'],az_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['zenith'],ze_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
-            np.testing.assert_allclose(true_ra.deg,ra_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(true_dec.deg,dec_,rtol=0,atol=atol_value,verbose=True)
-        
-        if set(['gal_lon','gal_lat']).issubset(table_read.columns):
-            np.testing.assert_allclose(table_read['gal_lon'],l_,rtol=0,atol=atol_value,verbose=True)
-            np.testing.assert_allclose(table_read['gal_lat'],b_,rtol=0,atol=atol_value,verbose=True)
-
-
-    print("... End of Calculated Value Separation Test")
-    return 0
-
 def main():
     #test_coordinate_transformator()
     #test_coordinate_transformator(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
@@ -571,40 +422,12 @@ def main():
     
     
     #moon sun postion benchmark
-    #ok#test_angle_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
-    #no#
+    #test_angle_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
+    
+    #need new benchmark table:
     #test_angle_separation(data_path("astro/ARCA_moon_sun_position_benchmark.csv"), "arca", "arca")
-    #no#test_angle_separation(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca")
+    #test_angle_separation(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca")
     
-
-    #test_separation value per value
-    
-    #Working#
-
-    #astro_object
-    #test_separation(data_path("astro/antares_astro_objects_benchmark.csv"), "antares", "antares")
-    #test_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca")
-    #test_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"), "orca", "orca")
-
-    #moon_sun_position
-    #test_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
-
-    #NotWorking#
-    
-    #coordinate benchmark
-
-    #2 degree max
-    #test_separation()
-    #0.9 degree max"
-    #test_separation(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
-    #0.95 degree max
-    #test_separation(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
-
-    #sun moon position
-    #totally wrong for moon
-    #test_separation(data_path("astro/ARCA_moon_sun_position_benchmark.csv"), "arca", "arca")
-    #totally wrong for moon
-    #test_separation(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca")
 
     
 if __name__ == "__main__":
