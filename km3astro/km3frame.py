@@ -2,6 +2,8 @@ import numpy as np
 
 from astropy.coordinates import ICRS, Galactic, FK4, FK5  # Low-level frames
 import astropy.units as u
+from astropy.units import rad, deg, hourangle  # noqa
+
 from astropy.coordinates import Angle
 
 from astropy.coordinates import (
