@@ -164,6 +164,12 @@ class UTM(BaseCoordinateFrame):
 
     obstime = TimeAttribute(default=None)
     location = EarthLocationAttribute(default=get_location("arca"))
+
+    @property
+    def alt_utm(self):
+        """ Altitude in UTM """
+        return Angle(np.pi/2 - self.zenith.rad, u.rad)
+
     
 @frame_transform_graph.transform(FunctionTransform, ParticleFrame, AltAz)
 def ParticleFrame_to_AltAz(ParticleFrame_, altaz):
@@ -201,6 +207,8 @@ def AltAz_to_ParticleFrame(altaz_, particleframe_):
 
     return particleframe_
 
+#UTM: X = Easting, Y = Northing with  Northing = North + conv_angle
+#Altaz: X = North Y = East  
 
 @frame_transform_graph.transform(FunctionTransform, UTM, AltAz)
 def UTM_to_AltAz(UTM_, altaz):
@@ -214,7 +222,7 @@ def UTM_to_AltAz(UTM_, altaz):
     conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
 
     altitude = np.pi / 2 - ze
-    Corrected_azimuth = (np.pi / 2 - az + 2*np.pi + conv_angle.rad) % (2 * np.pi)
+    Corrected_azimuth = (np.pi / 2 - az + conv_angle.rad) % (2 * np.pi)
 
     altaz = AltAz(alt = altitude *rad, az = Corrected_azimuth *rad, obstime=time, location=loc)
 
