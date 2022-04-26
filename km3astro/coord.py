@@ -46,7 +46,7 @@ import numpy as np
 import pandas as pd
 
 #also import get_location and convergence_angle that has been shifted to km3frame
-from km3astro.km3frame import *
+from km3astro.frame import *
 
 from km3astro.constants import (
     arca_longitude,
