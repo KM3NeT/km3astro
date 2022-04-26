@@ -1,13 +1,8 @@
 import numpy as np
 import pandas as pd
 
+from km3net_testdata import data_path
 from km3astro.coord import *
-
-def reader_from_file(file):
-
-    table = pd.read_csv(file,comment='#')
-
-    return table
 
 def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to_ = "antares", type_name = "coordinate_systems"):
 
@@ -15,7 +10,7 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
     #take a benchmark and create new benchmark table
 
     if file0 == "":
-        file0 = "/home/htedjditi/work/test_astro/antares_coordinate_systems_benchmark.csv"
+        file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
 
     table_read = reader_from_file(file0)
 
@@ -147,6 +142,7 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
     print("... End of Test Coordinate Transformator")
 
     return 0
+
 def test_Skycoord_separation(SC_true, SC_check):
     
     sep = SC_true.separation(SC_check)
@@ -166,7 +162,7 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
 
     print("Starting Angle Separation Test...")
     if file0 == "":
-        file0 = "/home/htedjditi/work/test_astro/antares_coordinate_systems_benchmark.csv"
+        file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
 
     print("Read " + file0 + " file. \n")
 
@@ -553,47 +549,32 @@ def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares")
     print("... End of Calculated Value Separation Test")
     return 0
 
-def get_SkyCoord_table(file0 = "", frame_ = "Detector", frame_to = "galactic", dectector = "arca", detector_to = "arca"):
-
-    #may need to be based on km3net-test-data
-    if file0 == "":
-        file0 = "/home/htedjditi/work/test_astro/antares_coordinate_systems_benchmark.csv"
-
-    table_read = reader_from_file(file0)
-
-    print("Read " + file0 + " file. \n")
-    print(table_read)
-
-    table_ = transform_to_new_frame(table_read, frame, frame_to, detector, detector_to)
-    
-    return table_
-
 def main():
     #test_coordinate_transformator()
-    #test_coordinate_transformator("/home/htedjditi/work/test_astro/ARCA_coordinate_systems_benchmark.csv", "arca", "arca")
-    #test_coordinate_transformator("/home/htedjditi/work/test_astro/ORCA_coordinate_systems_benchmark.csv", "orca", "orca")
-    #test_coordinate_transformator("/home/htedjditi/work/test_astro/ARCA_astro_objects_benchmark.csv", "arca", "arca", type_name = "astro_objects")
-    #test_coordinate_transformator("/home/htedjditi/work/test_astro/ORCA_moon_sun_position_benchmark.csv", "orca", "orca", type_name = "moon_sun_position")
+    #test_coordinate_transformator(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
+    #test_coordinate_transformator(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
+    #test_coordinate_transformator(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca", type_name = "astro_objects")
+    #test_coordinate_transformator(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca", type_name = "moon_sun_position")
 
     #testing_angle_separation
     
     #coordinate system benchmark
     #ok#
     test_angle_separation(to_print = True)
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/ARCA_coordinate_systems_benchmark.csv", "arca", "arca")
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/ORCA_coordinate_systems_benchmark.csv", "orca", "orca")
+    #ok#test_angle_separation(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
+    #ok#test_angle_separation(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
 
     #astro object benchmark
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/antares_astro_objects_benchmark.csv", "antares", "antares")
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/ARCA_astro_objects_benchmark.csv", "arca", "arca")
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/ORCA_astro_objects_benchmark.csv", "orca", "orca")
+    #ok#test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"), "antares", "antares")
+    #ok#test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca")
+    #ok#test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"), "orca", "orca")
     
     
     #moon sun postion benchmark
-    #ok#test_angle_separation("/home/htedjditi/work/test_astro/antares_moon_sun_position_benchmark.csv", "antares", "antares")
+    #ok#test_angle_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
     #no#
-    test_angle_separation("/home/htedjditi/work/test_astro/ARCA_moon_sun_position_benchmark.csv", "arca", "arca")
-    #no#test_angle_separation("/home/htedjditi/work/test_astro/ORCA_moon_sun_position_benchmark.csv", "orca", "orca")
+    #test_angle_separation(data_path("astro/ARCA_moon_sun_position_benchmark.csv"), "arca", "arca")
+    #no#test_angle_separation(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca")
     
 
     #test_separation value per value
@@ -601,12 +582,12 @@ def main():
     #Working#
 
     #astro_object
-    #test_separation("/home/htedjditi/work/test_astro/antares_astro_objects_benchmark.csv", "antares", "antares")
-    #test_separation("/home/htedjditi/work/test_astro/ARCA_astro_objects_benchmark.csv", "arca", "arca")
-    #test_separation("/home/htedjditi/work/test_astro/ORCA_astro_objects_benchmark.csv", "orca", "orca")
+    #test_separation(data_path("astro/antares_astro_objects_benchmark.csv"), "antares", "antares")
+    #test_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"), "arca", "arca")
+    #test_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"), "orca", "orca")
 
     #moon_sun_position
-    #test_separation("/home/htedjditi/work/test_astro/antares_moon_sun_position_benchmark.csv", "antares", "antares")
+    #test_separation(data_path("astro/antares_moon_sun_position_benchmark.csv"), "antares", "antares")
 
     #NotWorking#
     
@@ -615,15 +596,15 @@ def main():
     #2 degree max
     #test_separation()
     #0.9 degree max"
-    #test_separation("/home/htedjditi/work/test_astro/ARCA_coordinate_systems_benchmark.csv", "arca", "arca")
+    #test_separation(data_path("astro/ARCA_coordinate_systems_benchmark.csv"), "arca", "arca")
     #0.95 degree max
-    #test_separation("/home/htedjditi/work/test_astro/ORCA_coordinate_systems_benchmark.csv", "orca", "orca")
+    #test_separation(data_path("astro/ORCA_coordinate_systems_benchmark.csv"), "orca", "orca")
 
     #sun moon position
     #totally wrong for moon
-    #test_separation("/home/htedjditi/work/test_astro/ARCA_moon_sun_position_benchmark.csv", "arca", "arca")
+    #test_separation(data_path("astro/ARCA_moon_sun_position_benchmark.csv"), "arca", "arca")
     #totally wrong for moon
-    #test_separation("/home/htedjditi/work/test_astro/ORCA_moon_sun_position_benchmark.csv", "orca", "orca")
+    #test_separation(data_path("astro/ORCA_moon_sun_position_benchmark.csv"), "orca", "orca")
 
     
 if __name__ == "__main__":
