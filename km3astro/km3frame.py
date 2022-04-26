@@ -12,12 +12,25 @@ from astropy.coordinates import (
     Latitude,
 )
 
+from km3astro.constants import (
+    arca_longitude,
+    arca_latitude,
+    arca_height,
+    orca_longitude,
+    orca_latitude,
+    orca_height,
+    antares_longitude,
+    antares_latitude,
+    antares_height,
+)
+
 
 from astropy.coordinates import BaseCoordinateFrame
 import astropy.coordinates.representation as rep
 from astropy.coordinates import RepresentationMapping
 from astropy.coordinates.attributes import TimeAttribute, EarthLocationAttribute, QuantityAttribute
 from astropy.coordinates import TransformGraph, frame_transform_graph, FunctionTransform
+
 
 LOCATIONS = {
     "arca": EarthLocation.from_geodetic(
