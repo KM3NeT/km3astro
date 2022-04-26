@@ -243,11 +243,11 @@ class Event(object):
 
 def is_args_fine_for_frame(frame, *args):
 
-    if frame == "Detector" and len(args) != 6:
-        raise Exception("Only " + str(len(args)) + " given when 6 are needed: date, time, theta, phi, unit, detector ! for Detector")
+    if frame == "ParticleFrame" and len(args) != 6:
+        raise Exception("Only " + str(len(args)) + " given when 6 are needed: date, time, theta, phi, unit, particleframe ! for ParticleFrame")
 
     if frame == "UTM" and len(args) != 6:
-        raise Exception("Only " + str(len(args)) + " given when 6 are needed: date, time, azimuth, zenith, unit, detector ! for UTM")
+        raise Exception("Only " + str(len(args)) + " given when 6 are needed: date, time, azimuth, zenith, unit, particleframe ! for UTM")
 
     if frame == "equatorial" and len(args) != 4:
         raise Exception("Only " + str(len(args)) + " given when 4 are needed: date, time, ra, dec ! for Equatorial")
@@ -266,8 +266,8 @@ def build_event(Cframe,*args):
     time = args[0] + "T" + args[1]
     time = Time(time)
 
-    #Detector : date, time , theta, phi, unit, detector_name
-    if Cframe == "Detector":
+    #ParticleFrame : date, time , theta, phi, unit, detector_name
+    if Cframe == "ParticleFrame":
         
         theta = args[2]
         phi = args[3]
@@ -282,7 +282,7 @@ def build_event(Cframe,*args):
 
         loc = get_location(args[5])
         r = u.Quantity(100, u.m) #dummy r value ! Warning !
-        return SkyCoord( frame = Detector, phi = phi, theta = theta, location = loc, obstime = time, r=r)
+        return SkyCoord( frame = ParticleFrame, phi = phi, theta = theta, location = loc, obstime = time, r=r)
     
     #UTM : date, time, azimuth, zenith, unit, detector
     elif Cframe == "UTM":
@@ -347,9 +347,9 @@ def transform_to(Skycoord, frame_to, detector_to = "antares"):
     time = Skycoord.obstime
     loc = get_location(detector_to)
 
-    if frame_to == "Detector":
+    if frame_to == "ParticleFrame":
         
-        frame = Detector(obstime = time, location = loc)
+        frame = ParticleFrame(obstime = time, location = loc)
         return Skycoord.transform_to(frame)
 
     elif frame_to == "UTM":
@@ -373,7 +373,7 @@ def transform_to(Skycoord, frame_to, detector_to = "antares"):
 
 def transform_to_new_frame(table, frame_, frame_to, detector = "antares", detector_to = "antares"):
 
-    if frame_ == "Detector":
+    if frame_ == "ParticleFrame":
         list_evt = table.apply(lambda x: build_event(frame_, x.date, x.time, x.theta, x.phi, "deg", detector), axis=1, result_type='expand')
 
     if frame_ == "UTM":
@@ -431,12 +431,12 @@ def get_phi_theta(SC, detector_ = "antares", unit = "deg"):
     SC_copy = SC.copy()
     loc = get_location(detector_)
     
-    if SC.frame.name != "detector":
-        raise Exception("Wrong Frame: Expected 'detector' but got " + SC.frame.name)
+    if SC.frame.name != "particleframe":
+        raise Exception("Wrong Frame: Expected 'particleframe' but got " + SC.frame.name)
 
     
-    #if SC.frame.name != "detector":
-        #SC_copy = transform_to(SC, "Detector", detector_)
+    #if SC.frame.name != "particleframe":
+        #SC_copy = transform_to(SC, "ParticleFrame", detector_)
         
     phi = SC_copy.phi.rad
     theta = SC_copy.theta.rad
