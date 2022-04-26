@@ -145,7 +145,7 @@ def longitude_of_central_meridian(utmzone):
     return -np.pi + (utmzone - 1) * zone_width + zone_width / 2
 
 
-class Detector(BaseCoordinateFrame):
+class ParticleFrame(BaseCoordinateFrame):
     default_representation = rep.PhysicsSphericalRepresentation
 
     #Specify frame attributes required to fully specify the frame
@@ -165,13 +165,13 @@ class UTM(BaseCoordinateFrame):
     obstime = TimeAttribute(default=None)
     location = EarthLocationAttribute(default=get_location("arca"))
     
-@frame_transform_graph.transform(FunctionTransform, Detector, AltAz)
-def Detector_to_AltAz(Detector_, altaz):
+@frame_transform_graph.transform(FunctionTransform, ParticleFrame, AltAz)
+def ParticleFrame_to_AltAz(ParticleFrame_, altaz):
 
-    phi = Detector_.phi.rad
-    theta = Detector_.theta.rad
-    loc = Detector_.location
-    time = Detector_.obstime
+    phi = ParticleFrame_.phi.rad
+    theta = ParticleFrame_.theta.rad
+    loc = ParticleFrame_.location
+    time = ParticleFrame_.obstime
 
     conv_angle = Angle(convergence_angle(loc.lat.rad, loc.lon.rad), unit = u.radian)
 
@@ -182,8 +182,8 @@ def Detector_to_AltAz(Detector_, altaz):
 
     return altaz
 
-@frame_transform_graph.transform(FunctionTransform, AltAz, Detector)
-def AltAz_to_Detector(altaz_, detector_):
+@frame_transform_graph.transform(FunctionTransform, AltAz, ParticleFrame)
+def AltAz_to_ParticleFrame(altaz_, particleframe_):
 
     alt = altaz_.alt.rad
     az = altaz_.az.rad
@@ -197,9 +197,9 @@ def AltAz_to_Detector(altaz_, detector_):
     
     theta = alt + np.pi/2
 
-    detector_ = Detector(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
+    particleframe_ = ParticleFrame(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
 
-    return detector_
+    return particleframe_
 
 
 @frame_transform_graph.transform(FunctionTransform, UTM, AltAz)
@@ -239,8 +239,8 @@ def AltAz_to_UTM(altaz_, UTM_):
     UTM_ = UTM(azimuth = az *rad, zenith = ze *rad, obstime = time, location = loc, r = r)
     return UTM_
 
-@frame_transform_graph.transform(FunctionTransform, UTM, Detector)
-def UTM_to_Detector(UTM_, detector):
+@frame_transform_graph.transform(FunctionTransform, UTM, ParticleFrame)
+def UTM_to_ParticleFrame(UTM_, particleframe):
     
     phi = UTM_.azimuth.rad - np.pi
     theta = np.pi - UTM_.zenith.rad
@@ -248,19 +248,19 @@ def UTM_to_Detector(UTM_, detector):
     time = UTM_.obstime
     r = UTM_.r
 
-    detector = Detector(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
+    particleframe = ParticleFrame(phi = phi *rad, theta = theta *rad, obstime=time, location=loc, r = r)
 
-    return detector
+    return particleframe
 
-@frame_transform_graph.transform(FunctionTransform, Detector, UTM)
-def Detector_to_UTM(detector, UTM_):
+@frame_transform_graph.transform(FunctionTransform, ParticleFrame, UTM)
+def ParticleFrame_to_UTM(particleframe, UTM_):
     
-    az = detector.phi.rad + np.pi
-    ze = np.pi - detector.theta.rad
+    az = particleframe.phi.rad + np.pi
+    ze = np.pi - particleframe.theta.rad
 
-    loc = detector.location
-    time = detector.obstime
-    r = detector.r
+    loc = particleframe.location
+    time = particleframe.obstime
+    r = particleframe.r
 
     UTM_ = UTM(azimuth = az *rad, zenith = ze *rad, obstime = time, location = loc, r = r)
 

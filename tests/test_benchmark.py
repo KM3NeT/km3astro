@@ -28,9 +28,9 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
 
     if set(['phi','theta']).issubset(table_read.columns):
 
-        table_loc_to_utm = transform_to_new_frame(table_read, "Detector", "UTM", detector_, detector_to_)
-        table_loc_to_eq = transform_to_new_frame(table_read, "Detector", "equatorial", detector_, detector_to_)
-        table_loc_to_gal = transform_to_new_frame(table_read, "Detector", "galactic", detector_, detector_to_)
+        table_loc_to_utm = transform_to_new_frame(table_read, "ParticleFrame", "UTM", detector_, detector_to_)
+        table_loc_to_eq = transform_to_new_frame(table_read, "ParticleFrame", "equatorial", detector_, detector_to_)
+        table_loc_to_gal = transform_to_new_frame(table_read, "ParticleFrame", "galactic", detector_, detector_to_)
 
         phi_ = table_read['phi']
         theta_ = table_read['theta']
@@ -56,7 +56,7 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
 
     if set(['azimuth','zenith']).issubset(table_read.columns):
 
-        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "Detector", detector_, detector_to_)
+        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "ParticleFrame", detector_, detector_to_)
         table_utm_to_eq = transform_to_new_frame(table_read, "UTM", "equatorial", detector_, detector_to_)
         table_utm_to_gal = transform_to_new_frame(table_read, "UTM", "galactic", detector_, detector_to_)
 
@@ -85,7 +85,7 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
     if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
 
         table_eq_to_utm = transform_to_new_frame(table_read, "equatorial", "UTM", detector_, detector_to_)
-        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "Detector", detector_, detector_to_)
+        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "ParticleFrame", detector_, detector_to_)
         table_eq_to_gal = transform_to_new_frame(table_read, "equatorial", "galactic", detector_, detector_to_)
 
         ra_ = table_read['RA-J2000']
@@ -113,7 +113,7 @@ def test_coordinate_transformator(file0 = "", detector_ = "antares", detector_to
 
     if set(['gal_lon','gal_lat']).issubset(table_read.columns):
 
-        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "Detector", detector_, detector_to_)
+        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "ParticleFrame", detector_, detector_to_)
         table_gal_to_eq = transform_to_new_frame(table_read, "galactic", "equatorial", detector_, detector_to_)
         table_gal_to_utm = transform_to_new_frame(table_read, "galactic", "UTM", detector_, detector_to_)
 
@@ -174,25 +174,25 @@ def test_angle_separation(file0 = "", detector_ = "antares", detector_to_ = "ant
 
     if set(['phi','theta']).issubset(table_read.columns):
 
-        table_loc_to_utm = transform_to_new_frame(table_read, "Detector", "UTM", detector_, detector_to_)
-        table_loc_to_eq = transform_to_new_frame(table_read, "Detector", "equatorial", detector_, detector_to_)
-        table_loc_to_gal = transform_to_new_frame(table_read, "Detector", "galactic", detector_, detector_to_)
+        table_loc_to_utm = transform_to_new_frame(table_read, "ParticleFrame", "UTM", detector_, detector_to_)
+        table_loc_to_eq = transform_to_new_frame(table_read, "ParticleFrame", "equatorial", detector_, detector_to_)
+        table_loc_to_gal = transform_to_new_frame(table_read, "ParticleFrame", "galactic", detector_, detector_to_)
 
     if set(['azimuth','zenith']).issubset(table_read.columns):
 
-        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "Detector", detector_, detector_to_)
+        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "ParticleFrame", detector_, detector_to_)
         table_utm_to_eq = transform_to_new_frame(table_read, "UTM", "equatorial", detector_, detector_to_)
         table_utm_to_gal = transform_to_new_frame(table_read, "UTM", "galactic", detector_, detector_to_)
 
     if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
 
         table_eq_to_utm = transform_to_new_frame(table_read, "equatorial", "UTM", detector_, detector_to_)
-        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "Detector", detector_, detector_to_)
+        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "ParticleFrame", detector_, detector_to_)
         table_eq_to_gal = transform_to_new_frame(table_read, "equatorial", "galactic", detector_, detector_to_)
 
     if set(['gal_lon','gal_lat']).issubset(table_read.columns):
 
-        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "Detector", detector_, detector_to_)
+        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "ParticleFrame", detector_, detector_to_)
         table_gal_to_eq = transform_to_new_frame(table_read, "galactic", "equatorial", detector_, detector_to_)
         table_gal_to_utm = transform_to_new_frame(table_read, "galactic", "UTM", detector_, detector_to_)
 
@@ -429,9 +429,9 @@ def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares")
     print("Asserting from Phi, theta")
     if set(['phi','theta']).issubset(table_read.columns):
 
-        table_loc_to_utm = transform_to_new_frame(table_read, "Detector", "UTM", detector_, detector_to_)
-        table_loc_to_eq = transform_to_new_frame(table_read, "Detector", "equatorial", detector_, detector_to_)
-        table_loc_to_gal = transform_to_new_frame(table_read, "Detector", "galactic", detector_, detector_to_)
+        table_loc_to_utm = transform_to_new_frame(table_read, "ParticleFrame", "UTM", detector_, detector_to_)
+        table_loc_to_eq = transform_to_new_frame(table_read, "ParticleFrame", "equatorial", detector_, detector_to_)
+        table_loc_to_gal = transform_to_new_frame(table_read, "ParticleFrame", "galactic", detector_, detector_to_)
 
         phi_, theta_ = zip(*table_loc_to_utm.apply( lambda x: get_phi_theta(x.SkyCoord_base, detector_to_) , axis = 1))
 
@@ -459,7 +459,7 @@ def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares")
     print("Asserting from Az, Zenith")
     if set(['azimuth','zenith']).issubset(table_read.columns):
 
-        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "Detector", detector_, detector_to_)
+        table_utm_to_loc = transform_to_new_frame(table_read, "UTM", "ParticleFrame", detector_, detector_to_)
         table_utm_to_eq = transform_to_new_frame(table_read, "UTM", "equatorial", detector_, detector_to_)
         table_utm_to_gal = transform_to_new_frame(table_read, "UTM", "galactic", detector_, detector_to_)
 
@@ -490,7 +490,7 @@ def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares")
     if set(['RA-J2000','DEC-J2000']).issubset(table_read.columns):
 
         table_eq_to_utm = transform_to_new_frame(table_read, "equatorial", "UTM", detector_, detector_to_)
-        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "Detector", detector_, detector_to_)
+        table_eq_to_loc = transform_to_new_frame(table_read, "equatorial", "ParticleFrame", detector_, detector_to_)
         table_eq_to_gal = transform_to_new_frame(table_read, "equatorial", "galactic", detector_, detector_to_)
 
         ra_, dec_ = zip(*table_eq_to_utm.apply( lambda x: get_ra_dec(x.SkyCoord_base) , axis = 1))     
@@ -518,7 +518,7 @@ def test_separation(file0 = "", detector_ = "antares", detector_to_ = "antares")
     print("Asserting from l, b")
     if set(['gal_lon','gal_lat']).issubset(table_read.columns):
 
-        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "Detector", detector_, detector_to_)
+        table_gal_to_loc = transform_to_new_frame(table_read, "galactic", "ParticleFrame", detector_, detector_to_)
         table_gal_to_eq = transform_to_new_frame(table_read, "galactic", "equatorial", detector_, detector_to_)
         table_gal_to_utm = transform_to_new_frame(table_read, "galactic", "UTM", detector_, detector_to_)
 
