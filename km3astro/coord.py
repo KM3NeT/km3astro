@@ -389,7 +389,7 @@ def transform_to(Skycoord, frame_to, detector_to="antares"):
         return Skycoord.transform_to("galactic")
 
     else:
-        raise Exception("Wrong Frame to transform: " + frame_to + " is not valid")
+        raise ValueError("Wrong Frame to transform: " + frame_to + " is not valid")
         return -1
 
 
