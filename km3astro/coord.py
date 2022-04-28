@@ -260,7 +260,7 @@ def is_args_fine_for_frame(frame, *args):
         )
 
     if frame == "equatorial" and len(args) != 4:
-        raise Exception(
+        raise TypeError(
             "Only "
             + str(len(args))
             + " given when 4 are needed: date, time, ra, dec ! for Equatorial"
