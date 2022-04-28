@@ -352,7 +352,7 @@ def build_event(Cframe, *args):
         elif isinstance(ra, nb.Number):
             ra = Angle(ra, unit=u.deg)
 
-        if type(dec) == str:
+        if isinstance(dec, str):
             dec = Angle(dec, unit=u.deg)
         elif isinstance(dec, nb.Number):
             dec = Angle(dec, unit=u.deg)
