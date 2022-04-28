@@ -360,8 +360,8 @@ def build_event(Cframe, *args):
         return SkyCoord(frame=ICRS, ra=ra, dec=dec, obstime=time)
 
     else:
-        raise Exception("Error: Wrong Frame input:" + Cframe)
-        return -1
+        raise ValueError("Error: Wrong Frame input:" + Cframe)
+        return None
 
 
 def transform_to(Skycoord, frame_to, detector_to="antares"):
@@ -389,7 +389,7 @@ def transform_to(Skycoord, frame_to, detector_to="antares"):
         return Skycoord.transform_to("galactic")
 
     else:
-        raise Exception("Wrong Frame to transform: " + frame_to + " is not valid")
+        raise ValueError("Wrong Frame to transform: " + frame_to + " is not valid")
         return -1
 
 
