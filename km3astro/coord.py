@@ -44,7 +44,7 @@ from astropy.coordinates import Angle
 
 import numpy as np
 import pandas as pd
-import numbers as nb
+import numbers
 
 # also import get_location and convergence_angle that has been shifted to km3frame
 import km3astro.frame as kf
@@ -333,12 +333,12 @@ def build_event(Cframe, *args):
 
         if isinstance(l, str):
             l = Angle(l, unit="hourangle")
-        elif isinstance(l, nb.Number):
+        elif isinstance(l, numbers.Number):
             l = Angle(l, unit=u.deg)
 
         if isinstance(b, str):
             b = Angle(b, unit="hourangle")
-        elif isinstance(b, nb.Number):
+        elif isinstance(b, numbers.Number):
             b = Angle(b, unit=u.deg)
 
         return SkyCoord(frame=Cframe, l=l, b=b, unit="deg", obstime=time)
@@ -349,12 +349,12 @@ def build_event(Cframe, *args):
 
         if isinstance(ra, str):
             ra = Angle(ra, unit="hourangle")
-        elif isinstance(ra, nb.Number):
+        elif isinstance(ra, numbers.Number):
             ra = Angle(ra, unit=u.deg)
 
         if isinstance(dec, str):
             dec = Angle(dec, unit=u.deg)
-        elif isinstance(dec, nb.Number):
+        elif isinstance(dec, numbers.Number):
             dec = Angle(dec, unit=u.deg)
 
         return SkyCoord(frame=ICRS, ra=ra, dec=dec, obstime=time)
