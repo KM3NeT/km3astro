@@ -336,7 +336,7 @@ def build_event(Cframe, *args):
         elif isinstance(l, nb.Number):
             l = Angle(l, unit=u.deg)
 
-        if type(b) == str:
+        if isinstance(b, str):
             b = Angle(b, unit="hourangle")
         elif isinstance(b, nb.Number):
             b = Angle(b, unit=u.deg)
