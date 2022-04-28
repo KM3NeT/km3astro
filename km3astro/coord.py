@@ -253,7 +253,7 @@ def is_args_fine_for_frame(frame, *args):
         )
 
     if frame == "UTM" and len(args) != 6:
-        raise Exception(
+        raise TypeError(
             "Only "
             + str(len(args))
             + " given when 6 are needed: date, time, azimuth, zenith, unit, particleframe ! for UTM"
