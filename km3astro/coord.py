@@ -246,7 +246,7 @@ class Event(object):
 def is_args_fine_for_frame(frame, *args):
 
     if frame == "ParticleFrame" and len(args) != 6:
-        raise Exception(
+        raise TypeError(
             "Only "
             + str(len(args))
             + " given when 6 are needed: date, time, theta, phi, unit, particleframe ! for ParticleFrame"
