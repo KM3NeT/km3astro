@@ -447,9 +447,7 @@ def transform_to_new_frame(
 
 
 def print_Skycoord(SkyCoord):
-
     print(SkyCoord)
-    return 0
 
 
 def reader_from_file(file):
