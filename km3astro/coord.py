@@ -484,7 +484,7 @@ def get_phi_theta(SC, detector_="antares", unit="deg"):
     loc = kf.get_location(detector_)
 
     if SC.frame.name != "particleframe":
-        raise Exception(
+        raise ValueError(
             "Wrong Frame: Expected 'particleframe' but got " + SC.frame.name
         )
 
