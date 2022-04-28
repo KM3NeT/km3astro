@@ -12,10 +12,8 @@ from km3astro.coord import (
     local_event,
     neutrino_to_source_direction,
     sun_local,
-    convergence_angle,
-    utm_zone,
-    longitude_of_central_meridian,
 )
+
 from km3astro.random import random_date
 
 
