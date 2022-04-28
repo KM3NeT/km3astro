@@ -425,14 +425,7 @@ def test_angle_separation(
             if to_print == True:
                 print("EQ TO GAL")
                 print(sep_eq_to_gal)
-                print(
-                    "Mean = "
-                    + str(mean_)
-                    + " Max = "
-                    + str(max_)
-                    + " Min = "
-                    + str(min_)
-                )
+                print(f"Mean = {mean_} Max = {max_} Min = {min_}")
 
             if max_ > angle_treshold:
                 raise ValueError(
