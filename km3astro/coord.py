@@ -353,9 +353,8 @@ def build_event(Cframe, *args):
 
         if type(dec) == str:
             dec = Angle(dec, unit=u.deg)
-
-        elif type(dec) == float:
-            elif isinstance(dec, numbers.Number):
+        elif isinstance(dec, numbers.Number):
+            dec = Angle(dec, unit=u.deg)
 
         return SkyCoord(frame=ICRS, ra=ra, dec=dec, obstime=time)
 
