@@ -539,7 +539,7 @@ def get_ra_dec(SC, unit="deg"):
 def get_l_b(SC, unit="deg"):
 
     if SC.frame.name != "galactic":
-        raise Exception("Wrong Frame: Expected galactic but got " + SC.frame.name)
+        raise ValueError("Wrong Frame: Expected galactic but got " + SC.frame.name)
 
     l = SC.l
     b = SC.b
