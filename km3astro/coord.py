@@ -46,7 +46,7 @@ import numpy as np
 import pandas as pd
 
 # also import get_location and convergence_angle that has been shifted to km3frame
-from km3astro.frame import *
+import km3astro.frame as kf
 
 from km3astro.constants import (
     arca_longitude,
@@ -136,7 +136,7 @@ def local_frame(time, location):
     if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
-    loc = get_location(location)
+    loc = kf.get_location(location)
     frame = AltAz(obstime=time, location=loc)
     return frame
 
@@ -150,10 +150,10 @@ def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
         zenith *= np.pi / 180
     altitude = zenith - np.pi / 2
 
-    loc = get_location(location)
+    loc = kf.get_location(location)
     # neutrino telescopes call the co-azimuth "azimuth"
     true_azimuth = (
-        np.pi / 2 - azimuth + np.pi + convergence_angle(loc.lat.rad, loc.lon.rad)
+        np.pi / 2 - azimuth + np.pi + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
     ) % (2 * np.pi)
     frame = local_frame(time, location=location)
     event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
@@ -299,10 +299,10 @@ def build_event(Cframe, *args):
             phi = phi * u.rad
             theta = theta * u.rad
 
-        loc = get_location(args[5])
+        loc = kf.get_location(args[5])
         r = u.Quantity(100, u.m)  # dummy r value ! Warning !
         return SkyCoord(
-            frame=ParticleFrame, phi=phi, theta=theta, location=loc, obstime=time, r=r
+            frame=kf.ParticleFrame, phi=phi, theta=theta, location=loc, obstime=time, r=r
         )
 
     # UTM : date, time, azimuth, zenith, unit, detector
@@ -319,11 +319,11 @@ def build_event(Cframe, *args):
             az = az * u.rad
             zenith = zenith * u.rad
 
-        loc = get_location(args[5])
+        loc = kf.get_location(args[5])
         r = u.Quantity(100, u.m)  # dummy r value ! Warning !
 
         return SkyCoord(
-            frame=UTM, azimuth=az, zenith=zenith, location=loc, obstime=time, r=r
+            frame=kf.UTM, azimuth=az, zenith=zenith, location=loc, obstime=time, r=r
         )
 
     elif Cframe == "galactic":
@@ -367,15 +367,15 @@ def build_event(Cframe, *args):
 def transform_to(Skycoord, frame_to, detector_to="antares"):
 
     time = Skycoord.obstime
-    loc = get_location(detector_to)
+    loc = kf.get_location(detector_to)
 
     if frame_to == "ParticleFrame":
 
-        frame = ParticleFrame(obstime=time, location=loc)
+        frame = kf.ParticleFrame(obstime=time, location=loc)
         return Skycoord.transform_to(frame)
 
     elif frame_to == "UTM":
-        frame = UTM(obstime=time, location=loc)
+        frame = kf.UTM(obstime=time, location=loc)
         return Skycoord.transform_to(frame)
 
     elif frame_to == "altaz":
@@ -462,7 +462,7 @@ def reader_from_file(file):
 def get_az_zenith(SC, detector_="antares", unit="deg"):
 
     SC_copy = SC.copy()
-    loc = get_location(detector_)
+    loc = kf.get_location(detector_)
 
     if SC.frame.name != "utm":
         raise Exception("Wrong Frame: Expected 'utm' but got " + SC.frame.name)
@@ -483,7 +483,7 @@ def get_az_zenith(SC, detector_="antares", unit="deg"):
 def get_phi_theta(SC, detector_="antares", unit="deg"):
 
     SC_copy = SC.copy()
-    loc = get_location(detector_)
+    loc = kf.get_location(detector_)
 
     if SC.frame.name != "particleframe":
         raise Exception(
