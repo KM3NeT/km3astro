@@ -337,7 +337,7 @@ def build_event(Cframe, *args):
 
         if type(b) == str:
             b = Angle(b, unit="hourangle")
-        elif type(b) == float:
+        elif isinstance(b, numbers.Number):
             b = Angle(b, unit=u.deg)
 
         return SkyCoord(frame=Cframe, l=l, b=b, unit="deg", obstime=time)
