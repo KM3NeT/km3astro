@@ -361,7 +361,7 @@ def build_event(Cframe, *args):
 
     else:
         raise ValueError("Error: Wrong Frame input:" + Cframe)
-        return -1
+        return None
 
 
 def transform_to(Skycoord, frame_to, detector_to="antares"):
