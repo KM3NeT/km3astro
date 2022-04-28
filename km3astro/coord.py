@@ -463,7 +463,7 @@ def get_az_zenith(SC, detector_="antares", unit="deg"):
     loc = kf.get_location(detector_)
 
     if SC.frame.name != "utm":
-        raise Exception("Wrong Frame: Expected 'utm' but got " + SC.frame.name)
+        raise ValueError("Wrong Frame: Expected 'utm' but got " + SC.frame.name)
 
     # if SC.frame.name != "utm":
     # SC_copy = transform_to(SC, "UTM", detector_)
