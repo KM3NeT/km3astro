@@ -379,7 +379,7 @@ def test_angle_separation(
                 )
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise ValueError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
