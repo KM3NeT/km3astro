@@ -360,7 +360,7 @@ def build_event(Cframe, *args):
         return SkyCoord(frame=ICRS, ra=ra, dec=dec, obstime=time)
 
     else:
-        raise Exception("Error: Wrong Frame input:" + Cframe)
+        raise ValueError("Error: Wrong Frame input:" + Cframe)
         return -1
 
 
