@@ -8,11 +8,8 @@ from astropy.time import Time
 from astropy.io import ascii
 from km3net_testdata import data_path
 
-from km3astro.coord import (
-    local_event,
-    neutrino_to_source_direction,
-    sun_local,
-)
+import km3astro.coord as kc
+import km3astro.frame as kf
 
 from km3astro.random import random_date
 
@@ -27,7 +24,7 @@ class TestCoord(TestCase):
         theta = np.array([135.0, 11.97, 22.97, 33.97, 85.23])
         azi_exp = np.array([277.07, 203.46, 277.07, 12.5, 153.33])
         zen_exp = np.array([45.0, 168.03, 157.03, 146.03, 94.77])
-        azi, zen = neutrino_to_source_direction(phi, theta, radian=False)
+        azi, zen = kc.neutrino_to_source_direction(phi, theta, radian=False)
         assert_allclose(azi, azi_exp)
         assert_allclose(zen, zen_exp)
 
@@ -36,7 +33,7 @@ class TestCoord(TestCase):
         theta = np.array([135.0, 11.97, 22.97, 33.97, 85.23]) * np.pi / 180
         azi_exp = np.array([277.07, 203.46, 277.07, 12.5, 153.33]) * np.pi / 180
         zen_exp = np.array([45.0, 168.03, 157.03, 146.03, 94.77]) * np.pi / 180
-        azi, zen = neutrino_to_source_direction(phi, theta, radian=True)
+        azi, zen = kc.neutrino_to_source_direction(phi, theta, radian=True)
 
         assert_allclose(azi, azi_exp)
         assert_allclose(zen, zen_exp)
@@ -45,18 +42,18 @@ class TestCoord(TestCase):
 class TestCoordRandom(TestCase):
     def test_sun(self):
         date = random_date(n=100)
-        sun = sun_local(date, loc="orca")
+        sun = kc.sun_local(date, loc="orca")
 
 
 class TestConvergenceAngle(TestCase):
     def test_convergence_angle(self):
-        ca = convergence_angle(1.5, 1.3)
+        ca = kf.convergence_angle(1.5, 1.3)
         self.assertAlmostEqual(-0.00897440033130838, ca)
 
 
 class TestUTMStuff(TestCase):
     def test_utm_zone(self):
-        assert 38 == utm_zone(np.pi / 180 * 42.8871)
+        assert 38 == kf.utm_zone(np.pi / 180 * 42.8871)
 
     def test_longitude_of_central_meridian(self):
         self.assertAlmostEqual(0.785398163397448, longitude_of_central_meridian(38))
@@ -79,11 +76,11 @@ class TestAntaresBenchmark(TestCase):
             phi = np.deg2rad(obj["phi"])
 
             # check azimuth and zenith conversion
-            azimuth, zenith = neutrino_to_source_direction(phi, theta)
+            azimuth, zenith = kc.neutrino_to_source_direction(phi, theta)
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = local_event(phi, time, theta, location="antares")
+            event = kc.local_event(phi, time, theta, location="antares")
 
             equat = event.fk5
             dec = equat.dec
@@ -114,13 +111,13 @@ class TestAntaresBenchmark(TestCase):
             phi = np.deg2rad(obj["phi"])
 
             # check azimuth and zenith conversion
-            azimuth, zenith = neutrino_to_source_direction(phi, theta)
+            azimuth, zenith = kc.neutrino_to_source_direction(phi, theta)
             print("azimuth: ", azimuth, np.rad2deg(azimuth))
             print("zenith: ", zenith, np.rad2deg(zenith))
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = local_event(phi, time, theta, location="antares")
+            event = kc.local_event(phi, time, theta, location="antares")
             print(event.fk5)
             print(event.galactic)
 
