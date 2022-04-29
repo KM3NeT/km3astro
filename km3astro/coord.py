@@ -303,7 +303,12 @@ def build_event(Cframe, *args):
         loc = kf.get_location(args[5])
         r = u.Quantity(100, u.m)  # dummy r value ! Warning !
         return SkyCoord(
-            frame=kf.ParticleFrame, phi=phi, theta=theta, location=loc, obstime=time, r=r
+            frame=kf.ParticleFrame,
+            phi=phi,
+            theta=theta,
+            location=loc,
+            obstime=time,
+            r=r,
         )
 
     # UTM : date, time, azimuth, zenith, unit, detector
