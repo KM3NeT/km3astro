@@ -1,6 +1,8 @@
 from unittest import TestCase
 
 import numpy as np
+import pandas as pd
+
 from numpy.testing import assert_allclose
 from astropy.coordinates import SkyCoord
 from astropy import units as u
@@ -10,6 +12,7 @@ from km3net_testdata import data_path
 
 import km3astro.coord as kc
 import km3astro.frame as kf
+import km3astro.testing_tools as ktt
 
 from km3astro.random import random_date
 
@@ -58,8 +61,39 @@ class TestUTMStuff(TestCase):
     def test_longitude_of_central_meridian(self):
         self.assertAlmostEqual(0.785398163397448, kf.longitude_of_central_meridian(38))
 
-
 class TestAntaresBenchmark(TestCase):
+    def setUp(self):
+        self.angle_threshold = 0.02
+        
+    def test_antares_objects(self):
+        ktt.test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"))
+
+    def test_antares_coordinate_system_benchmarks(self):
+        ktt.test_angle_separation(data_path("astro/antares_coordinate_system_benchmarks.csv"))
+
+
+class TestARCABenchmark(TestCase):
+    def setUp(self):
+        self.angle_threshold = 0.02
+        
+    def test_arca_objects(self):
+        ktt.test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"))
+
+    def test_arca_coordinate_system_benchmarks(self):
+        ktt.test_angle_separation(data_path("astro/ARCA_coordinate_system_benchmarks.csv"))
+
+class TestORCABenchmark(TestCase):
+    def setUp(self):
+        self.angle_threshold = 0.02
+        
+    def test_orca_objects(self):
+        ktt.test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"))
+
+    def test_orca_coordinate_system_benchmarks(self):
+        ktt.test_angle_separation(data_path("astro/ORCA_coordinate_system_benchmarks.csv"))
+
+
+class TestAntaresBenchmark_previous(TestCase):
     def setUp(self):
         self.tol = 0.01 * u.deg
         self.gal_tol = 0.02 * u.deg
