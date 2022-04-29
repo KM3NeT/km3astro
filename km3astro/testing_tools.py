@@ -24,7 +24,7 @@ def test_benchmark_conversion(table_true, table_check):
 
     return sep_table
 
-def test_angle_separation(file0):
+def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
         
     table_read = kc.reader_from_file(file0)
 

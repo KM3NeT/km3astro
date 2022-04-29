@@ -66,10 +66,10 @@ class TestAntaresBenchmark(TestCase):
         self.angle_threshold = 0.02
         
     def test_antares_objects(self):
-        ktt.test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"))
+        ktt.test_angle_separation(data_path("astro/antares_astro_objects_benchmark.csv"),"antares","antares")
 
     def test_antares_coordinate_system_benchmarks(self):
-        ktt.test_angle_separation(data_path("astro/antares_coordinate_system_benchmarks.csv"))
+        ktt.test_angle_separation(data_path("astro/antares_coordinate_system_benchmarks.csv"),"antares","antares")
 
 
 class TestARCABenchmark(TestCase):
@@ -77,20 +77,20 @@ class TestARCABenchmark(TestCase):
         self.angle_threshold = 0.02
         
     def test_arca_objects(self):
-        ktt.test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"))
+        ktt.test_angle_separation(data_path("astro/ARCA_astro_objects_benchmark.csv"),"arca","arca")
 
     def test_arca_coordinate_system_benchmarks(self):
-        ktt.test_angle_separation(data_path("astro/ARCA_coordinate_system_benchmarks.csv"))
+        ktt.test_angle_separation(data_path("astro/ARCA_coordinate_system_benchmarks.csv"),"arca","arca")
 
 class TestORCABenchmark(TestCase):
     def setUp(self):
         self.angle_threshold = 0.02
         
     def test_orca_objects(self):
-        ktt.test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"))
+        ktt.test_angle_separation(data_path("astro/ORCA_astro_objects_benchmark.csv"),"orca","orca")
 
     def test_orca_coordinate_system_benchmarks(self):
-        ktt.test_angle_separation(data_path("astro/ORCA_coordinate_system_benchmarks.csv"))
+        ktt.test_angle_separation(data_path("astro/ORCA_coordinate_system_benchmarks.csv"),"orca","orca")
 
 
 class TestAntaresBenchmark_previous(TestCase):
