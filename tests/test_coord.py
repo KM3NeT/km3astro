@@ -56,7 +56,7 @@ class TestUTMStuff(TestCase):
         assert 38 == kf.utm_zone(np.pi / 180 * 42.8871)
 
     def test_longitude_of_central_meridian(self):
-        self.assertAlmostEqual(0.785398163397448, longitude_of_central_meridian(38))
+        self.assertAlmostEqual(0.785398163397448, kf.longitude_of_central_meridian(38))
 
 
 class TestAntaresBenchmark(TestCase):
