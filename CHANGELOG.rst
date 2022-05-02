@@ -4,6 +4,13 @@ Unreleased Changes
 Version 0
 ---------
 
+0.9.0 / 2022-05-02
+~~~~~~~~~~~~~~~~~~
+* Refactoring
+* Coordinate transformation is now fully based on astropy.SkyCoord with
+  a new frame designed for KM3NeT
+* Bugfixes
+
 0.8.4 / 2020-01-23
 ~~~~~~~~~~~~~~~~~~
 * Cleanup and remove unnecessary requirements (scipy, km3pipe, ...)
