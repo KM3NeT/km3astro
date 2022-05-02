@@ -92,7 +92,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_utm_to_loc.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -107,7 +107,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_eq_to_loc.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -125,7 +125,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_gal_to_loc.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -144,7 +144,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_loc_to_utm.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -159,7 +159,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_eq_to_utm.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -176,7 +176,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_gal_to_utm.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -193,7 +193,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_loc_to_eq.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -208,7 +208,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_utm_to_eq.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -223,7 +223,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_gal_to_eq.max()
 
             if max_ > angle_treshold:
-                raise Exception(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -242,7 +242,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_loc_to_gal.max()
 
             if max_ > angle_treshold:
-                raise ValueError(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -259,7 +259,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_utm_to_gal.max()
 
             if max_ > angle_treshold:
-                raise ValueError(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
@@ -274,7 +274,7 @@ def test_angle_separation(file0, detector_="antares", detector_to_="antares"):
             max_ = sep_eq_to_gal.max()
 
             if max_ > angle_treshold:
-                raise ValueError(
+                raise AssertionError(
                     "Error: Maximum angle separation = "
                     + str(max_)
                     + " > "
