@@ -38,7 +38,16 @@ from astropy.coordinates import (
     get_moon,
 )
 import astropy.time
+from astropy.coordinates import ICRS, Galactic, FK4, FK5  # Low-level frames
+from astropy.time import Time
+from astropy.coordinates import Angle
+
 import numpy as np
+import pandas as pd
+import numbers
+
+# also import get_location and convergence_angle that has been shifted to km3frame
+import km3astro.frame as kf
 
 from km3astro.constants import (
     arca_longitude,
@@ -54,25 +63,6 @@ from km3astro.constants import (
 from km3astro.time import np_to_astrotime
 from km3astro.random import random_date, random_azimuth
 from km3astro.sources import GALACTIC_CENTER
-
-
-LOCATIONS = {
-    "arca": EarthLocation.from_geodetic(
-        lon=Longitude(arca_longitude * deg),
-        lat=Latitude(arca_latitude * deg),
-        height=arca_height,
-    ),
-    "orca": EarthLocation.from_geodetic(
-        lon=Longitude(orca_longitude * deg),
-        lat=Latitude(orca_latitude * deg),
-        height=orca_height,
-    ),
-    "antares": EarthLocation.from_geodetic(
-        lon=Longitude(antares_longitude * deg),
-        lat=Latitude(antares_latitude * deg),
-        height=antares_height,
-    ),
-}
 
 
 def neutrino_to_source_direction(phi, theta, radian=True):
@@ -126,14 +116,6 @@ def source_to_neutrino_direction(azimuth, zenith, radian=True):
     return phi, theta
 
 
-def get_location(location):
-    try:
-        loc = LOCATIONS[location]
-    except KeyError:
-        raise KeyError("Invalid location, valid are 'orca', 'arca', 'antares'")
-    return loc
-
-
 def Sun(time):
     """Wrapper around astropy's get_sun, accepting numpy/pandas time objects."""
     if not isinstance(time, astropy.time.Time):
@@ -155,7 +137,7 @@ def local_frame(time, location):
     if not isinstance(time, astropy.time.Time):
         # if np.datetime64, convert to astro time
         time = np_to_astrotime(time)
-    loc = get_location(location)
+    loc = kf.get_location(location)
     frame = AltAz(obstime=time, location=loc)
     return frame
 
@@ -169,10 +151,10 @@ def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
         zenith *= np.pi / 180
     altitude = zenith - np.pi / 2
 
-    loc = get_location(location)
+    loc = kf.get_location(location)
     # neutrino telescopes call the co-azimuth "azimuth"
     true_azimuth = (
-        np.pi / 2 - azimuth + np.pi + convergence_angle(loc.lat.rad, loc.lon.rad)
+        np.pi / 2 - azimuth + np.pi + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
     ) % (2 * np.pi)
     frame = local_frame(time, location=location)
     event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
@@ -262,86 +244,313 @@ class Event(object):
         return cls(zenith, azimuth, time, **initargs)
 
 
-def convergence_angle(lat, lon):
-    """Calculate the converge angle on the UTM grid.
+def is_args_fine_for_frame(frame, *args):
 
-    Parameters
-    ----------
-    lon : number
-        Longitude in rad
-    lat : number
-        Latitude in rad
-
-    """
-    latitude_deg = lat * u.deg
-
-    if latitude_deg > 84 * u.deg or latitude_deg < -80 * u.deg:
-        raise ValueError(
-            "UTM coordinate system is only defined between -80deg S and 84deg N."
+    if frame == "ParticleFrame" and len(args) != 6:
+        raise TypeError(
+            "Only "
+            + str(len(args))
+            + " given when 6 are needed: date, time, theta, phi, unit, particleframe ! for ParticleFrame"
         )
 
-    # detector position, longitude and latitude in rad
-    # lambda  = longitude
-    phi = lat
-
-    # find UTM zone and central meridian
-
-    # longitude of the central meridian of UTM zone in rad
-    lambda0 = longitude_of_central_meridian(utm_zone(lon))
-    omega = lon - lambda0
-
-    # parameters of the Earth ellipsoid
-    sma = 6378137  # semi-major axis in meters (WGS84)
-    ecc = 0.0066943800  # eccentricity (WGS84)
-
-    rho = sma * (1 - ecc) / pow(1 - ecc * np.sin(phi) ** 2, 3 / 2)
-    nu = sma / np.sqrt(1 - ecc * np.sin(phi) ** 2)
-    psi = nu / rho
-    t = np.tan(phi)
-
-    angle = (
-        np.sin(phi) * omega
-        - np.sin(phi) * omega ** 3 / 3 * pow(np.cos(phi), 2) * (2 * psi ** 2 - psi)
-        - np.sin(phi)
-        * omega ** 5
-        / 15
-        * pow(np.cos(phi), 4)
-        * (
-            psi ** 4 * (11 - 24 * t ** 2)
-            - psi ** 3 * (11 - 36 * t ** 2)
-            + 2 * psi ** 2 * (1 - 7 * t ** 2)
-            + psi * t ** 2
+    if frame == "UTM" and len(args) != 6:
+        raise TypeError(
+            "Only "
+            + str(len(args))
+            + " given when 6 are needed: date, time, azimuth, zenith, unit, particleframe ! for UTM"
         )
-        - np.sin(phi)
-        * omega ** 7
-        / 315
-        * pow(np.cos(phi), 6)
-        * (17 - 26 * t ** 2 + 2 * t ** 4)
+
+    if frame == "equatorial" and len(args) != 4:
+        raise TypeError(
+            "Only "
+            + str(len(args))
+            + " given when 4 are needed: date, time, ra, dec ! for Equatorial"
+        )
+
+    if frame == "galactic" and len(args) != 4:
+        raise TypeError(
+            "Only "
+            + str(len(args))
+            + " given when 4 are needed: date, time, l, b ! for Galactic"
+        )
+
+    return 0
+
+
+def build_event(Cframe, *args):
+
+    is_args_fine_for_frame(Cframe, *args)
+
+    # Defining time of observation
+    # using astropy.time Time because pandas.to_datetime raise an error for convertion in np_to_astrotime
+    time = args[0] + "T" + args[1]
+    time = Time(time)
+
+    # ParticleFrame : date, time , theta, phi, unit, detector_name
+    if Cframe == "ParticleFrame":
+
+        theta = args[2]
+        phi = args[3]
+        unit = args[4]
+        if unit == "deg":
+            phi = phi * u.deg
+            theta = theta * u.deg
+
+        else:
+            phi = phi * u.rad
+            theta = theta * u.rad
+
+        loc = kf.get_location(args[5])
+        r = u.Quantity(100, u.m)  # dummy r value ! Warning !
+        return SkyCoord(
+            frame=kf.ParticleFrame,
+            phi=phi,
+            theta=theta,
+            location=loc,
+            obstime=time,
+            r=r,
+        )
+
+    # UTM : date, time, azimuth, zenith, unit, detector
+    elif Cframe == "UTM":
+
+        az = args[2]
+        zenith = args[3]
+        unit = args[4]
+        if unit == "deg":
+            az = az * u.deg
+            zenith = zenith * u.deg
+
+        else:
+            az = az * u.rad
+            zenith = zenith * u.rad
+
+        loc = kf.get_location(args[5])
+        r = u.Quantity(100, u.m)  # dummy r value ! Warning !
+
+        return SkyCoord(
+            frame=kf.UTM, azimuth=az, zenith=zenith, location=loc, obstime=time, r=r
+        )
+
+    elif Cframe == "galactic":
+        l = args[2]
+        b = args[3]
+
+        if isinstance(l, str):
+            l = Angle(l, unit="hourangle")
+        elif isinstance(l, numbers.Number):
+            l = Angle(l, unit=u.deg)
+
+        if isinstance(b, str):
+            b = Angle(b, unit="hourangle")
+        elif isinstance(b, numbers.Number):
+            b = Angle(b, unit=u.deg)
+
+        return SkyCoord(frame=Cframe, l=l, b=b, unit="deg", obstime=time)
+
+    elif Cframe == "equatorial":
+        ra = args[2]
+        dec = args[3]
+
+        if isinstance(ra, str):
+            ra = Angle(ra, unit="hourangle")
+        elif isinstance(ra, numbers.Number):
+            ra = Angle(ra, unit=u.deg)
+
+        if isinstance(dec, str):
+            dec = Angle(dec, unit=u.deg)
+        elif isinstance(dec, numbers.Number):
+            dec = Angle(dec, unit=u.deg)
+
+        return SkyCoord(frame=ICRS, ra=ra, dec=dec, obstime=time)
+
+    else:
+        raise ValueError("Error: Wrong Frame input:" + Cframe)
+        return None
+
+
+def transform_to(Skycoord, frame_to, detector_to="antares"):
+
+    time = Skycoord.obstime
+    loc = kf.get_location(detector_to)
+
+    if frame_to == "ParticleFrame":
+
+        frame = kf.ParticleFrame(obstime=time, location=loc)
+        return Skycoord.transform_to(frame)
+
+    elif frame_to == "UTM":
+        frame = kf.UTM(obstime=time, location=loc)
+        return Skycoord.transform_to(frame)
+
+    elif frame_to == "altaz":
+        frame = AltAz(obstime=time, location=loc)
+        return Skycoord.transform_to(frame)
+
+    elif frame_to == "equatorial":
+        return Skycoord.transform_to(ICRS)
+
+    elif frame_to == "galactic":
+        return Skycoord.transform_to("galactic")
+
+    else:
+        raise ValueError("Wrong Frame to transform: " + frame_to + " is not valid")
+        return -1
+
+
+def transform_to_new_frame(
+    table, frame_, frame_to, detector="antares", detector_to="antares"
+):
+
+    if frame_ == "ParticleFrame":
+        list_evt = table.apply(
+            lambda x: build_event(
+                frame_, x.date, x.time, x.theta, x.phi, "deg", detector
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame_ == "UTM":
+        list_evt = table.apply(
+            lambda x: build_event(
+                frame_, x.date, x.time, x.azimuth, x.zenith, "deg", detector
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame_ == "equatorial":
+        list_evt = table.apply(
+            lambda x: build_event(
+                frame_, x.date, x.time, x["RA-J2000"], x["DEC-J2000"]
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame_ == "galactic":
+        list_evt = table.apply(
+            lambda x: build_event(frame_, x.date, x.time, x.gal_lon, x.gal_lat),
+            axis=1,
+            result_type="expand",
+        )
+
+    if isinstance(list_evt, pd.Series):
+        series_ = {"SkyCoord_base": list_evt}
+        list_evt = pd.DataFrame(series_)
+
+    list_evt.set_axis(["SkyCoord_base"], axis="columns", inplace=True)
+
+    list_evt["SkyCoord_new"] = list_evt.apply(
+        lambda x: transform_to(x.SkyCoord_base, frame_to, detector_to),
+        axis=1,
+        result_type="expand",
     )
 
-    return angle
+    return list_evt
 
 
-def utm_zone(lat):
-    """The UTM zone for a given latitude
-
-    Parameters
-    ----------
-    lat : number
-        Latitude in rad
-
-    """
-    return 1 + int((np.pi + lat) / (6 * np.pi / 180))
+def print_Skycoord(SkyCoord):
+    print(SkyCoord)
 
 
-def longitude_of_central_meridian(utmzone):
-    """The longitude of the central meridian for a given UTM zone.
+def reader_from_file(file):
 
-    Parameters
-    ----------
-    utmzone : number
-        The UTM zone.
+    table = pd.read_csv(file, comment="#")
 
-    """
-    zone_width = 6 * np.pi / 180
-    return -np.pi + (utmzone - 1) * zone_width + zone_width / 2
+    return table
+
+
+def get_az_zenith(SC, detector_="antares", unit="deg"):
+
+    SC_copy = SC.copy()
+    loc = kf.get_location(detector_)
+
+    if SC.frame.name != "utm":
+        raise ValueError("Wrong Frame: Expected 'utm' but got " + SC.frame.name)
+
+    # if SC.frame.name != "utm":
+    # SC_copy = transform_to(SC, "UTM", detector_)
+
+    zenith = SC_copy.zenith.rad
+    az = SC_copy.azimuth.rad
+
+    if unit == "deg":
+        zenith = SC_copy.zenith.deg
+        az = SC_copy.azimuth.deg
+
+    return az, zenith
+
+
+def get_phi_theta(SC, detector_="antares", unit="deg"):
+
+    SC_copy = SC.copy()
+    loc = kf.get_location(detector_)
+
+    if SC.frame.name != "particleframe":
+        raise ValueError(
+            "Wrong Frame: Expected 'particleframe' but got " + SC.frame.name
+        )
+
+    # if SC.frame.name != "particleframe":
+    # SC_copy = transform_to(SC, "ParticleFrame", detector_)
+
+    phi = SC_copy.phi.rad
+    theta = SC_copy.theta.rad
+
+    if unit == "deg":
+        phi = SC_copy.phi.deg
+        theta = SC_copy.theta.deg
+
+    return phi, theta
+
+
+def get_alt_az(SC, unit="deg"):
+
+    if SC.frame.name != "altaz":
+        raise Exception("Wrong Frame: Expected altAz but got " + SC.frame.name)
+
+    alt = SC.alt
+    az = SC.az
+
+    if unit == "deg":
+        alt = SC.alt.deg
+        az = SC.az.deg
+
+    return alt, az
+
+
+def get_ra_dec(SC, unit="deg"):
+
+    if SC.frame.name != "icrs" and SC.frame.name != "fk5":
+        raise Exception("Wrong Frame: Expected icrs or fk5 but got " + SC.frame.name)
+
+    ra = SC.ra
+    dec = SC.dec
+
+    if unit == "deg":
+        ra = SC.ra.deg
+        dec = SC.dec.deg
+
+    if unit == "hourangle":
+        ra = Angle(ra, unit="hourangle")
+        ra = ra.to_string()
+        dec = dec
+
+    return ra, dec
+
+
+def get_l_b(SC, unit="deg"):
+
+    if SC.frame.name != "galactic":
+        raise ValueError("Wrong Frame: Expected galactic but got " + SC.frame.name)
+
+    l = SC.l
+    b = SC.b
+
+    if unit == "deg":
+        l = SC.l.deg
+        b = SC.b.deg
+
+    return l, b
