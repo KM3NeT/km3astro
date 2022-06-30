@@ -3,6 +3,9 @@ Unreleased Changes
 
 Version 0
 ---------
+0.10.0 / 2022-06-30
+~~~~~~~~~~~~~~~~~~~
+* Toolbox added, with lots of functionalities (``km3astro.toolbox``)
 
 0.9.0 / 2022-05-02
 ~~~~~~~~~~~~~~~~~~
