@@ -3,6 +3,10 @@ Unreleased Changes
 
 Version 0
 ---------
+0.11.0 / 2022-08-04
+~~~~~~~~~~~~~~~~~~~
+* Skymap integration and lots of plotting tools made by Hichem!
+
 0.10.0 / 2022-06-30
 ~~~~~~~~~~~~~~~~~~~
 * Toolbox added, with lots of functionalities (``km3astro.toolbox``)
