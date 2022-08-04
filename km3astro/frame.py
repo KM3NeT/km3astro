@@ -104,22 +104,22 @@ def convergence_angle(lat, lon):
 
     angle = (
         np.sin(phi) * omega
-        - np.sin(phi) * omega ** 3 / 3 * pow(np.cos(phi), 2) * (2 * psi ** 2 - psi)
+        - np.sin(phi) * omega**3 / 3 * pow(np.cos(phi), 2) * (2 * psi**2 - psi)
         - np.sin(phi)
-        * omega ** 5
+        * omega**5
         / 15
         * pow(np.cos(phi), 4)
         * (
-            psi ** 4 * (11 - 24 * t ** 2)
-            - psi ** 3 * (11 - 36 * t ** 2)
-            + 2 * psi ** 2 * (1 - 7 * t ** 2)
-            + psi * t ** 2
+            psi**4 * (11 - 24 * t**2)
+            - psi**3 * (11 - 36 * t**2)
+            + 2 * psi**2 * (1 - 7 * t**2)
+            + psi * t**2
         )
         - np.sin(phi)
-        * omega ** 7
+        * omega**7
         / 315
         * pow(np.cos(phi), 6)
-        * (17 - 26 * t ** 2 + 2 * t ** 4)
+        * (17 - 26 * t**2 + 2 * t**4)
     )
 
     return angle
