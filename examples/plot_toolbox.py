@@ -12,6 +12,12 @@ from km3net_testdata import data_path
 
 
 def main():
+
+    ##########################################################
+    # Alert Coordinates
+    # --------------------
+    # Let's define one event.
+
     det = "antares"
     date = "2007-10-04"
     time = "03:03:03"
@@ -24,9 +30,8 @@ def main():
     l = 198.7
     b = -29.298
 
-    file0 = data_path("astro/antares_astro_objects_benchmark.csv")
-    frame_from = "ParticleFrame"
-    frame_to = "equatorial"
+    ##########################################################
+    # Let's do some transformation with toolbox.function
 
     print("Starting test of toolbox")
     print()
@@ -43,6 +48,20 @@ def main():
     ktb.print_loc_to_gal(phi, theta, date, time, det)
     print()
     print("TESTING TRANSFORM FILE")
+
+    ##########################################################
+    # Let's transform a file with a list of alert
+    # --------------------
+    ##########################################################
+    # Let's take one list of event.
+
+    file0 = data_path("astro/antares_astro_objects_benchmark.csv")
+
+    ##########################################################
+    # Let's define the frame of the alert and the frame to transform to.
+
+    frame_from = "ParticleFrame"
+    frame_to = "equatorial"
 
     ktb.transform_file(
         file0,

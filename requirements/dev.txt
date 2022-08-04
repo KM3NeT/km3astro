@@ -10,7 +10,7 @@ pytest-flake8
 pytest-pylint
 pytest-watch
 sphinx-autoapi
-sphinx-gallery>=0.1.12
+sphinx-gallery==0.10.1
 sphinx-rtd-theme>=0.3
 sphinx>=1.6.3
 sphinx_rtd_theme>=0.3

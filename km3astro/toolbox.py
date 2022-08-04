@@ -612,7 +612,13 @@ def Skycoord_breaker(data_SC):
 
 
 def transform_file(
-    file0, frame_from, frame_to, detector_from="orca", detector_to="orca", name=""
+    file0,
+    frame_from,
+    frame_to,
+    detector_from="orca",
+    detector_to="orca",
+    name="",
+    return_data=False,
 ):
     """Transform the input file containing coordinate into a new table of those coordinate in a new frame
 
@@ -654,3 +660,67 @@ def transform_file(
         name = "data" + frame_to + ".csv"
 
     data.to_csv(name, index=False)
+    if return_data == True:
+        return data
+
+
+def build_skycoord_list(table, frame, detector="antares"):
+    """Transform the input table containing coordinate into a new table of SkyCoord coordinate
+
+    Parameters
+    ----------
+    table : pandas.DataFrame
+        The table from the csv file containing the sky parameter.
+    frame : str
+        The frame of the coordinate inside the table, either "ParticleFrame" or "UTM" or "equatorial" or "galactic"
+    detector : str [default = "antares"]
+        Detector of the coordinate inside the table, either "orca", "arca" or "antares" . Mandatory if using frame_from = "ParticleFrame" or "UTM".
+
+    Returns
+    -------
+    list_evt : pandas.DataFrame(astropy.SkyCoord)
+        DataFrame containing astropy.SkyCoord object corresponding to the sky coordinate in the input table.
+
+    """
+
+    if frame == "ParticleFrame":
+        list_evt = table.apply(
+            lambda x: kc.build_event(
+                frame, x.date, x.time, x.theta, x.phi, "deg", detector
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame == "UTM":
+        list_evt = table.apply(
+            lambda x: kc.build_event(
+                frame, x.date, x.time, x.azimuth, x.zenith, "deg", detector
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame == "equatorial":
+        list_evt = table.apply(
+            lambda x: kc.build_event(
+                frame, x.date, x.time, x["RA-J2000"], x["DEC-J2000"]
+            ),
+            axis=1,
+            result_type="expand",
+        )
+
+    if frame == "galactic":
+        list_evt = table.apply(
+            lambda x: kc.build_event(frame, x.date, x.time, x.gal_lon, x.gal_lat),
+            axis=1,
+            result_type="expand",
+        )
+
+    if isinstance(list_evt, pd.Series):
+        series_ = {"SkyCoord_base": list_evt}
+        list_evt = pd.DataFrame(series_)
+
+    list_evt.set_axis(["SkyCoord_base"], axis="columns", inplace=True)
+
+    return list_evt
