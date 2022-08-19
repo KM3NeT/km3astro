@@ -38,7 +38,7 @@ def projection_axes(projection="aitoff", **figargs):
     fig = plt.figure(**figargs)
     ax = fig.add_subplot(111, projection=projection)
     ax.grid(color="lightgrey")
-    return ax
+    return fig, ax
 
 
 def plot_equatorial(
@@ -49,11 +49,11 @@ def plot_equatorial(
     markersize=4,
     alpha=0.8,
     adjust_subplots=True,
-    **kwargs
+    **kwargs,
 ):
     ra, dec = ra_dec(evts)
     if ax is None:
-        ax = projection_axes(projection=projection)
+        _, ax = projection_axes(projection=projection)
     ax.plot(ra, dec, marker, markersize=markersize, alpha=alpha, **kwargs)
     if adjust_subplots:
         plt.subplots_adjust(top=0.95, bottom=0.0)
@@ -132,14 +132,14 @@ def plot_SkyCoord(
     markersize=3,
     alpha=0.8,
     adjust_subplots=True,
-    **kwargs
+    **kwargs,
 ):
     """Plot given SkyCoord object or list"""
 
     Coord_lon, Coord_lat = get_coord_from_skycoord(SC, frame, detector)
 
     if ax is None:
-        ax = projection_axes(projection=projection)
+        _, ax = projection_axes(projection=projection)
     ax.plot(Coord_lon, Coord_lat, marker, markersize=markersize, alpha=alpha, **kwargs)
     if adjust_subplots:
         plt.subplots_adjust(top=0.95, bottom=0.0)
@@ -454,14 +454,16 @@ def plot_visibility(ax, frame="equatorial", detector="antares"):
     plt.colorbar(pc, shrink=0.6)
 
 
-def skymap_hpx(file0, path="", name=""):
+def skymap_hpx(file0, save=False, path="", name=""):
     # to be updated for GW healpix url
     """Method to plot a skymap from an hpx url
 
     Parameters
     ----------
     file0 : str
-    The path to the healpix file.
+        The path to the healpix file.
+    save : bool
+        To save or not the fig
     path : str
         Path to the writing location.
     name : str
@@ -473,7 +475,7 @@ def skymap_hpx(file0, path="", name=""):
     """
 
     projection = "mollweide"
-    ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
+    fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
 
     gw_map = hp.read_map(file0)
     hp.mollview(
@@ -481,27 +483,34 @@ def skymap_hpx(file0, path="", name=""):
     )
     hp.graticule()
 
-    if path != "":
-        if name == "":
-            name = path + "hpx_skymap_maker_test.png"
+    if save:
+        if path != "":
+            if name == "":
+                name = os.path.join(path.name, f"skymap_hpx_test.png")
+
+            else:
+                name = os.path.join(path.name, f"{name}.png")
+
         else:
-            name = path + name
+            path = tempfile.TemporaryDirectory()
 
-    else:
-        path = tempfile.TemporaryDirectory()
+            if name == "":
+                name = "hpx_skymap_maker_test.png"
 
-        if name == "":
-            name = "hpx_skymap_maker_test.png"
+            plt.savefig(name)
 
-    plt.savefig(name)
+    return fig
 
 
 def skymap_list(
     file0="",
+    dataframe=pd.DataFrame(),
     frame="equatorial",
     detector="antares",
     plot_frame="equatorial",
     detector_to="antares",
+    title="",
+    save=False,
     path="",
     name="",
 ):
@@ -511,14 +520,20 @@ def skymap_list(
     ----------
     file0 : str
         The path to the csv file containing the list of alert.
+    dataframe = pd.DataFrame()
+        The dataframe containing the list of alert
     frame :str [default = "equatorial"]
         The frame of alerts in file0
     detector : str [default = "antares"]
         The detector of the alerts, either "orca", "arca" or "antares"
     plot_frame : str [default = "equatorial"]
         The frame of the skymap, either "equatorial" or "galactic"
-    detector_to :str [default = "antares"]
+    detector_to : str [default = "antares"]
         The detector to use for frame transformation, either "orca", "arca" or "antares"
+    title : str [default = ""]
+        Title of the figure
+    save : bool [default = False]
+        To save or not the figure
     path : str
         Path to the writing location
     name : str
@@ -529,36 +544,49 @@ def skymap_list(
        A png file of the skymap.
     """
 
-    if file0 == "":
-        file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
-
     projection = "aitoff"
-    ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
+    fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
 
-    table_read = pd.read_csv(file0, comment="#")
-    table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
+    if file0 != "":
+        table_read = pd.read_csv(file0, comment="#")
+        table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
 
-    plot_file(file0, ax, projection, frame, detector, plot_frame, detector_to)
+    elif dataframe.empty == False:
+        table_skycoord = kt.build_skycoord_list(dataframe, frame, detector)
+
+    else:
+        file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
+        table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
+
+    plot_pd_skycoord(table_skycoord, plot_frame, detector_to, projection, ax)
     plot_visibility(ax=ax, frame=plot_frame, detector=detector_to)
 
-    title = detector + " Alert List " + plot_frame + " frame skymap"
+    if title == "":
+        title = detector + " Alert List " + plot_frame + " frame skymap"
     ax.set_title(title, fontsize=20, y=1.1)
     xlabel, ylabel = get_label(plot_frame)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    if path != "":
-        if name == "":
-            name = path + "skymap_list_" + detector + "_test_" + plot_frame + ".png"
+    if save:
+        if path != "":
+            if name == "":
+                name = os.path.join(
+                    path.name, f"skymap_list_{detector}_test_{plot_frame}.png"
+                )
+
+            else:
+                name = os.path.join(path.name, f"{name}.png")
+
         else:
-            name = path + name
-    else:
-        path = tempfile.TemporaryDirectory()
+            path = tempfile.TemporaryDirectory()
 
-        if name == "":
-            name = "skymap_list_" + detector + "_test_" + plot_frame + ".png"
+            if name == "":
+                name = "skymap_list_" + detector + "_test_" + plot_frame + ".png"
 
-    plt.savefig(name)
+        plt.savefig(name)
+
+    return fig
 
 
 def skymap_alert(
@@ -571,6 +599,8 @@ def skymap_alert(
     plot_frame="equatorial",
     detector_to="antares",
     alt_cut=5.7,
+    title="",
+    save=False,
     path="",
     name="",
 ):
@@ -594,6 +624,10 @@ def skymap_alert(
         The detector to use for frame transformation, either "orca", "arca" or "antares"
     alt_cut : float [default = 5.7]
         The altitude cut on detector visibility for horizon calculation. default is alt_cut = 5.7 degree which correspond to cos(0.1).
+    title : str [default = ""]
+        Title of the figure
+    save : bool [default = False]
+        To save or not the figure
     path : str
         Path to the writing location.
     name : str [default = ""]
@@ -622,7 +656,7 @@ def skymap_alert(
         use_file = True
 
     projection = "aitoff"
-    ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
+    fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
 
     if use_file == True:
 
@@ -663,7 +697,7 @@ def skymap_alert(
         marker=".",
         markersize=10,
         linewidth=0,
-        color="lime",
+        color="darkgreen",
     )
 
     gal_plan = get_galactic_plan(detector=detector_to, time=obstime, frame=plot_frame)
@@ -676,12 +710,13 @@ def skymap_alert(
         marker=".",
         markersize=10,
         linewidth=0,
-        color="red",
+        color="darkred",
     )
 
     date, time = str(obstime).split("T", 1)
 
-    title = detector + " Alert " + plot_frame + " frame skymap " + date + " " + time
+    if title == "":
+        title = detector + " Alert " + plot_frame + " frame skymap " + date + " " + time
     ax.set_title(title, fontsize=20, y=1.1)
     xlabel, ylabel = get_label(plot_frame)
     plt.xlabel(xlabel)
@@ -700,15 +735,20 @@ def skymap_alert(
 
     plt.legend(handles=h, bbox_to_anchor=(1.05, 1.05))
 
-    if path != "":
-        if name == "":
-            name = path + "skymap_alert_" + detector + "_test_" + plot_frame + ".png"
+    if save:
+        if path != "":
+            if name == "":
+                name = os.path.join(
+                    path.name, f"skymap_alert_{detector}_test_{plot_frame}.png"
+                )
+            else:
+                name = os.path.join(path.name, f"{name}.png")
+
         else:
-            name = path + name
+            path = tempfile.TemporaryDirectory()
+            if name == "":
+                name = "skymap_alert_" + detector + "_test_" + plot_frame + ".png"
 
-    else:
-        path = tempfile.TemporaryDirectory()
-        if name == "":
-            name = "skymap_alert_" + detector + "_test_" + plot_frame + ".png"
+        plt.savefig(name)
 
-    plt.savefig(name)
+    return fig
