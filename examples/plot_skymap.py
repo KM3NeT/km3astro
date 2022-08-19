@@ -16,15 +16,34 @@ from km3net_testdata import data_path
 
 
 def main():
-    kp.skymap_list(
+
+    fig = kp.skymap_list(
         data_path("astro/antares_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="antares",
         plot_frame="equatorial",
         detector_to="antares",
+        save=True,
     )
 
-    kp.skymap_list(
+    fig.savefig("test_save_fig.png")
+
+    table_read = pd.read_csv(
+        data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
+    )
+
+    _ = kp.skymap_list(
+        dataframe=table_read,
+        frame="UTM",
+        detector="antares",
+        plot_frame="equatorial",
+        detector_to="antares",
+        title="test_title_input",
+        save=True,
+        name="test_dataframe_input",
+    )
+
+    _ = kp.skymap_list(
         data_path("astro/antares_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="antares",
@@ -32,7 +51,7 @@ def main():
         detector_to="antares",
     )
 
-    kp.skymap_list(
+    _ = kp.skymap_list(
         data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="orca",
@@ -40,7 +59,7 @@ def main():
         detector_to="orca",
     )
 
-    kp.skymap_list(
+    _ = kp.skymap_list(
         data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="orca",
@@ -48,7 +67,7 @@ def main():
         detector_to="orca",
     )
 
-    kp.skymap_list(
+    _ = kp.skymap_list(
         data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="arca",
@@ -56,7 +75,7 @@ def main():
         detector_to="arca",
     )
 
-    kp.skymap_list(
+    _ = kp.skymap_list(
         data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="arca",
@@ -64,7 +83,7 @@ def main():
         detector_to="arca",
     )
 
-    kp.skymap_alert(
+    _ = kp.skymap_alert(
         file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="antares",
@@ -72,7 +91,7 @@ def main():
         detector_to="antares",
     )
 
-    kp.skymap_alert(
+    _ = kp.skymap_alert(
         ra=80,
         dec=-20,
         obstime="2022-07-18T03:03:03",
@@ -81,7 +100,7 @@ def main():
         detector_to="orca",
     )
 
-    kp.skymap_alert(
+    _ = kp.skymap_alert(
         ra=80,
         dec=-20,
         obstime="2022-07-18T03:03:03",

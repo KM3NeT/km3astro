@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+import pandas as pd
 from km3net_testdata import data_path
 import km3astro.toolbox as ktb
 import km3astro.testing_tools as ktt
@@ -9,23 +10,31 @@ import km3astro.plot as kp
 
 class TestPlotSkymap(TestCase):
     def test_skymap_list(self):
-        kp.skymap_list(
-            data_path("astro/antares_coordinate_systems_benchmark.csv"),
-            frame="UTM",
-            detector="antares",
-            plot_frame="equatorial",
-            detector_to="antares",
-        )
 
-        kp.skymap_list(
+        _ = kp.skymap_list(
             data_path("astro/antares_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="antares",
             plot_frame="galactic",
             detector_to="antares",
+            save=True,
         )
 
-        kp.skymap_list(
+        table_read = pd.read_csv(
+            data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
+        )
+        _ = kp.skymap_list(
+            dataframe=table_read,
+            frame="UTM",
+            detector="antares",
+            plot_frame="equatorial",
+            detector_to="antares",
+            title="test_title",
+            save=True,
+            name="test_dataframe_input",
+        )
+
+        _ = kp.skymap_list(
             data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="orca",
@@ -33,7 +42,7 @@ class TestPlotSkymap(TestCase):
             detector_to="orca",
         )
 
-        kp.skymap_list(
+        _ = kp.skymap_list(
             data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="orca",
@@ -41,7 +50,7 @@ class TestPlotSkymap(TestCase):
             detector_to="orca",
         )
 
-        kp.skymap_list(
+        _ = kp.skymap_list(
             data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="arca",
@@ -49,7 +58,7 @@ class TestPlotSkymap(TestCase):
             detector_to="arca",
         )
 
-        kp.skymap_list(
+        _ = kp.skymap_list(
             data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="arca",
