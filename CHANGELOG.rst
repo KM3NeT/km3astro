@@ -3,6 +3,17 @@ Unreleased Changes
 
 Version 0
 ---------
+0.12.0 / 2022-08-19
+~~~~~~~~~~~~~~~~~~~
+* Added a save option for skymap
+* skymap_* return fig by default now (for shiftertool website)
+* added dataframe input option in skymap_*
+* added option for the User to choose the title
+* changed skymap alert color to darkgreen and darkred.
+* Changed path + name to os.path.join in skymap_*
+* applied change to tests and examples folder.
+
+
 0.11.0 / 2022-08-04
 ~~~~~~~~~~~~~~~~~~~
 * Skymap integration and lots of plotting tools made by Hichem!
