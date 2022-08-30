@@ -336,22 +336,61 @@ def get_obstime(table_Sky, it=0):
     return table_Sky.iloc[it]["SkyCoord_base"].obstime
 
 
+def get_alert_color(alert_type):
+    """Return the color for a specific alert_type
+    Based on color list tab:Palette 10
+    """
+
+    Alert_color_dict = {
+        "GRB": "tab:blue",
+        "GW": "tab:orange",
+        "Neutrino": "tab:green",
+        "NuEM": "tab:red",
+        "SK_SN": "tab:purple",
+        "SNEWS": "tab:brown",
+        "Transient": "tab:pink",
+    }
+
+    if alert_type in Alert_color_dict.keys():
+        return Alert_color_dict[alert_type]
+    else:
+        return "c"
+
+
 def plot_pd_skycoord(table_skycoord, plot_frame, detector_to, projection, ax):
     """plot a pandas DataFrame of SkyCoord."""
-    table_skycoord.apply(
-        lambda x: plot_SkyCoord(
-            x.SkyCoord_base,
-            frame=plot_frame,
-            detector=detector_to,
-            projection=projection,
-            markersize=10,
-            marker=".",
-            color="royalblue",
-            ax=ax,
-            label=get_Sky_label(x.SkyCoord_base, plot_frame, detector_to),
-        ),
-        axis=1,
-    )
+
+    if "Alert_type" in table_skycoord.columns:
+        table_skycoord.apply(
+            lambda x: plot_SkyCoord(
+                x.SkyCoord_base,
+                frame=plot_frame,
+                detector=detector_to,
+                projection=projection,
+                markersize=10,
+                marker=".",
+                color=get_alert_color(x.Alert_type),
+                ax=ax,
+                label=get_Sky_label(x.SkyCoord_base, plot_frame, detector_to),
+            ),
+            axis=1,
+        )
+
+    else:
+        table_skycoord.apply(
+            lambda x: plot_SkyCoord(
+                x.SkyCoord_base,
+                frame=plot_frame,
+                detector=detector_to,
+                projection=projection,
+                markersize=10,
+                marker=".",
+                color="royalblue",
+                ax=ax,
+                label=get_Sky_label(x.SkyCoord_base, plot_frame, detector_to),
+            ),
+            axis=1,
+        )
 
 
 def plot_file(file0, ax, projection, frame, detector, plot_frame, detector_to):
@@ -439,7 +478,7 @@ def get_visi_map_path(frame, detector):
     return path
 
 
-def plot_visibility(ax, frame="equatorial", detector="antares"):
+def plot_visibility(ax, frame="equatorial", detector="antares", plot_colorscale=False):
     """Plot on the background the visibility map corresponding to the frame and detector"""
     visi_map = get_visi_map_path(frame, detector)
 
@@ -451,7 +490,8 @@ def plot_visibility(ax, frame="equatorial", detector="antares"):
     y = y * (2 * np.pi / 360)
 
     pc = ax.pcolormesh(y, x, visi_data.T, alpha=1, cmap="Greys_r", shading="gouraud")
-    plt.colorbar(pc, shrink=0.6)
+    if plot_colorscale:
+        plt.colorbar(pc, shrink=0.6)
 
 
 def skymap_hpx(file0, save=False, path="", name=""):
@@ -553,6 +593,9 @@ def skymap_list(
 
     elif dataframe.empty == False:
         table_skycoord = kt.build_skycoord_list(dataframe, frame, detector)
+        if "Alert_type" in dataframe.columns:
+            extracted_column = dataframe["Alert_type"]
+            table_skycoord = table_skycoord.join(extracted_column)
 
     else:
         file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
@@ -567,6 +610,29 @@ def skymap_list(
     xlabel, ylabel = get_label(plot_frame)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+
+    if "Alert_type" in table_skycoord.columns:
+
+        h = []
+        check_list = []
+
+        for it in table_skycoord["Alert_type"]:
+
+            if it not in check_list:
+                check_list.append(it)
+
+                alert = mlines.Line2D(
+                    [],
+                    [],
+                    color=get_alert_color(it),
+                    marker=".",
+                    markersize=10,
+                    label=it,
+                )
+
+                h.append(alert)
+
+        plt.legend(handles=h, bbox_to_anchor=(1.05, 1.05))
 
     if save:
         if path != "":
