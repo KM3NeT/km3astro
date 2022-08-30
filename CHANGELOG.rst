@@ -3,6 +3,15 @@ Unreleased Changes
 
 Version 0
 ---------
+
+0.13.0 / 2022-08-30
+~~~~~~~~~~~~~~~~~~~
+* skymap_list : Removed default plot of colorbar (request from Damien)
+* skymap_list : Added marker color palette if "Alert_type" is specified in dataframe (request from Jêrome)
+* Added test for skymap_hpx with url input
+* Added test for Alert_type color palette
+* Added legend in skymap_list for Alert type
+
 0.12.0 / 2022-08-19
 ~~~~~~~~~~~~~~~~~~~
 * Added a save option for skymap
