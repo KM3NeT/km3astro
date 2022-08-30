@@ -23,14 +23,36 @@ def main():
         detector="antares",
         plot_frame="equatorial",
         detector_to="antares",
-        save=True,
+        save=False,
     )
 
-    fig.savefig("test_save_fig.png")
+    # fig.savefig("test_save_fig.png")
 
     table_read = pd.read_csv(
         data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
     )
+
+    alert_type = [
+        "GRB",
+        "GW",
+        "Neutrino",
+        "NuEM",
+        "SK_SN",
+        "SNEWS",
+        "Transient",
+        "Random",
+        "GRB",
+        "GW",
+        "Neutrino",
+        "NuEM",
+        "SK_SN",
+        "SNEWS",
+        "Transient",
+        "Randome",
+        "Hasard",
+    ]
+
+    table_read["Alert_type"] = alert_type
 
     _ = kp.skymap_list(
         dataframe=table_read,

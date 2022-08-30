@@ -23,6 +23,28 @@ class TestPlotSkymap(TestCase):
         table_read = pd.read_csv(
             data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
         )
+        alert_type = [
+            "GRB",
+            "GW",
+            "Neutrino",
+            "NuEM",
+            "SK_SN",
+            "SNEWS",
+            "Transient",
+            "Random",
+            "GRB",
+            "GW",
+            "Neutrino",
+            "NuEM",
+            "SK_SN",
+            "SNEWS",
+            "Transient",
+            "Randome",
+            "Hasard",
+        ]
+
+        table_read["Alert_type"] = alert_type
+
         _ = kp.skymap_list(
             dataframe=table_read,
             frame="UTM",
@@ -68,15 +90,16 @@ class TestPlotSkymap(TestCase):
 
     def test_skymap_alert(self):
 
-        kp.skymap_alert(
+        _ = kp.skymap_alert(
             file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="antares",
             plot_frame="ParticleFrame",
             detector_to="antares",
+            save=True,
         )
 
-        kp.skymap_alert(
+        _ = kp.skymap_alert(
             ra=80,
             dec=-20,
             obstime="2022-07-18T03:03:03",
@@ -85,11 +108,18 @@ class TestPlotSkymap(TestCase):
             detector_to="orca",
         )
 
-        kp.skymap_alert(
+        _ = kp.skymap_alert(
             ra=80,
             dec=-20,
             obstime="2022-07-18T03:03:03",
             plot_frame="equatorial",
             detector="dummy",
             detector_to="orca",
+        )
+
+    def test_skymap_hpx(self):
+
+        _ = kp.skymap_hpx(
+            file0="https://gracedb.ligo.org/api/superevents/MS210525n/files/bayestar.fits.gz,0",
+            save=True,
         )
