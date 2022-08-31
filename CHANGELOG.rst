@@ -4,6 +4,10 @@ Unreleased Changes
 Version 0
 ---------
 
+0.13.1 / 2022-08-31
+~~~~~~~~~~~~~~~~~~~
+* fixes: skymap_hpx fig is empty
+
 0.13.0 / 2022-08-30
 ~~~~~~~~~~~~~~~~~~~
 * skymap_list : Removed default plot of colorbar (request from Damien)
