@@ -519,7 +519,8 @@ def skymap_hpx(file0, save=False, path="", name=""):
 
     gw_map = hp.read_map(file0)
     hp.mollview(
-        gw_map,
+        map = gw_map,
+        fig = fig
     )
     hp.graticule()
 
