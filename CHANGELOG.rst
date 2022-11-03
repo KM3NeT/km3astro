@@ -4,6 +4,10 @@ Unreleased Changes
 Version 0
 ---------
 
+0.13.2 / 2022-11-03
+~~~~~~~~~~~~~~~~~~~
+* performance and cosmetics in SkyMap plots
+
 0.13.1 / 2022-08-31
 ~~~~~~~~~~~~~~~~~~~
 * fixes: skymap_hpx fig is empty
