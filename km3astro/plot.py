@@ -630,7 +630,7 @@ def skymap_list(
 
                 h.append(alert)
 
-        plt.legend(handles=h, bbox_to_anchor=(1.05, 1.05))
+        plt.legend(handles=h, bbox_to_anchor=(1.1, 1.2), loc="upper right")
 
     if save:
         if path != "":
@@ -797,7 +797,7 @@ def skymap_alert(
     h.append(horizon_line)
     h.append(gal_line)
 
-    plt.legend(handles=h, bbox_to_anchor=(1.05, 1.05))
+    plt.legend(handles=h, bbox_to_anchor=(1.1, 1.2), loc="upper right")
 
     if save:
         if path != "":
