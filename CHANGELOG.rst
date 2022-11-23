@@ -3,6 +3,9 @@ Unreleased Changes
 
 Version 0
 ---------
+0.13.3 / 2022-11-23
+~~~~~~~~~~~~~~~~~~~
+* Inverts the visibility colours in ``plot_visibility()``
 
 0.13.2 / 2022-11-03
 ~~~~~~~~~~~~~~~~~~~
