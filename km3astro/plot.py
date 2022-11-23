@@ -489,7 +489,7 @@ def plot_visibility(ax, frame="equatorial", detector="antares", plot_colorscale=
     x = x * (2 * np.pi / 360)
     y = y * (2 * np.pi / 360)
 
-    pc = ax.pcolormesh(y, x, visi_data.T, alpha=1, cmap="Greys_r", shading="gouraud")
+    pc = ax.pcolormesh(y, x, 1.0 - visi_data.T, alpha=1, cmap="Greys_r", shading="gouraud")
     if plot_colorscale:
         plt.colorbar(pc, shrink=0.6)
 
