@@ -3,6 +3,15 @@ Unreleased Changes
 
 Version 0
 ---------
+0.13.5 / 2022-12-20
+~~~~~~~~~~~~~~~~~~~
+* limits the dec coordinates of the error circle to [-90, 90]
+
+0.13.4 / 2022-12-20
+~~~~~~~~~~~~~~~~~~~
+* Optional error circle to skymap_alert via the ``error_radius=None``
+  keyword
+
 0.13.3 / 2022-11-23
 ~~~~~~~~~~~~~~~~~~~
 * Inverts the visibility colours in ``plot_visibility()``
