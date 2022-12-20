@@ -657,6 +657,7 @@ def skymap_alert(
     file0="",
     ra=1000,
     dec=1000,
+    error_radius=None,
     obstime="",
     frame="equatorial",
     detector="antares",
@@ -676,6 +677,8 @@ def skymap_alert(
         The path to the csv file containing the alert.
     ra, dec : (float,float)
         The ra and dec coordinate of the alert.
+    error_radius : float
+        The radius of the error circle around the alert coordinate.
     obstime : str
         The observation time of the alert. Format is "YYYY-MM-DDTHH:MM:SS"
     frame :str [default = "equatorial"]
@@ -734,6 +737,26 @@ def skymap_alert(
         alert = SkyCoord(
             ra=ra * u.degree, dec=dec * u.degree, obstime=obstime, frame="icrs"
         )
+
+        if error_radius is not None:
+            theta = np.linspace(0, 2 * np.pi, 360)
+
+            ra = ra + error_radius * np.cos(theta)
+            dec = dec + error_radius * np.sin(theta)
+
+            error = SkyCoord(
+                ra=ra * u.degree, dec=dec * u.degree, obstime=obstime, frame="icrs"
+            )
+            plot_SkyCoord(
+                error,
+                frame=plot_frame,
+                detector=detector_to,
+                projection=projection,
+                ax=ax,
+                marker=".",
+                markersize=1,
+                color="royalblue",
+            )
 
         plot_SkyCoord(
             alert,
