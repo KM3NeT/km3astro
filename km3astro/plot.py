@@ -742,7 +742,7 @@ def skymap_alert(
             theta = np.linspace(0, 2 * np.pi, 360)
 
             ra = ra + error_radius * np.cos(theta)
-            dec = dec + error_radius * np.sin(theta)
+            dec = np.fmax(-90, np.fmin(90, dec + error_radius * np.sin(theta)))
 
             error = SkyCoord(
                 ra=ra * u.degree, dec=dec * u.degree, obstime=obstime, frame="icrs"
