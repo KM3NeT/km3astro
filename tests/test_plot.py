@@ -120,6 +120,6 @@ class TestPlotSkymap(TestCase):
     def test_skymap_hpx(self):
 
         _ = kp.skymap_hpx(
-            file0="https://gracedb.ligo.org/api/superevents/MS210525n/files/bayestar.fits.gz,0",
+            file0="https://gracedb.ligo.org/api/superevents/MS230522k/files/bayestar.multiorder.fits,1",
             save=True,
         )
