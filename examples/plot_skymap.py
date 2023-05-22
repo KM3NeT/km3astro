@@ -18,7 +18,7 @@ from km3net_testdata import data_path
 def main():
 
     fig = kp.skymap_list(
-        data_path("astro/antares_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="antares",
         plot_frame="equatorial",
@@ -66,7 +66,7 @@ def main():
     )
 
     _ = kp.skymap_list(
-        data_path("astro/antares_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="antares",
         plot_frame="galactic",
@@ -74,7 +74,7 @@ def main():
     )
 
     _ = kp.skymap_list(
-        data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="orca",
         plot_frame="equatorial",
@@ -82,7 +82,7 @@ def main():
     )
 
     _ = kp.skymap_list(
-        data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="orca",
         plot_frame="galactic",
@@ -90,7 +90,7 @@ def main():
     )
 
     _ = kp.skymap_list(
-        data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="arca",
         plot_frame="equatorial",
@@ -98,7 +98,7 @@ def main():
     )
 
     _ = kp.skymap_list(
-        data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
+        file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
         frame="UTM",
         detector="arca",
         plot_frame="galactic",
