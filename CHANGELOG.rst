@@ -3,6 +3,11 @@ Unreleased Changes
 
 Version 0
 ---------
+0.14.0 / 2023-05-22
+~~~~~~~~~~~~~~~~~~~
+* New SkyMap plots
+
+* limits the dec coordinates of the error circle to [-90, 90]
 0.13.5 / 2022-12-20
 ~~~~~~~~~~~~~~~~~~~
 * limits the dec coordinates of the error circle to [-90, 90]
