@@ -480,7 +480,7 @@ def transform_to_new_frame(
         series = {"SkyCoord_base": list_evt}
         list_evt = pd.DataFrame(series)
 
-    list_evt.set_axis(["SkyCoord_base"], axis="columns", inplace=True)
+    list_evt = list_evt.set_axis(["SkyCoord_base"], axis="columns")
 
     list_evt["SkyCoord_new"] = list_evt.apply(
         lambda x: transform_to(x.SkyCoord_base, frame_to, detector_to),

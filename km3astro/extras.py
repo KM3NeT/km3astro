@@ -14,3 +14,20 @@ def pandas():
         )
     else:
         return pandas
+
+
+def ligoskymap():
+    """Imports and returns useful imports from ``ligo.skymap``."""
+    try:
+        import ligo.skymap.plot
+        import ligo.skymap.io as io
+        import ligo.skymap.postprocess as postprocess
+    except ImportError:
+        raise ImportError(
+            "install the 'ligo.skymap' package with:\n\n"
+            "    pip install ligo.skymap\n\n"
+            "or\n\n"
+            "    conda install ligo.skymap"
+        )
+    else:
+        return io, postprocess

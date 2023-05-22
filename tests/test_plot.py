@@ -12,7 +12,7 @@ class TestPlotSkymap(TestCase):
     def test_skymap_list(self):
 
         _ = kp.skymap_list(
-            data_path("astro/antares_coordinate_systems_benchmark.csv"),
+            file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="antares",
             plot_frame="galactic",
@@ -39,8 +39,8 @@ class TestPlotSkymap(TestCase):
             "SK_SN",
             "SNEWS",
             "Transient",
-            "Randome",
-            "Hasard",
+            "Random",
+            "Random",
         ]
 
         table_read["Alert_type"] = alert_type
@@ -57,7 +57,7 @@ class TestPlotSkymap(TestCase):
         )
 
         _ = kp.skymap_list(
-            data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
+            file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="orca",
             plot_frame="equatorial",
@@ -65,7 +65,7 @@ class TestPlotSkymap(TestCase):
         )
 
         _ = kp.skymap_list(
-            data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
+            file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="orca",
             plot_frame="galactic",
@@ -73,7 +73,7 @@ class TestPlotSkymap(TestCase):
         )
 
         _ = kp.skymap_list(
-            data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
+            file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="arca",
             plot_frame="equatorial",
@@ -81,7 +81,7 @@ class TestPlotSkymap(TestCase):
         )
 
         _ = kp.skymap_list(
-            data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
+            file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
             frame="UTM",
             detector="arca",
             plot_frame="galactic",
@@ -104,7 +104,7 @@ class TestPlotSkymap(TestCase):
             dec=-20,
             obstime="2022-07-18T03:03:03",
             plot_frame="galactic",
-            detector="dummy",
+            detector="orca",
             detector_to="orca",
         )
 

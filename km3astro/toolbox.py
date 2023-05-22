@@ -584,7 +584,7 @@ def Skycoord_breaker(data_SC):
 
     data = obstime.apply(lambda x: split_date_time(x))
 
-    data.set_axis(["date", "time"], axis="columns", inplace=True)
+    data = data.set_axis(["date", "time"], axis="columns")
 
     if frame0 == "galactic":
         data["gal_lon"] = sub_sc.apply(lambda x: x.SkyCoord_new.l.deg * 1)
@@ -721,6 +721,6 @@ def build_skycoord_list(table, frame, detector="antares"):
         series_ = {"SkyCoord_base": list_evt}
         list_evt = pd.DataFrame(series_)
 
-    list_evt.set_axis(["SkyCoord_base"], axis="columns", inplace=True)
+    list_evt = list_evt.set_axis(["SkyCoord_base"], axis="columns")
 
     return list_evt
