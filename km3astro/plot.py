@@ -390,6 +390,24 @@ def get_alert_color(alert_type):
         return "c"
 
 
+def get_alert_marker(alert_type):
+    """Return the marker style for a specific alert_type"""
+
+    Alert_marker_dict = {
+        "GRB": "o",
+        "Neutrino": "^",
+        "NuEM": "v",
+        "SK_SN": "*",
+        "SNEWS": "*",
+        "Transient": "s",
+    }
+
+    if alert_type in Alert_marker_dict.keys():
+        return Alert_marker_dict[alert_type]
+    else:
+        return "."
+
+
 def plot_pd_skycoord(table_skycoord, plot_frame, detector_to, projection, ax):
     """plot a pandas DataFrame of SkyCoord."""
 
@@ -728,6 +746,7 @@ def skymap_hpx(
 def skymap_list(
     dataframe: pd.DataFrame = pd.DataFrame(),
     frame: str = "equatorial",
+    frame_input: str = "equatorial",
     detector: str = "antares",
     outfile: str = None,
     **old_kwargs,
@@ -740,6 +759,8 @@ def skymap_list(
         The dataframe containing the list of alert.
     frame : str [default = "equatorial"]
         The frame of the skymap, either "equatorial" or "galactic".
+    frame_input : str [default = "equatorial"]
+        The frame of the input data, either "equatorial" or "galactic".
     detector : str [ default = "antares"]
         The detector to be used for eventual input and for horizon.
     outfile : str
@@ -777,7 +798,7 @@ def skymap_list(
             table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
 
         elif dataframe.empty == False:
-            table_skycoord = kt.build_skycoord_list(dataframe, frame, detector)
+            table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
             if "Alert_type" in dataframe.columns:
                 extracted_column = dataframe["Alert_type"]
                 table_skycoord = table_skycoord.join(extracted_column)
@@ -847,21 +868,11 @@ def skymap_list(
         )
         table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
 
-    skycoords = table_skycoord["SkyCoord_base"].to_numpy()
-    if "Alert_type" in table_skycoord:
-        colors = [
-            get_alert_color(alert_type) for alert_type in table_skycoord["Alert_type"]
-        ]
-    else:
-        colors = "black"
-
     ke.ligoskymap()
 
     if frame not in ["galactic", "equatorial"]:
         raise RuntimeError(f"Unknown frame type {frame}")
     aframe = "icrs" if frame == "equatorial" else "galactic"
-
-    visibility = get_visibility_map(frame, detector)
 
     # Prepare figure
     fig = plt.figure(figsize=(9, 5.3))
@@ -870,32 +881,26 @@ def skymap_list(
         projection="%s degrees mollweide"
         % ("astro" if frame == "equatorial" else "geo"),
     )
-    # Plot horizon
-    ax.imshow_hpx(
-        visibility,
-        cmap="binary",
-        vmin=0.0,
-        vmax=1.0,
-    )
     # Plot point-source
-    if frame == "equatorial":
-        ax.scatter(
-            [c.ra.deg for c in skycoords],
-            [c.dec.deg for c in skycoords],
-            marker=".",
-            s=130,
-            color=colors,
-            transform=ax.get_transform("icrs"),
-        )
-    elif frame == "galactic":
-        ax.scatter(
-            [c.l.deg for c in skycoords],
-            [c.b.deg for c in skycoords],
-            marker=".",
-            s=130,
-            color=colors,
-            transform=ax.get_transform("itrs"),
-        )
+    for _, alert in table_skycoord.iterrows():
+        if frame == "equatorial":
+            ax.scatter(
+                alert["SkyCoord_base"].ra.deg,
+                alert["SkyCoord_base"].dec.deg,
+                s=100,
+                marker=get_alert_marker(alert.get("Alert_type", ".")),
+                color=get_alert_color(alert.get("Alert_type", "black")),
+                transform=ax.get_transform("icrs"),
+            )
+        elif frame == "galactic":
+            ax.scatter(
+                alert["SkyCoord_base"].l.deg,
+                alert["SkyCoord_base"].b.deg,
+                s=50,
+                marker=get_alert_marker(alert.get("Alert_type", ".")),
+                color=get_alert_color(alert.get("Alert_type", "black")),
+                transform=ax.get_transform("itrs"),
+            )
 
     # Axis configuration
     ax.grid()
@@ -906,13 +911,6 @@ def skymap_list(
 
     # Draw custom legend
     handles = []
-    handles.append(
-        matplotlib.patches.Patch(
-            edgecolor="black",
-            facecolor="black",
-            label=r"Sky visibility",
-        )
-    )
     if "Alert_type" in table_skycoord:
         for alert_type in np.unique(table_skycoord["Alert_type"]):
             handles.append(
@@ -920,9 +918,9 @@ def skymap_list(
                     [],
                     [],
                     color=get_alert_color(alert_type),
-                    linewidth=0,
-                    marker=".",
+                    marker=get_alert_marker(alert_type),
                     markersize=10,
+                    linewidth=0,
                     label=alert_type,
                 )
             )

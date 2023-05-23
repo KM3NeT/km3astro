@@ -10,6 +10,7 @@ Multiple exemple of how to use km3astro.plot
 
 import numpy as np
 import pandas as pd
+import sys
 
 import km3astro.plot as kp
 from km3net_testdata import data_path
@@ -17,16 +18,9 @@ from km3net_testdata import data_path
 
 def main():
 
-    fig = kp.skymap_list(
-        file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="antares",
-        plot_frame="equatorial",
-        detector_to="antares",
-        save=False,
-    )
-
-    # fig.savefig("test_save_fig.png")
+    if sys.version_info < (3, 8):
+        print("ligo.skymap requires Python 3.8+")
+        return
 
     table_read = pd.read_csv(
         data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
@@ -34,101 +28,65 @@ def main():
 
     alert_type = [
         "GRB",
-        "GW",
+        "Transient",
         "Neutrino",
         "NuEM",
-        "SK_SN",
-        "SNEWS",
-        "Transient",
-        "Random",
         "GRB",
-        "GW",
-        "Neutrino",
-        "NuEM",
-        "SK_SN",
-        "SNEWS",
+        "GRB",
         "Transient",
-        "Randome",
-        "Hasard",
+        "Neutrino",
+        "GRB",
+        "GRB",
+        "Neutrino",
+        "Neutrino",
+        "GRB",
+        "GRB",
+        "Transient",
+        "GRB",
+        "NuEM",
     ]
-
     table_read["Alert_type"] = alert_type
 
     _ = kp.skymap_list(
         dataframe=table_read,
-        frame="UTM",
+        frame="equatorial",
+        frame_input="UTM",
         detector="antares",
-        plot_frame="equatorial",
-        detector_to="antares",
-        title="test_title_input",
-        save=True,
-        name="test_dataframe_input",
+        outfile="test_plot_skymap_list_equatorial_antares.png",
     )
 
     _ = kp.skymap_list(
-        file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="antares",
-        plot_frame="galactic",
-        detector_to="antares",
-    )
-
-    _ = kp.skymap_list(
-        file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
-        frame="UTM",
+        dataframe=table_read,
+        frame="galactic",
+        frame_input="UTM",
         detector="orca",
-        plot_frame="equatorial",
-        detector_to="orca",
-    )
-
-    _ = kp.skymap_list(
-        file0=data_path("astro/ORCA_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="orca",
-        plot_frame="galactic",
-        detector_to="orca",
-    )
-
-    _ = kp.skymap_list(
-        file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="arca",
-        plot_frame="equatorial",
-        detector_to="arca",
-    )
-
-    _ = kp.skymap_list(
-        file0=data_path("astro/ARCA_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="arca",
-        plot_frame="galactic",
-        detector_to="arca",
-    )
-
-    _ = kp.skymap_alert(
-        file0=data_path("astro/antares_coordinate_systems_benchmark.csv"),
-        frame="UTM",
-        detector="antares",
-        plot_frame="ParticleFrame",
-        detector_to="antares",
+        outfile="test_plot_skymap_list_galactic_orca.png",
     )
 
     _ = kp.skymap_alert(
         ra=80,
         dec=-20,
         obstime="2022-07-18T03:03:03",
-        plot_frame="galactic",
-        detector="dummy",
-        detector_to="orca",
+        frame="equatorial",
+        detector="orca",
+        outfile="test_plot_skymap_alert_equatorial_orca.png",
     )
-
     _ = kp.skymap_alert(
         ra=80,
         dec=-20,
+        error_radius=5,
         obstime="2022-07-18T03:03:03",
-        plot_frame="equatorial",
-        detector="dummy",
-        detector_to="orca",
+        frame="galactic",
+        detector="antares",
+        outfile="test_plot_skymap_alert_galactic_antares.png",
+    )
+
+    _ = kp.skymap_hpx(
+        skymap_url="https://gracedb.ligo.org/api/superevents/MS230522k/files/bayestar.fits.gz,1",
+        obstime="2022-07-18T03:03:03",
+        nside=32,
+        detector="arca",
+        outfile="test_plot_skymap_hpx_arca.png",
     )
 
 
