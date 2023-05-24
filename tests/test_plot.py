@@ -93,6 +93,12 @@ class TestPlotSkymap(TestCase):
     @skipIf(sys.version_info < (3, 8), "ligo.skymap requires Python 3.8+")
     def test_skymap_list(self):
 
+        _ = kp.skymap_list(
+            frame="equatorial",
+            frame_input="UTM",
+            detector="antares",
+        )
+
         table_read = pd.read_csv(
             data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
         )
@@ -120,7 +126,7 @@ class TestPlotSkymap(TestCase):
         _ = kp.skymap_list(
             dataframe=table_read,
             frame="equatorial",
-            frame_input="UTM",
+            frame_input="galactic",
             detector="antares",
         )
 
