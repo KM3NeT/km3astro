@@ -858,15 +858,21 @@ def skymap_list(
 
     if not dataframe.empty:
         detector = "antares"
-        table_skycoord = kt.build_skycoord_list(dataframe, frame, detector)
+        table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
         if "Alert_type" in dataframe.columns:
             extracted_column = dataframe["Alert_type"]
             table_skycoord = table_skycoord.join(extracted_column)
+        table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
+            lambda x: kc.transform_to(x, frame, detector)
+        )
     else:
         table_read = pd.read_csv(
             data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
         )
-        table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
+        table_skycoord = kt.build_skycoord_list(table_read, frame_input, detector)
+        table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
+            lambda x: kc.transform_to(x, frame, detector)
+        )
 
     ke.ligoskymap()
 
@@ -910,8 +916,8 @@ def skymap_list(
             ax.coords[key].set_auto_axislabel(False)
 
     # Draw custom legend
-    handles = []
     if "Alert_type" in table_skycoord:
+        handles = []
         for alert_type in np.unique(table_skycoord["Alert_type"]):
             handles.append(
                 matplotlib.lines.Line2D(
@@ -924,8 +930,10 @@ def skymap_list(
                     label=alert_type,
                 )
             )
+        fig.legend(
+            handles=handles, loc="upper center", bbox_to_anchor=(0.50, 0.13), ncol=4
+        )
 
-    fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.50, 0.13), ncol=4)
     fig.suptitle(frame.capitalize() + " coordinates", fontsize=16)
     if outfile is not None:
         fig.savefig(outfile, dpi=300)
