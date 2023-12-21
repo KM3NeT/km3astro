@@ -3,9 +3,13 @@ Unreleased Changes
 
 Version 0
 ---------
+0.15.0 / 2023-12-21
+~~~~~~~~~~~~~~~~~~~
+* Removed deprecated plotting stuff
+
 0.14.2 / 2023-12-21
 ~~~~~~~~~~~~~~~~~~~
-* Removed PyTables dependencie
+* Removed PyTables dependency
 
 0.14.0 / 2023-05-22
 ~~~~~~~~~~~~~~~~~~~
