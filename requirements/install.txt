@@ -4,6 +4,5 @@ astropy>=3.0
 matplotlib>=2.2
 numpy
 pandas
-tables
 utm
 healpy
