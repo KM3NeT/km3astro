@@ -3,6 +3,10 @@ Unreleased Changes
 
 Version 0
 ---------
+0.14.2 / 2023-12-21
+~~~~~~~~~~~~~~~~~~~
+* Removed PyTables dependencie
+
 0.14.0 / 2023-05-22
 ~~~~~~~~~~~~~~~~~~~
 * New SkyMap plots
