@@ -81,13 +81,14 @@ def main():
         outfile="test_plot_skymap_alert_galactic_antares.png",
     )
 
-    _ = kp.skymap_hpx(
-        skymap_url="https://gracedb.ligo.org/api/superevents/MS230522k/files/bayestar.fits.gz,1",
-        obstime="2022-07-18T03:03:03",
-        nside=32,
-        detector="arca",
-        outfile="test_plot_skymap_hpx_arca.png",
-    )
+    # Gives a 404 error
+    # _ = kp.skymap_hpx(
+    #     skymap_url="https://gracedb.ligo.org/api/superevents/MS230522k/files/bayestar.fits.gz,1",
+    #     obstime="2022-07-18T03:03:03",
+    #     nside=32,
+    #     detector="arca",
+    #     outfile="test_plot_skymap_hpx_arca.png",
+    # )
 
 
 if __name__ == "__main__":
