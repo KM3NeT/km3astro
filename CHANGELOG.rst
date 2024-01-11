@@ -3,6 +3,16 @@ Unreleased Changes
 
 Version 0
 ---------
+0.16.0 / 2024-01-11
+~~~~~~~~~~~~~~~~~~~
+* local_event now takes (theta, phi, time) instead of azimuth and zenith
+  The order of arguments has been changed so that this function now
+  errors (unsupported types error) to make sure nobody is getting silently
+  wrong results
+  The main idea is that users should not need to calculate azimuth/zenith
+  themeselves.
+* A couple of unused and untested functions were removed as well
+
 0.15.0 / 2023-12-21
 ~~~~~~~~~~~~~~~~~~~
 * Removed deprecated plotting stuff
