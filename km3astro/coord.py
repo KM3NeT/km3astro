@@ -142,19 +142,22 @@ def local_frame(time, location):
     return frame
 
 
-def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
+def local_event(theta, phi, time, location, radian=True, **kwargs):
     """Create astropy events from detector coordinates."""
-    zenith = np.atleast_1d(zenith).copy()
-    azimuth = np.atleast_1d(azimuth).copy()
+    zenith = np.atleast_1d(theta).copy()
+    azimuth = np.atleast_1d(phi).copy()
+
+    azimuth, zenith = neutrino_to_source_direction(phi, theta, radian)
+
     if not radian:
         azimuth *= np.pi / 180
         zenith *= np.pi / 180
-    altitude = zenith - np.pi / 2
+    altitude = np.pi / 2 - zenith
 
     loc = kf.get_location(location)
     # neutrino telescopes call the co-azimuth "azimuth"
     true_azimuth = (
-        np.pi / 2 - azimuth + np.pi + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
+        np.pi / 2 - azimuth + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
     ) % (2 * np.pi)
     frame = local_frame(time, location=location)
     event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
@@ -183,50 +186,6 @@ def gc_in_local(time, loc):
     gc = GALACTIC_CENTER
     gc_local = gc.transform_to(frame)
     return gc_local
-
-
-def orca_gc_dist(azimuth, time, zenith, frame="detector"):
-    """Return angular distance of event to GC.
-
-    Parameters
-    ==========
-    frame: str, [default: 'detector']
-        valid are 'detector', 'galactic', 'icrs', 'gcrs'
-    """
-    evt = local_event(azimuth, time, zenith)
-    galcen = gc_in_local(time, loc)
-    if frame == "detector":
-        pass
-    elif frame in ("galactic", "icrs", "gcrs"):
-        evt = evt.transform_to(frame)
-        galcen = galcen.transform_to(frame)
-    return evt.separation(galcen).radian
-
-
-def orca_sun_dist(azimuth, time, zenith):
-    """Return distance of event to sun, in detector coordinates."""
-    evt = local_event(azimuth, time, zenith)
-    sun = sun_local(time, loc)
-    dist = evt.separation(sun).radian
-    return dist
-
-
-def gc_dist_random(zenith, frame="detector"):
-    """Generate random (time, azimuth) events and get distance to GC."""
-    n_evts = len(zenith)
-    time = random_date(n=n_evts)
-    azimuth = random_azimuth(n=n_evts)
-    dist = orca_gc_dist(azimuth, time, zenith, frame=frame)
-    return dist
-
-
-def sun_dist_random(zenith):
-    """Generate random (time, azimuth) events and get distance to GC."""
-    n_evts = len(zenith)
-    time = random_date(n=n_evts)
-    azimuth = random_azimuth(n=n_evts)
-    dist = orca_sun_dist(azimuth, time, zenith)
-    return dist
 
 
 class Event(object):
