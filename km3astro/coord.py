@@ -188,50 +188,6 @@ def gc_in_local(time, loc):
     return gc_local
 
 
-def orca_gc_dist(azimuth, time, zenith, frame="detector"):
-    """Return angular distance of event to GC.
-
-    Parameters
-    ==========
-    frame: str, [default: 'detector']
-        valid are 'detector', 'galactic', 'icrs', 'gcrs'
-    """
-    evt = local_event(azimuth, time, zenith)
-    galcen = gc_in_local(time, loc)
-    if frame == "detector":
-        pass
-    elif frame in ("galactic", "icrs", "gcrs"):
-        evt = evt.transform_to(frame)
-        galcen = galcen.transform_to(frame)
-    return evt.separation(galcen).radian
-
-
-def orca_sun_dist(azimuth, time, zenith):
-    """Return distance of event to sun, in detector coordinates."""
-    evt = local_event(azimuth, time, zenith)
-    sun = sun_local(time, loc)
-    dist = evt.separation(sun).radian
-    return dist
-
-
-def gc_dist_random(zenith, frame="detector"):
-    """Generate random (time, azimuth) events and get distance to GC."""
-    n_evts = len(zenith)
-    time = random_date(n=n_evts)
-    azimuth = random_azimuth(n=n_evts)
-    dist = orca_gc_dist(azimuth, time, zenith, frame=frame)
-    return dist
-
-
-def sun_dist_random(zenith):
-    """Generate random (time, azimuth) events and get distance to GC."""
-    n_evts = len(zenith)
-    time = random_date(n=n_evts)
-    azimuth = random_azimuth(n=n_evts)
-    dist = orca_sun_dist(azimuth, time, zenith)
-    return dist
-
-
 class Event(object):
     def __init__(self, zenith, azimuth, time, location):
         self.zenith = zenith
