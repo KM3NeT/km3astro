@@ -56,10 +56,7 @@ theta = theta_deg * np.pi / 180
 phi = phi_deg * np.pi / 180
 azimuth, zenith = neutrino_to_source_direction(phi, theta)
 
-zenith = np.pi - zenith
-azimuth = np.pi + azimuth
-
-evt = local_event(azimuth, time, zenith, location="antares")
+evt = local_event(theta, phi, time, location="antares")
 equat = evt.fk5
 # dec = equat.dec.degree
 # ra = equat.ra.degree

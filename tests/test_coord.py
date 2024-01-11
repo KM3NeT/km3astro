@@ -82,7 +82,7 @@ class TestAntaresBenchmark(TestCase):
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = kc.local_event(phi, time, theta, location="antares")
+            event = kc.local_event(theta, phi, time, location="antares")
 
             equat = event.fk5
             dec = equat.dec
@@ -119,7 +119,7 @@ class TestAntaresBenchmark(TestCase):
             self.assertAlmostEqual(azimuth[0], np.deg2rad(obj["azimuth"]))
             self.assertAlmostEqual(zenith[0], np.deg2rad(obj["zenith"]))
 
-            event = kc.local_event(phi, time, theta, location="antares")
+            event = kc.local_event(theta, phi, time, location="antares")
             print(event.fk5)
             print(event.galactic)
 

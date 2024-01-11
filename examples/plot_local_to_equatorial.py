@@ -35,6 +35,8 @@ time = pd.to_datetime(
 ).values[0]
 
 ##########################################################
+# Note:
+#
 # Phi, theta: Where the neutrino is pointing to
 #
 # Zenith, azimuth: where the neutrino is coming from
@@ -53,7 +55,7 @@ orca_loc = get_location("orca")
 #
 # This returns an ``astropy.SkyCoord`` instance.
 
-evt_local = local_event(azimuth=azimuth, zenith=zenith, time=time, location="orca")
+evt_local = local_event(theta, phi, time, location="orca")
 
 print(evt_local)
 
