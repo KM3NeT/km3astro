@@ -142,23 +142,27 @@ def local_frame(time, location):
     return frame
 
 
-def local_event(azimuth, time, zenith, location, radian=True, **kwargs):
+def local_event(theta, phi, time, location, radian=True, **kwargs):
     """Create astropy events from detector coordinates."""
-    zenith = np.atleast_1d(zenith).copy()
-    azimuth = np.atleast_1d(azimuth).copy()
+    zenith = np.atleast_1d(theta).copy()
+    azimuth = np.atleast_1d(phi).copy()
+
+    azimuth, zenith = neutrino_to_source_direction(phi, theta, radian)
+
     if not radian:
         azimuth *= np.pi / 180
         zenith *= np.pi / 180
-    altitude = zenith - np.pi / 2
+    altitude = np.pi / 2 - zenith
 
     loc = kf.get_location(location)
     # neutrino telescopes call the co-azimuth "azimuth"
     true_azimuth = (
-        np.pi / 2 - azimuth + np.pi + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
+        np.pi / 2 - azimuth + kf.convergence_angle(loc.lat.rad, loc.lon.rad)
     ) % (2 * np.pi)
     frame = local_frame(time, location=location)
     event = SkyCoord(alt=altitude * rad, az=true_azimuth * rad, frame=frame, **kwargs)
     return event
+
 
 
 def sun_local(time, loc):
