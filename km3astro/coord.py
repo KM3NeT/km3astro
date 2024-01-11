@@ -164,7 +164,6 @@ def local_event(theta, phi, time, location, radian=True, **kwargs):
     return event
 
 
-
 def sun_local(time, loc):
     """Sun position in local coordinates."""
     frame = local_frame(time, location=loc)

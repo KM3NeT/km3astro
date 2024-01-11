@@ -11,7 +11,6 @@ import sys
 
 
 class TestPlotSkymap(TestCase):
-
     @skipIf(sys.version_info < (3, 8), "ligo.skymap requires Python 3.8+")
     def test_skymap_list(self):
 
@@ -58,7 +57,6 @@ class TestPlotSkymap(TestCase):
             frame_input="UTM",
             detector="orca",
         )
-
 
     @skipIf(sys.version_info < (3, 8), "ligo.skymap requires Python 3.8+")
     def test_skymap_alert(self):
