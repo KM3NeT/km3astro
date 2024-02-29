@@ -17,8 +17,6 @@ from astropy.coordinates import ICRS, Galactic, FK4, FK5  # Low-level frames
 
 from astropy.time import Time
 
-from km3net_testdata import data_path
-
 import km3astro.coord as kc
 import km3astro.frame as kf
 import km3astro.toolbox as kt
@@ -218,49 +216,11 @@ def skymap_hpx(
         The detector to use for horizon definition. Choices are antares, orca, and arca.
     outfile : str
         Path to the output file. If None, no file is written.
-    **old_kwards: dict
-        [TO BE DEPRECATED] Arguments used by the old function: (file0, save=False, path="", name="")
 
     Returns:
     Fig : file.png
        A png file of the skymap.
     """
-
-    # === SECTION TO BE DEPRECATED ===
-    # Handling of old plotting function
-    if len(old_kwargs) > 0:
-        warnings.warn(
-            "The old 'skymap_hpx' method will be replaced, see documentation.",
-            DeprecationWarning,
-        )
-
-        file0 = old_kwargs.get("file0")
-        save = old_kwargs.get("save", False)
-        path = old_kwargs.get("path", "")
-        name = old_kwargs.get("name", "")
-
-        projection = "mollweide"
-        fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
-
-        gw_map = hp.read_map(file0)
-        hp.mollview(map=gw_map, fig=fig)
-        hp.graticule()
-
-        if save:
-            if path != "":
-                if name == "":
-                    name = os.path.join(path.name, f"skymap_hpx_test.png")
-                else:
-                    name = os.path.join(path.name, f"{name}.png")
-            else:
-                path = tempfile.TemporaryDirectory()
-                if name == "":
-                    name = "hpx_skymap_maker_test.png"
-                plt.savefig(name)
-
-        return fig
-    # === END OF SECTION TO BE DEPRECATED ===
-
     assert skymap_url is not None and obstime is not None
     io, postprocess = ke.ligoskymap()
     obstime = Time(obstime, format="isot")
@@ -357,111 +317,17 @@ def skymap_list(
         The detector to be used for eventual input and for horizon.
     outfile : str
         Path to the output file. If None, no file is written.
-    **old_kwards: dict
-        [TO BE DEPRECATED] Arguments used by the old function: (file0, plot_frame, detector_to, alt_cut, title, save, path, name)
 
     Returns:
     Fig : file.png
        A png file of the skymap.
     """
-
-    # === SECTION TO BE DEPRECATED ===
-    # Handling of old plotting function
-    if len(old_kwargs) > 0:
-        warnings.warn(
-            "The old 'skymap_list' method will be replaced, see documentation.",
-            DeprecationWarning,
-        )
-
-        file0 = old_kwargs.get("file0", "")
-        plot_frame = old_kwargs.get("plot_frame", "equatorial")
-        detector_to = old_kwargs.get("detector_to", "antares")
-        alt_cut = old_kwargs.get("alt_cut", 5.7)
-        title = old_kwargs.get("title", "")
-        save = old_kwargs.get("save", False)
-        path = old_kwargs.get("path", "")
-        name = old_kwargs.get("name", "")
-
-        projection = "aitoff"
-        fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
-
-        if file0 != "":
-            table_read = pd.read_csv(file0, comment="#")
-            table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
-
-        elif dataframe.empty == False:
-            table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
-            if "Alert_type" in dataframe.columns:
-                extracted_column = dataframe["Alert_type"]
-                table_skycoord = table_skycoord.join(extracted_column)
-
-        else:
-            file0 = data_path("astro/antares_coordinate_systems_benchmark.csv")
-            table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
-
-        plot_pd_skycoord(table_skycoord, plot_frame, detector_to, projection, ax)
-        plot_visibility(ax=ax, frame=plot_frame, detector=detector_to)
-
-        if title == "":
-            title = detector + " Alert List " + plot_frame + " frame skymap"
-        ax.set_title(title, fontsize=20, y=1.1)
-        xlabel, ylabel = get_label(plot_frame)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-
-        if "Alert_type" in table_skycoord.columns:
-
-            h = []
-            check_list = []
-
-            for it in table_skycoord["Alert_type"]:
-
-                if it not in check_list:
-                    check_list.append(it)
-
-                    alert = mlines.Line2D(
-                        [],
-                        [],
-                        color=get_alert_color(it),
-                        marker=".",
-                        markersize=10,
-                        label=it,
-                    )
-
-                    h.append(alert)
-
-            plt.legend(handles=h, bbox_to_anchor=(1.1, 1.2), loc="upper right")
-
-        if save:
-            if path != "":
-                if name == "":
-                    name = os.path.join(
-                        path.name, f"skymap_list_{detector}_test_{plot_frame}.png"
-                    )
-                else:
-                    name = os.path.join(path.name, f"{name}.png")
-            else:
-                path = tempfile.TemporaryDirectory()
-                if name == "":
-                    name = "skymap_list_" + detector + "_test_" + plot_frame + ".png"
-            plt.savefig(name)
-        return fig
-    # ===END OF SECTION TO BE DEPRECATED ===
-
     if not dataframe.empty:
         detector = "antares"
         table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
         if "Alert_type" in dataframe.columns:
             extracted_column = dataframe["Alert_type"]
             table_skycoord = table_skycoord.join(extracted_column)
-        table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
-            lambda x: kc.transform_to(x, frame, detector)
-        )
-    else:
-        table_read = pd.read_csv(
-            data_path("astro/antares_coordinate_systems_benchmark.csv"), comment="#"
-        )
-        table_skycoord = kt.build_skycoord_list(table_read, frame_input, detector)
         table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
             lambda x: kc.transform_to(x, frame, detector)
         )
@@ -560,162 +426,11 @@ def skymap_alert(
         The detector to use for horizon definition and coordinate transformation. Choices are antares, orca, and arca.
     outfile : str
         Path to the output file. If None, no file is written.
-    **old_kwards: dict
-        [TO BE DEPRECATED] Arguments used by the old function: (file0, plot_frame, detector_to, alt_cut, title, save, path, name)
 
     Returns:
     Fig : file.png
        A png file of the skymap.
     """
-
-    # === SECTION TO BE DEPRECATED ===
-    # Handling of old plotting function
-    if len(old_kwargs) > 0:
-        warnings.warn(
-            "The old 'skymap_alert' method will be replaced, see documentation.",
-            DeprecationWarning,
-        )
-
-        file0 = old_kwargs.get("file0", "")
-        plot_frame = old_kwargs.get("plot_frame", "equatorial")
-        detector_to = old_kwargs.get("detector_to", "antares")
-        alt_cut = old_kwargs.get("alt_cut", 5.7)
-        title = old_kwargs.get("title", "")
-        save = old_kwargs.get("save", False)
-        path = old_kwargs.get("path", "")
-        name = old_kwargs.get("name", "")
-
-        use_coord = False
-        use_file = False
-        if file0 != "":
-            use_file = True
-        if ra != None and dec != None and obstime != None:
-            use_coord = True
-        if use_coord == False and use_file == False:
-            file0 = data_path("astro/antares_moon_sun_position_benchmark.csv")
-            ra = 80
-            dec = 15
-            obstime = "2022-06-15T03:03:03"
-            use_coord = True
-            use_file = True
-
-        projection = "aitoff"
-        fig, ax = projection_axes(projection=projection, figsize=[40 / 2.54, 30 / 2.54])
-
-        if use_file == True:
-            table_read = pd.read_csv(file0, comment="#")
-            table_skycoord = kt.build_skycoord_list(table_read, frame, detector)
-            obstime = get_obstime(table_skycoord)
-            plot_file(file0, ax, projection, frame, detector, plot_frame, detector_to)
-
-        if use_coord == True:
-            alert = SkyCoord(
-                ra=ra * u.degree, dec=dec * u.degree, obstime=obstime, frame="icrs"
-            )
-            if error_radius is not None:
-                theta = np.linspace(0, 2 * np.pi, 360)
-                ra = ra + error_radius * np.cos(theta)
-                dec = np.fmax(-90, np.fmin(90, dec + error_radius * np.sin(theta)))
-                error = SkyCoord(
-                    ra=ra * u.degree, dec=dec * u.degree, obstime=obstime, frame="icrs"
-                )
-                plot_SkyCoord(
-                    error,
-                    frame=plot_frame,
-                    detector=detector_to,
-                    projection=projection,
-                    ax=ax,
-                    marker=".",
-                    markersize=1,
-                    color="royalblue",
-                )
-
-            plot_SkyCoord(
-                alert,
-                frame=plot_frame,
-                detector=detector_to,
-                projection=projection,
-                ax=ax,
-                marker=".",
-                markersize=10,
-                linewidth=0,
-                color="royalblue",
-                label=get_Sky_label(alert, plot_frame, detector_to, time=False),
-            )
-
-        horizon = get_horizon(
-            detector=detector_to, time=obstime, frame=plot_frame, alt_cut=alt_cut
-        )
-
-        plot_SkyCoord(
-            horizon,
-            frame=plot_frame,
-            detector=detector_to,
-            projection=projection,
-            ax=ax,
-            marker=".",
-            markersize=10,
-            linewidth=0,
-            color="darkgreen",
-        )
-
-        gal_plan = get_galactic_plan(
-            detector=detector_to, time=obstime, frame=plot_frame
-        )
-        plot_SkyCoord(
-            gal_plan,
-            frame=plot_frame,
-            detector=detector_to,
-            projection=projection,
-            ax=ax,
-            marker=".",
-            markersize=10,
-            linewidth=0,
-            color="darkred",
-        )
-
-        date, time = str(obstime).split("T", 1)
-
-        if title == "":
-            title = (
-                detector + " Alert " + plot_frame + " frame skymap " + date + " " + time
-            )
-        ax.set_title(title, fontsize=20, y=1.1)
-        xlabel, ylabel = get_label(plot_frame)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-
-        horizon_line = mlines.Line2D(
-            [], [], color="lime", marker=".", markersize=1, label="Horizon"
-        )
-        gal_line = mlines.Line2D(
-            [], [], color="red", marker=".", markersize=1, label="Galactic plan"
-        )
-
-        h, l = ax.get_legend_handles_labels()
-        h.append(horizon_line)
-        h.append(gal_line)
-
-        plt.legend(handles=h, bbox_to_anchor=(1.1, 1.2), loc="upper right")
-
-        if save:
-            if path != "":
-                if name == "":
-                    name = os.path.join(
-                        path.name, f"skymap_alert_{detector}_test_{plot_frame}.png"
-                    )
-                else:
-                    name = os.path.join(path.name, f"{name}.png")
-
-            else:
-                path = tempfile.TemporaryDirectory()
-                if name == "":
-                    name = "skymap_alert_" + detector + "_test_" + plot_frame + ".png"
-
-            plt.savefig(name)
-
-        return fig
-    # ===END OF SECTION TO BE DEPRECATED ===
 
     assert ra is not None and dec is not None and obstime is not None
 
