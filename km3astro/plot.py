@@ -322,15 +322,14 @@ def skymap_list(
     Fig : file.png
        A png file of the skymap.
     """
-    if not dataframe.empty:
-        detector = "antares"
-        table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
-        if "Alert_type" in dataframe.columns:
-            extracted_column = dataframe["Alert_type"]
-            table_skycoord = table_skycoord.join(extracted_column)
-        table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
-            lambda x: kc.transform_to(x, frame, detector)
-        )
+    detector = "antares"
+    table_skycoord = kt.build_skycoord_list(dataframe, frame_input, detector)
+    if "Alert_type" in dataframe.columns:
+        extracted_column = dataframe["Alert_type"]
+        table_skycoord = table_skycoord.join(extracted_column)
+    table_skycoord["SkyCoord_base"] = table_skycoord["SkyCoord_base"].map(
+        lambda x: kc.transform_to(x, frame, detector)
+    )
 
     ke.ligoskymap()
 
