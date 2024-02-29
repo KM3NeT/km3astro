@@ -188,21 +188,6 @@ def gc_in_local(time, loc):
     return gc_local
 
 
-class Event(object):
-    def __init__(self, zenith, azimuth, time, location):
-        self.zenith = zenith
-        self.azimuth = azimuth
-        self.time = time
-
-    @classmethod
-    def from_zenith(cls, zenith, **initargs):
-        zenith = np.atleast_1d(zenith)
-        n_evts = zenith.shape[0]
-        azimuth = random_azimuth(n_evts)
-        time = random_date(n_evts)
-        return cls(zenith, azimuth, time, **initargs)
-
-
 def is_args_fine_for_frame(frame, *args):
 
     if frame == "ParticleFrame" and len(args) < 6:
