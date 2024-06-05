@@ -3,6 +3,11 @@ Unreleased Changes
 
 Version 0
 ---------
+0.17.0 / 2024-06-05
+~~~~~~~~~~~~~~~~~~~
+* Added reading of KM3NeT events
+* HDF5 output
+
 0.16.0 / 2024-01-11
 ~~~~~~~~~~~~~~~~~~~
 * local_event now takes (theta, phi, time) instead of azimuth and zenith
